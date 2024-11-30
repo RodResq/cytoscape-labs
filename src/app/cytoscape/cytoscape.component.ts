@@ -18,7 +18,11 @@ export class CytoscapeComponent implements OnInit {
         // list of graph elements to start with
         { data: { id: 'a' } },
         { data: { id: 'b' } },
-        { data: { id: 'ab', source: 'a', target: 'b' } }
+        { data: { id: 'c' } },
+        { data: { id: 'd' } },
+        { data: { id: 'ab', source: 'a', target: 'b' } },
+        { data: { id: 'bc', source: 'b', target: 'c' } },
+        { data: { id: 'bd', source: 'b', target: 'd' } }
       ],
       style: [ // the stylesheet for the graph
         {
