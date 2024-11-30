@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { CytoscapeComponent } from './cytoscape/cytoscape.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [CytoscapeComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
