@@ -12,18 +12,22 @@ export class CytoscapeComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
+    var cy = cytoscape({container: this.cyContainer.nativeElement});
+    /**
     cytoscape({
       container: this.cyContainer.nativeElement, // container to render in
-      elements: [
+      elements: {
         // list of graph elements to start with
-        { data: { id: 'a' } },
-        { data: { id: 'b' } },
-        { data: { id: 'c' } },
-        { data: { id: 'd' } },
-        { data: { id: 'ab', source: 'a', target: 'b' } },
-        { data: { id: 'bc', source: 'b', target: 'c' } },
-        { data: { id: 'bd', source: 'b', target: 'd' } }
-      ],
+        nodes: [
+          { data: { id: 'a' }, position: {x: 100, y: 100}, style: {'background-color': 'red'} },
+          { data: { id: 'b' }, position: {x: 200, y: 200}, style: {'background-color': 'green'} },
+          { data: { id: 'c' }, position: {x: 300, y: 200}, style: {'background-color': 'silver'} },
+          { data: { id: 'd' } }],
+        edges: [
+          { data: { id: 'ab', source: 'a', target: 'b' } },
+          { data: { id: 'bc', source: 'b', target: 'c' } },
+          { data: { id: 'bd', source: 'b', target: 'd' } }]
+      },
       style: [ // the stylesheet for the graph
         {
           selector: 'node',
@@ -36,16 +40,54 @@ export class CytoscapeComponent implements OnInit {
           selector: 'edge',
           style: {
             'width': 3,
-            'line-color': '#FF4136',
-            'target-arrow-color': '#FF4136',
-            'target-arrow-shape': 'triangle'
+            'line-color': '#ccc',
+            'target-arrow-color': '#ccc',
+            'target-arrow-shape': 'triangle',
+            'curve-style': 'bezier'
           }
         }
       ],
       layout: {
         name: 'grid',
         rows: 1
+      },
+    }).add({group: 'nodes', data: {weight: 75}, position: { x: 200, y: 200}})
+     */
+    // cy.add({
+    //   group: 'nodes',
+    //   data: {id: 'teste',  weight: 75},
+    //   position: { x: 300, y: 300}
+    // });
+
+
+    var eles = cy.add([
+      { group: 'nodes', data: { id: 'a' }, position: { x: 100, y: 100 }, style: {'background-color': 'red'}},
+      { group: 'nodes', data: { id: 'b' }, position: { x: 200, y: 200 }, style: {'background-color': 'green'}},
+      { group: 'edges', data: { id: 'e0', source: 'a', target: 'b'}}
+    ])
+
+    cy.remove('[id = "teste"]')
+    cy.add({group: 'nodes', data: { id: 'c', position: { x: 50, y: 50}, style: {'background-color': 'blue'}}})
+    cy.add({group: 'edges', data: { id: 'e1', source: 'b', target: 'c'}})
+
+    // var element = cy.getElementById('a');
+    // console.log(element);
+
+    // cy.on('tap', 'node', function(evt) {
+    //   var node = evt.target;
+    //   console.log('tapped ' + node.id());
+    // });
+
+    cy.on('tap', function(evt) {
+      var evtTarget = evt.target;
+
+      if (evtTarget == cy) {
+        console.log('tab on background');
+      } else {
+        console.log('tap on some element');
       }
     });
+
   }
+
 }
