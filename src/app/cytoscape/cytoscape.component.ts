@@ -12,16 +12,16 @@ export class CytoscapeComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    var cy = cytoscape({container: this.cyContainer.nativeElement});
-    /**
-    cytoscape({
+    // var cy = cytoscape({container: this.cyContainer.nativeElement});
+
+    var cy = cytoscape({
       container: this.cyContainer.nativeElement, // container to render in
       elements: {
         // list of graph elements to start with
         nodes: [
           { data: { id: 'a' }, position: {x: 100, y: 100}, style: {'background-color': 'red'} },
           { data: { id: 'b' }, position: {x: 200, y: 200}, style: {'background-color': 'green'} },
-          { data: { id: 'c' }, position: {x: 300, y: 200}, style: {'background-color': 'silver'} },
+          { data: { id: 'c' }, position: {x: 300, y: 300}, style: {'background-color': 'silver'} },
           { data: { id: 'd' } }],
         edges: [
           { data: { id: 'ab', source: 'a', target: 'b' } },
@@ -51,24 +51,16 @@ export class CytoscapeComponent implements OnInit {
         name: 'grid',
         rows: 1
       },
-    }).add({group: 'nodes', data: {weight: 75}, position: { x: 200, y: 200}})
-     */
-    // cy.add({
-    //   group: 'nodes',
-    //   data: {id: 'teste',  weight: 75},
-    //   position: { x: 300, y: 300}
-    // });
+    });
 
+    cy.add([
+      { group: 'nodes', data: { id: 'e' }, position: { x: 100, y: 100 }, style: {'background-color': 'red'}},
+      { group: 'edges', data: { id: 'e0', source: 'b', target: 'e'}}
+    ]);
 
-    var eles = cy.add([
-      { group: 'nodes', data: { id: 'a' }, position: { x: 100, y: 100 }, style: {'background-color': 'red'}},
-      { group: 'nodes', data: { id: 'b' }, position: { x: 200, y: 200 }, style: {'background-color': 'green'}},
-      { group: 'edges', data: { id: 'e0', source: 'a', target: 'b'}}
-    ])
-
-    cy.remove('[id = "teste"]')
-    cy.add({group: 'nodes', data: { id: 'c', position: { x: 50, y: 50}, style: {'background-color': 'blue'}}})
-    cy.add({group: 'edges', data: { id: 'e1', source: 'b', target: 'c'}})
+    // cy.remove('[id = "e"]')
+    // cy.add({group: 'nodes', data: { id: 'c', position: { x: 50, y: 50}, style: {'background-color': 'blue'}}})
+    // cy.add({group: 'edges', data: { id: 'e1', source: 'b', target: 'c'}})
 
     // var element = cy.getElementById('a');
     // console.log(element);
@@ -78,15 +70,15 @@ export class CytoscapeComponent implements OnInit {
     //   console.log('tapped ' + node.id());
     // });
 
-    cy.on('tap', function(evt) {
-      var evtTarget = evt.target;
+    // cy.on('tap', function(evt) {
+    //   var evtTarget = evt.target;
 
-      if (evtTarget == cy) {
-        console.log('tab on background');
-      } else {
-        console.log('tap on some element');
-      }
-    });
+    //   if (evtTarget == cy) {
+    //     console.log('tab on background');
+    //   } else {
+    //     console.log('tap on some element');
+    //   }
+    // });
 
   }
 
