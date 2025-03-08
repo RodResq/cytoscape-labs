@@ -1,5 +1,8 @@
+import { group } from '@angular/animations';
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import cytoscape from 'cytoscape';
+import { interval } from 'rxjs';
+
 
 @Component({
   selector: 'app-cytoscape',
@@ -12,7 +15,8 @@ export class CytoscapeComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    // var cy = cytoscape({container: this.cyContainer.nativeElement});
+
+    var formCadastrar = $('#formCadastrar').css('visibility', 'hidden')
 
     var cy = cytoscape({
       container: this.cyContainer.nativeElement, // container to render in
@@ -51,34 +55,61 @@ export class CytoscapeComponent implements OnInit {
         name: 'grid',
         rows: 1
       },
+      // initial viewport state:
+      zoom: 1,
+      pan: { x: 0, y: 0 },
+
+      // interaction options:
+      minZoom: 1e-50,
+      maxZoom: 1e50,
+      zoomingEnabled: true,
+      userZoomingEnabled: true,
+      panningEnabled: true,
+      userPanningEnabled: true,
+      boxSelectionEnabled: true,
+      selectionType: 'single',
+      touchTapThreshold: 8,
+      desktopTapThreshold: 4,
+      autolock: false,
+      autoungrabify: false,
+      autounselectify: false,
+
+      // rendering options:
+      headless: false,
+      styleEnabled: true,
+      hideEdgesOnViewport: false,
+      textureOnViewport: false,
+      motionBlur: false,
+      motionBlurOpacity: 0.2,
+      wheelSensitivity: 1,
+      pixelRatio: 'auto'
+
     });
 
-    cy.add([
-      { group: 'nodes', data: { id: 'e' }, position: { x: 100, y: 100 }, style: {'background-color': 'red'}},
-      { group: 'edges', data: { id: 'e0', source: 'b', target: 'e'}}
-    ]);
 
-    // cy.remove('[id = "e"]')
-    // cy.add({group: 'nodes', data: { id: 'c', position: { x: 50, y: 50}, style: {'background-color': 'blue'}}})
-    // cy.add({group: 'edges', data: { id: 'e1', source: 'b', target: 'c'}})
 
-    // var element = cy.getElementById('a');
-    // console.log(element);
+    cy.on('tap', 'node', function(evt) {
+      let node = evt.target;
+      let nodeId = node.id();
+      let numero_randomico =  (Math.floor(Math.random() * 100)).toString();
+      let valor_concatenado = nodeId.concat(numero_randomico);
 
-    // cy.on('tap', 'node', function(evt) {
-    //   var node = evt.target;
-    //   console.log('tapped ' + node.id());
-    // });
 
-    // cy.on('tap', function(evt) {
-    //   var evtTarget = evt.target;
 
-    //   if (evtTarget == cy) {
-    //     console.log('tab on background');
-    //   } else {
-    //     console.log('tap on some element');
-    //   }
-    // });
+      cy.add({
+        group: 'nodes',
+        data: { id: valor_concatenado},
+        position: { x: (Math.floor(Math.random() * 300)), y: (Math.floor(Math.random() * 200)) },
+        style: { 'background-color': node.style()['background-color'] }
+      });
+
+      cy.add({
+        group: 'edges',
+        data: { source: nodeId, target: valor_concatenado},
+      });
+
+    });
+
 
   }
 
