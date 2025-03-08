@@ -1,0 +1,18 @@
+<div class="row justify-content-gl-center">
+  <div #formCadastrar>
+    <form [formGroup]="nodeForm" (ngSubmit)="handleSubmit()">
+      <label>Name
+        <input type="text" formControlName="nome" />
+      </label>
+      <label>Evento
+        <input type="text" formControlName="evento" />
+      </label>
+      <button type="submit" [disabled]="!nodeForm.valid">Cadastrar</button>
+    </form>
+  </div>
+  <div class="container">
+    <h2>Cadastro Nó</h2>
+    <p>Nome: {{ nodeForm.value.nome }}</p>
+    <p>Evento: {{ nodeForm.value.evento }}</p>
+  </div>
+</div>

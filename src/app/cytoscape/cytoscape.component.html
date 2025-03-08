@@ -1,17 +1,7 @@
 <div class="container">
-  <div class="row justify-content-md-center">
-    <div class="col col-lg-2">
-      <div #cyContainer style="width: 50%; height: 400px; border: 1px solid black;">
-
-        <div #formCadastrar>
-          <form action="">
-            <label for="nome">Nome</label>
-            <input type="text" name="nome" >
-            <input type="submit" value="Cadastrar">
-          </form>
-        </div>
-
-      </div>
-    </div>
+  <div class="row justify-content-gl-center">
+      <div #cyContainer style="width: 50%; height: 400px; border: 1px solid black;"></div>
+      <!-- Passar referencia para o imput property do filho -->
+      <app-cadastro-form grafo="cyContainer"></app-cadastro-form>
   </div>
 </div>

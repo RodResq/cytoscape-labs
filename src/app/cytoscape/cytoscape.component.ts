@@ -1,22 +1,27 @@
 import { group } from '@angular/animations';
-import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, inject } from '@angular/core';
 import cytoscape from 'cytoscape';
 import { interval } from 'rxjs';
+import { CadastroFormComponent } from "../cadastro-form/cadastro-form.component";
+import { CadastroService } from '../service/cadastro.service';
 
 
 @Component({
   selector: 'app-cytoscape',
   templateUrl: './cytoscape.component.html',
   styleUrls: ['./cytoscape.component.css'],
+  imports: [CadastroFormComponent],
 })
 export class CytoscapeComponent implements OnInit {
   @ViewChild('cyContainer', { static: true }) cyContainer!: ElementRef;
 
+  private cadastroService = inject(CadastroService);
+
+  public cy: any;
+
   constructor() {}
 
   ngOnInit(): void {
-
-    var formCadastrar = $('#formCadastrar').css('visibility', 'hidden')
 
     var cy = cytoscape({
       container: this.cyContainer.nativeElement, // container to render in
@@ -87,30 +92,25 @@ export class CytoscapeComponent implements OnInit {
     });
 
 
-
     cy.on('tap', 'node', function(evt) {
       let node = evt.target;
       let nodeId = node.id();
       let numero_randomico =  (Math.floor(Math.random() * 100)).toString();
       let valor_concatenado = nodeId.concat(numero_randomico);
 
-
-
       cy.add({
-        group: 'nodes',
-        data: { id: valor_concatenado},
-        position: { x: (Math.floor(Math.random() * 300)), y: (Math.floor(Math.random() * 200)) },
-        style: { 'background-color': node.style()['background-color'] }
+          group: 'nodes',
+          data: { id: valor_concatenado},
+          position: { x: (Math.floor(Math.random() * 300)), y: (Math.floor(Math.random() * 200)) },
+          style: { 'background-color': node.style()['background-color'] }
+        });
+
+        cy.add({
+            group: 'edges',
+            data: { source: nodeId, target: valor_concatenado},
+          });
+
       });
-
-      cy.add({
-        group: 'edges',
-        data: { source: nodeId, target: valor_concatenado},
-      });
-
-    });
-
-
   }
 
 }
