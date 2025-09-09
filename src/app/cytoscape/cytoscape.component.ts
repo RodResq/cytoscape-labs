@@ -51,8 +51,14 @@ export class CytoscapeComponent implements OnInit {
           image: {src : "assets/icons/add.svg", width : 12, height : 12, x : 6, y : 4},
           selector: 'node',
           coreAsWell: true,
-          onClickFunction: () => {
-            console.log('Adicionar nó de tarefa');
+          onClickFunction: (event: any) => {
+            const clickedElement = event.target || event.cyTarget;
+            console.log(clickedElement);
+            
+            this.cy.add([
+              {group: 'nodes', data: { id:'n1'} ,position: { x: 200, y: 300 }},
+              {group: 'edges', data: { id: 'e0', source: 'a', target: 'n1' }}
+          ]);
           }
         }
       ],
@@ -72,13 +78,9 @@ export class CytoscapeComponent implements OnInit {
       elements: {
         nodes: [
           { data: { id: 'a' }, position: {x: 100, y: 100}, style: {'background-color': 'red'} },
-          { data: { id: 'b' }, position: {x: 200, y: 200}, style: {'background-color': 'green'} },
-          { data: { id: 'c' }, position: {x: 300, y: 300}, style: {'background-color': 'silver'} },
-          { data: { id: 'd' } }],
+        ],
         edges: [
-          { data: { id: 'ab', source: 'a', target: 'b' } },
-          { data: { id: 'bc', source: 'b', target: 'c' } },
-          { data: { id: 'bd', source: 'b', target: 'd' } }]
+        ]
       },
       style: [ // the stylesheet for the graph
         {
@@ -91,7 +93,7 @@ export class CytoscapeComponent implements OnInit {
         {
           selector: 'edge',
           style: {
-            'width': 3,
+            'width': 1,
             'line-color': '#ccc',
             'target-arrow-color': '#ccc',
             'target-arrow-shape': 'triangle',
