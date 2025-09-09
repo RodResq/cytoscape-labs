@@ -11,28 +11,28 @@ cytoscape.use(contextMenus);
   styleUrls: ['./cytoscape.component.css'],
 })
 export class CytoscapeComponent implements OnInit {
-  @ViewChild('cyContainer', { static: true }) 
+  @ViewChild('cyContainer', { static: true })
   cytoscapeContainer!: ElementRef;
-  
+
   private cy!: cytoscape.Core;
 
   private options = {
       evtType: 'cxttap',
       menuItems: [
         {
-          id: 'Remove Nó', 
-          content: 'remove', 
-          tooltipText: 'remove', 
-          image: {src : "assets/icons/remove.svg", width : 12, height : 12, x : 6, y : 4}, 
-          selector: 'node, edge', 
-          onClickFunction: () => { 
+          id: 'Remove Nó',
+          content: 'remove',
+          tooltipText: 'remove',
+          image: {src : "assets/icons/remove.svg", width : 12, height : 12, x : 6, y : 4},
+          selector: 'node, edge',
+          onClickFunction: () => {
             console.log('remove element');
           },
-          disabled: false, 
-          show: true, 
-          hasTrailingDivider: true, 
-          coreAsWell: false, 
-          submenu: [] 
+          disabled: false,
+          show: true,
+          hasTrailingDivider: true,
+          coreAsWell: false,
+          submenu: []
         },
         {
           id: 'add-note-decisão',
@@ -53,11 +53,24 @@ export class CytoscapeComponent implements OnInit {
           coreAsWell: true,
           onClickFunction: (event: any) => {
             const clickedElement = event.target || event.cyTarget;
-            console.log(clickedElement);
-            
+            const elementId = clickedElement.id()
+            console.log('Adicionando nó de decisão a partir do elemento:', elementId);
+            const newNodeId = 'decision-' + Date.now();
+            console.log('Novo No Criado:' , newNodeId);
+
+            const nodePos = clickedElement.position();
+
             this.cy.add([
-              {group: 'nodes', data: { id:'n1'} ,position: { x: 200, y: 300 }},
-              {group: 'edges', data: { id: 'e0', source: 'a', target: 'n1' }}
+              {
+                group: 'nodes',
+                data: { id: newNodeId },
+                position: { x: nodePos.x + 100, y: nodePos.y },
+                classes: 'decision-node'
+              },
+              {
+                group: 'edges',
+                data: { id: 'edge-' + elementId + '-' + newNodeId, source: elementId, target: newNodeId }
+              }
           ]);
           }
         }
@@ -68,7 +81,7 @@ export class CytoscapeComponent implements OnInit {
       ],
       submenuIndicator: { src: 'assets/icons/submenu-indicator-default.svg', width: 12, height: 12 }
   };
-  
+
   constructor() {}
 
   ngOnInit(): void {
@@ -105,9 +118,15 @@ export class CytoscapeComponent implements OnInit {
         name: 'grid',
         rows: 1
       },
+      zoom: 1,
+      pan: { x: 0, y: 0 },
+      minZoom: 1e-50,
+      maxZoom: 1e50,
+      zoomingEnabled: false,
+      userZoomingEnabled: false,
     });
 
     this.cy.contextMenus(this.options);
-    
+
   }
 }
