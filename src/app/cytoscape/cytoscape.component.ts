@@ -1,5 +1,9 @@
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import cytoscape from 'cytoscape';
+import contextMenus from 'cytoscape-context-menus';
+import 'cytoscape-context-menus/cytoscape-context-menus.css';
+
+cytoscape.use(contextMenus);
 
 @Component({
   selector: 'app-cytoscape',
@@ -7,17 +11,65 @@ import cytoscape from 'cytoscape';
   styleUrls: ['./cytoscape.component.css'],
 })
 export class CytoscapeComponent implements OnInit {
-  @ViewChild('cyContainer', { static: true }) cyContainer!: ElementRef;
+  @ViewChild('cyContainer', { static: true }) 
+  cytoscapeContainer!: ElementRef;
+  
+  private cy!: cytoscape.Core;
 
+  private options = {
+      evtType: 'cxttap',
+      menuItems: [
+        {
+          id: 'Remove Nó', 
+          content: 'remove', 
+          tooltipText: 'remove', 
+          image: {src : "assets/icons/remove.svg", width : 12, height : 12, x : 6, y : 4}, 
+          selector: 'node, edge', 
+          onClickFunction: () => { 
+            console.log('remove element');
+          },
+          disabled: false, 
+          show: true, 
+          hasTrailingDivider: true, 
+          coreAsWell: false, 
+          submenu: [] 
+        },
+        {
+          id: 'add-note-decisão',
+          content: 'Adicionar nó de decisão',
+          tooltipText: 'Adcione um nó de decisão no fluxo',
+          selector: 'node, edge',
+          onClickFunction:  () => {
+            console.log('click Adicionar nó de decisão');
+          },
+          disabled: false
+        },
+        {
+          id: 'add-node',
+          content: 'Adicionar Nó de Tarefa',
+          tooltipText: 'Adicionar um nó para tarefa no fluxo',
+          image: {src : "assets/icons/add.svg", width : 12, height : 12, x : 6, y : 4},
+          selector: 'node',
+          coreAsWell: true,
+          onClickFunction: () => {
+            console.log('Adicionar nó de tarefa');
+          }
+        }
+      ],
+      menuItemClasses: [
+      ],
+      contextMenuClasses: [
+      ],
+      submenuIndicator: { src: 'assets/icons/submenu-indicator-default.svg', width: 12, height: 12 }
+  };
+  
   constructor() {}
 
   ngOnInit(): void {
-    // var cy = cytoscape({container: this.cyContainer.nativeElement});
 
-    var cy = cytoscape({
-      container: this.cyContainer.nativeElement, // container to render in
+    this.cy = cytoscape({
+      container: this.cytoscapeContainer.nativeElement,
       elements: {
-        // list of graph elements to start with
         nodes: [
           { data: { id: 'a' }, position: {x: 100, y: 100}, style: {'background-color': 'red'} },
           { data: { id: 'b' }, position: {x: 200, y: 200}, style: {'background-color': 'green'} },
@@ -53,33 +105,7 @@ export class CytoscapeComponent implements OnInit {
       },
     });
 
-    cy.add([
-      { group: 'nodes', data: { id: 'e' }, position: { x: 100, y: 100 }, style: {'background-color': 'red'}},
-      { group: 'edges', data: { id: 'e0', source: 'b', target: 'e'}}
-    ]);
-
-    // cy.remove('[id = "e"]')
-    // cy.add({group: 'nodes', data: { id: 'c', position: { x: 50, y: 50}, style: {'background-color': 'blue'}}})
-    // cy.add({group: 'edges', data: { id: 'e1', source: 'b', target: 'c'}})
-
-    // var element = cy.getElementById('a');
-    // console.log(element);
-
-    // cy.on('tap', 'node', function(evt) {
-    //   var node = evt.target;
-    //   console.log('tapped ' + node.id());
-    // });
-
-    // cy.on('tap', function(evt) {
-    //   var evtTarget = evt.target;
-
-    //   if (evtTarget == cy) {
-    //     console.log('tab on background');
-    //   } else {
-    //     console.log('tap on some element');
-    //   }
-    // });
-
+    this.cy.contextMenus(this.options);
+    
   }
-
 }
