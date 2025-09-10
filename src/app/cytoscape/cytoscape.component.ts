@@ -39,8 +39,35 @@ export class CytoscapeComponent implements OnInit {
           content: 'Adicionar nó de decisão',
           tooltipText: 'Adcione um nó de decisão no fluxo',
           selector: 'node, edge',
-          onClickFunction:  () => {
+          onClickFunction:  (event: any) => {
             console.log('click Adicionar nó de decisão');
+            const clickedElement = event.target || event.cyTarget;
+            const elementId = clickedElement.id()
+
+            console.log('Adicionando nó triangular a partir do elemento:', elementId);
+
+            const newNodeId = 'triangle-' + Date.now();
+            console.log('Novo Nó Triangular Criado:', newNodeId);
+
+            const nodePos = clickedElement.position();
+
+            this.cy.add([
+              {
+                group: 'nodes',
+                data: { id: newNodeId },
+                position: { x: nodePos.x + 100, y: nodePos.y + 50 },
+                classes: 'triangle-node' 
+              },
+              {
+                group: 'edges',
+                data: { 
+                  id: 'edge-' + elementId + '-' + newNodeId, 
+                  source: elementId, 
+                  target: newNodeId 
+                }
+              }
+            ]);
+
           },
           disabled: false
         },
@@ -65,7 +92,7 @@ export class CytoscapeComponent implements OnInit {
                 group: 'nodes',
                 data: { id: newNodeId },
                 position: { x: nodePos.x + 100, y: nodePos.y },
-                classes: 'decision-node'
+                classes: 'node'
               },
               {
                 group: 'edges',
@@ -95,12 +122,36 @@ export class CytoscapeComponent implements OnInit {
         edges: [
         ]
       },
-      style: [ // the stylesheet for the graph
+      style: [
         {
           selector: 'node',
           style: {
             'background-color': '#0074D9',
             label: 'data(id)'
+          }
+        },
+        {
+          selector: '.triangle-node',
+          style: {
+            'shape': 'triangle',
+            'background-color': '#FF4136',
+            'width': 30,
+            'height': 30,
+            label: 'data(id)',
+            'text-valign': 'center',
+            'text-halign': 'center'
+          }
+        },
+        {
+          selector: '.decision-node',
+          style: {
+            'shape': 'diamond',
+            'background-color': '#FFDC00',
+            'width': 40,
+            'height': 40,
+            label: 'data(id)',
+            'text-valign': 'center',
+            'text-halign': 'center'
           }
         },
         {
