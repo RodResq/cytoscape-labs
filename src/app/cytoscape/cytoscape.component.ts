@@ -25,14 +25,13 @@ export class CytoscapeComponent implements OnInit {
           tooltipText: 'remove',
           image: {src : "assets/icons/remove.svg", width : 12, height : 12, x : 6, y : 4},
           selector: 'node, edge',
-          onClickFunction: () => {
-            console.log('remove element');
+          onClickFunction: (event: any) => {
+            this.removerElemento(event);
           },
           disabled: false,
           show: true,
           hasTrailingDivider: true,
-          coreAsWell: false,
-          submenu: []
+          coreAsWell: false
         },
         {
           id: 'add-note-decisão',
@@ -40,34 +39,7 @@ export class CytoscapeComponent implements OnInit {
           tooltipText: 'Adcione um nó de decisão no fluxo',
           selector: 'node, edge',
           onClickFunction:  (event: any) => {
-            console.log('click Adicionar nó de decisão');
-            const clickedElement = event.target || event.cyTarget;
-            const elementId = clickedElement.id()
-
-            console.log('Adicionando nó triangular a partir do elemento:', elementId);
-
-            const newNodeId = 'triangle-' + Date.now();
-            console.log('Novo Nó Triangular Criado:', newNodeId);
-
-            const nodePos = clickedElement.position();
-
-            this.cy.add([
-              {
-                group: 'nodes',
-                data: { id: newNodeId },
-                position: { x: nodePos.x + 100, y: nodePos.y + 50 },
-                classes: 'triangle-node' 
-              },
-              {
-                group: 'edges',
-                data: { 
-                  id: 'edge-' + elementId + '-' + newNodeId, 
-                  source: elementId, 
-                  target: newNodeId 
-                }
-              }
-            ]);
-
+            this.adicionarNoDeDecicao(event);
           },
           disabled: false
         },
@@ -79,26 +51,7 @@ export class CytoscapeComponent implements OnInit {
           selector: 'node',
           coreAsWell: true,
           onClickFunction: (event: any) => {
-            const clickedElement = event.target || event.cyTarget;
-            const elementId = clickedElement.id()
-            console.log('Adicionando nó de decisão a partir do elemento:', elementId);
-            const newNodeId = 'decision-' + Date.now();
-            console.log('Novo No Criado:' , newNodeId);
-
-            const nodePos = clickedElement.position();
-
-            this.cy.add([
-              {
-                group: 'nodes',
-                data: { id: newNodeId },
-                position: { x: nodePos.x + 100, y: nodePos.y },
-                classes: 'node'
-              },
-              {
-                group: 'edges',
-                data: { id: 'edge-' + elementId + '-' + newNodeId, source: elementId, target: newNodeId }
-              }
-          ]);
+            this.adicionarNoDeTarefa(event);
           }
         }
       ],
@@ -111,13 +64,15 @@ export class CytoscapeComponent implements OnInit {
 
   constructor() {}
 
+
+
   ngOnInit(): void {
 
     this.cy = cytoscape({
       container: this.cytoscapeContainer.nativeElement,
       elements: {
         nodes: [
-          { data: { id: 'a' }, position: {x: 100, y: 100}, style: {'background-color': 'red'} },
+          { data: { id: '0' }, position: {x: 100, y: 100}, style: {'background-color': 'red'} },
         ],
         edges: [
         ]
@@ -179,5 +134,92 @@ export class CytoscapeComponent implements OnInit {
 
     this.cy.contextMenus(this.options);
 
+    this.cy.on('tap', 'node', (event) => {
+        const node = event.target;
+        console.log('Clique simples no nó:', node.id());
+    });
+
   }
+
+
+  private adicionarNoDeTarefa(event: any) {
+    const clickedElement = event.target || event.cyTarget;
+    const elementId = clickedElement.id();
+
+    const newNodeId = 'tarefa-' + Date.now();
+
+    console.log('No Clicado: ', clickedElement);
+
+    const nodePos = clickedElement.position();
+
+    this.cy.add([
+      {
+        group: 'nodes',
+        data: { id: newNodeId, idParentNode: elementId },
+        position: { x: nodePos.x + 100, y: nodePos.y + 50 },
+        classes: 'node',
+      },
+      {
+        group: 'edges',
+        data: {
+          id: 'edge-' + elementId + '-' + newNodeId,
+          source: elementId,
+          target: newNodeId
+        }
+      }
+    ]);
+
+    const newNode = this.cy.getElementById(newNodeId);
+    console.log('Novo no criado: ', newNode);
+  }
+
+  private adicionarNoDeDecicao(event: any) {
+    const clickedElement = event.target || event.cyTarget;
+    const elementId = clickedElement.id();
+    const newNodeId = 'decisao-' + Date.now();
+    const nodePos = clickedElement.position();
+
+    this.cy.add([
+      {
+        group: 'nodes',
+        data: { id: newNodeId, idParentNode: elementId },
+        position: { x: nodePos.x - 100, y: nodePos.y + 50 },
+        classes: 'triangle-node'
+      },
+      {
+        group: 'edges',
+        data: {
+          id: 'edge-' + elementId + '-' + newNodeId,
+          source: elementId,
+          target: newNodeId
+        }
+      }
+    ]);
+
+    const newNode = this.cy.getElementById(newNodeId);
+    console.log('Novo no criado: ', newNode);
+  }
+
+  private removerElemento(event: any) {
+    const clickedElement = event.target || event.cyTarget;
+    const elementId = clickedElement.id();
+
+    console.log('No a ser removido', clickedElement);
+
+    if (this.hasChildren(elementId)) {
+      alert('Elemento nao pode ser removido pois possui elemento filhos');
+      return;
+    }
+
+    clickedElement.remove();
+  }
+
+  private hasChildren(nodeId: string): boolean {
+    const node = this.cy.getElementById(nodeId);
+    const children = node.successors('node');
+
+    return children.length > 0;
+  }
+
+
 }
