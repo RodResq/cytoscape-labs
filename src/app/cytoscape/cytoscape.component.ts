@@ -261,5 +261,9 @@ export class CytoscapeComponent implements OnInit {
     this.showTaskForm = !this.showTaskForm;
   }
 
+  recuperarDadosForm(event: any) {
+    console.log('Dados do formulário: ', event);
+    // TODO Armazenar Informações no próprio Nó.
+  }
 
 }

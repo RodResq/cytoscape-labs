@@ -4,6 +4,7 @@
     #taskFormRef
     *ngIf="showTaskForm"
     [nomeElemento]="selectedElementId"
+    (taskCreated)="recuperarDadosForm($event)"
     style="width: -moz-available;"
     ></app-task-form>
 </div>
