@@ -112,7 +112,7 @@ export class CytoscapeComponent implements OnInit {
           selector: '.event-node',
           style: {
             'shape': 'triangle',
-            // 'background-color': '#FF4136',
+            'background-color': '#FF4136',
             'width': 30,
             'height': 30,
             label: 'data(id)',
