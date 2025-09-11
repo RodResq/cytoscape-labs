@@ -2,6 +2,7 @@ import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import cytoscape from 'cytoscape';
 import contextMenus from 'cytoscape-context-menus';
 import 'cytoscape-context-menus/cytoscape-context-menus.css';
+import { TaskFormComponent } from "../task-form/task-form.component";
 
 cytoscape.use(contextMenus);
 
@@ -9,6 +10,7 @@ cytoscape.use(contextMenus);
   selector: 'app-cytoscape',
   templateUrl: './cytoscape.component.html',
   styleUrls: ['./cytoscape.component.css'],
+  imports: [TaskFormComponent],
 })
 export class CytoscapeComponent implements OnInit {
   @ViewChild('cyContainer', { static: true })
