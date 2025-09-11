@@ -2,43 +2,68 @@
       <h3>Elemento {{ nomeElemento }}</h3>
       <form [formGroup]="taskForm" (ngSubmit)="onSubmit()" class="task-form">
         <div class="form-group">
-          <label for="nomeTarefa">Nome Tarefa</label>
+          <label for="nomeTarefa">Código do Fluxo*</label>
           <input
             type="text"
-            id="nomeTarefa"
-            formControlName="nomeTarefa"
-            placeholder="Digite o nome da tarefa"
-            [class.error]="isFieldInvalid('nomeTarefa')"
+            id="codigoFluxo"
+            formControlName="codigoFluxo"
+            placeholder="Digite o código do fluxo"
+            [class.error]="isFieldInvalid('codigoFluxo')"
           />
           <div *ngIf="isFieldInvalid('nomeTarefa')" class="error-message">
-            Nome da tarefa é obrigatório
+            Código do Fluxo é Obrigatório.
           </div>
         </div>
         <div class="form-group">
-          <label for="dataCriacao">Data de Criação:</label>
-          <input
-            type="datetime-local"
-            id="dataCriacao"
-            formControlName="dataCriacao"
-            [class.error]="isFieldInvalid('dataCriacao')"
-          />
-          <div *ngIf="isFieldInvalid('dataCriacao')" class="error-message">
-            Data de criação é obrigatória
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="eventos">Eventos: </label>
+          <label for="eventos">Fluxo*: </label>
           <input
             type="text"
-            id="eventos"
-            formControlName="eventos"
-            placeholder="Entre com os eventos da tarefa"
-            [class.error]="isFieldInvalid('eventos')"
+            id="fluxo"
+            formControlName="fluxo"
+            placeholder="Entre com o nome fluxo"
+            [class.error]="isFieldInvalid('fluxo')"
           />
-          <div *ngIf="isFieldInvalid('dataCriacao')" class="error-message">
-            Data de criação é obrigatória
+          <div *ngIf="isFieldInvalid('fluxo')" class="error-message">
+            Nome do Fluxo é Inválido.
           </div>
         </div>
+        <div class="form-group">
+          <label for="dataCriacao">Prazo (dias):</label>
+          <input
+            type="datetime-local"
+            id="prazo"
+            formControlName="prazo"/>
+        </div>
+        <div class="form-group">
+          <label for="eventos">Parâmetros: </label>
+          <input
+            type="text"
+            id="parametros"
+            formControlName="parametros"
+            placeholder="Entre com os parâmetros da tarefa"
+          />
+        </div>
+        <h3>Propriedades </h3>
+        <label for="nomeTarefa">Identificador*</label>
+        <input
+          type="text"
+          id="identificador"
+          formControlName="identificador"
+          placeholder="Digite o identificador do fluxo"
+        />
+        <label for="nomeTarefa">Nome do Processo*</label>
+        <input
+          type="text"
+          id="nomeProcesso"
+          formControlName="nomeProcesso"
+          placeholder="Digite o nomeProcesso do fluxo"
+        />
+        <label for="descricao">Descrição</label>
+        <textarea
+          id="descricao"
+          formControlName="descricao"
+          placeholder="Digite a descricao do fluxo"
+        ></textarea>
         <div class="form-actions">
           <button
             type="submit"

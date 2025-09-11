@@ -3,8 +3,14 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormGroup, ReactiveFormsModule, Validators, FormBuilder } from '@angular/forms';
 
 export interface TaskData {
-  nomeTarefa: string;
-  dataCriacao: string;
+  codigoFluxo: string;
+  fluxo: string;
+  prazo?: string;
+  parametros?: string;
+  identificador?: string;
+  nomeProcesso?: string;
+  descricao?: string;
+  dataCriacao?: string;
 }
 
 
@@ -24,8 +30,14 @@ export class TaskFormComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder) {
     this.taskForm = this.formBuilder.group({
-      nomeTarefa: ['', [Validators.required, Validators.minLength(2)]],
-      dataCriacao: ['', Validators.required]
+      codigoFluxo: ['', [Validators.required, Validators.minLength(2)]],
+      fluxo: ['', [Validators.required, Validators.minLength(2)]],
+      prazo: [''],
+      parametros: [''],
+      identificador: [''],
+      nomeProcesso: [''],
+      descricao: [''],
+      dataCriacao: [''],
     })
   }
 
