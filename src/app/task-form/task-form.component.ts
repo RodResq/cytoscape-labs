@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormGroup, ReactiveFormsModule, Validators, FormBuilder } from '@angular/forms';
 
 export interface TaskData {
@@ -15,8 +15,10 @@ export interface TaskData {
   styleUrl: './task-form.component.css'
 })
 export class TaskFormComponent implements OnInit {
+  @Input() nomeElemento: string = '';
   @Output() taskCreated = new EventEmitter<TaskData>();
   @Output() formCancelled = new EventEmitter<void>();
+
 
   taskForm: FormGroup;
 

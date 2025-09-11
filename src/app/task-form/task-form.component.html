@@ -1,8 +1,8 @@
 <div class="task-form-container">
-      <h3>Nova Tarefa</h3>
+      <h3>Elemento {{ nomeElemento }}</h3>
       <form [formGroup]="taskForm" (ngSubmit)="onSubmit()" class="task-form">
         <div class="form-group">
-          <label for="nomeTarefa">Nome da Tarefa:</label>
+          <label for="nomeTarefa">Nome Tarefa</label>
           <input
             type="text"
             id="nomeTarefa"
@@ -21,6 +21,19 @@
             id="dataCriacao"
             formControlName="dataCriacao"
             [class.error]="isFieldInvalid('dataCriacao')"
+          />
+          <div *ngIf="isFieldInvalid('dataCriacao')" class="error-message">
+            Data de criação é obrigatória
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="eventos">Eventos: </label>
+          <input
+            type="text"
+            id="eventos"
+            formControlName="eventos"
+            placeholder="Entre com os eventos da tarefa"
+            [class.error]="isFieldInvalid('eventos')"
           />
           <div *ngIf="isFieldInvalid('dataCriacao')" class="error-message">
             Data de criação é obrigatória

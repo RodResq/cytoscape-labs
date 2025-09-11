@@ -3,6 +3,7 @@ import cytoscape from 'cytoscape';
 import contextMenus from 'cytoscape-context-menus';
 import 'cytoscape-context-menus/cytoscape-context-menus.css';
 import { TaskFormComponent } from "../task-form/task-form.component";
+import { CommonModule } from '@angular/common';
 
 cytoscape.use(contextMenus);
 
@@ -10,11 +11,17 @@ cytoscape.use(contextMenus);
   selector: 'app-cytoscape',
   templateUrl: './cytoscape.component.html',
   styleUrls: ['./cytoscape.component.css'],
-  imports: [TaskFormComponent],
+  imports: [TaskFormComponent, CommonModule],
 })
 export class CytoscapeComponent implements OnInit {
   @ViewChild('cyContainer', { static: true })
   cytoscapeContainer!: ElementRef;
+
+  @ViewChild('taskFormRef', {static: false})
+  taskFormComponent!: TaskFormComponent;
+
+  showTaskForm: boolean = false;
+  selectedElementId: string = '';
 
   private cy!: cytoscape.Core;
 
@@ -66,15 +73,17 @@ export class CytoscapeComponent implements OnInit {
 
   constructor() {}
 
-
-
   ngOnInit(): void {
 
     this.cy = cytoscape({
       container: this.cytoscapeContainer.nativeElement,
       elements: {
         nodes: [
-          { data: { id: '0' }, position: {x: 100, y: 100}, style: {'background-color': 'red'} },
+          {
+            data: { id: '0' },
+            position: {x: 100, y: 100},
+            // style: {'background-color': 'red'}
+          },
         ],
         edges: [
         ]
@@ -83,7 +92,7 @@ export class CytoscapeComponent implements OnInit {
         {
           selector: 'node',
           style: {
-            'background-color': '#0074D9',
+            // 'background-color': '#0074D9',
             label: 'data(id)'
           }
         },
@@ -91,7 +100,19 @@ export class CytoscapeComponent implements OnInit {
           selector: '.triangle-node',
           style: {
             'shape': 'triangle',
-            'background-color': '#FF4136',
+            // 'background-color': '#FF4136',
+            'width': 30,
+            'height': 30,
+            label: 'data(id)',
+            'text-valign': 'center',
+            'text-halign': 'center'
+          }
+        },
+        {
+          selector: '.event-node',
+          style: {
+            'shape': 'triangle',
+            // 'background-color': '#FF4136',
             'width': 30,
             'height': 30,
             label: 'data(id)',
@@ -102,8 +123,8 @@ export class CytoscapeComponent implements OnInit {
         {
           selector: '.decision-node',
           style: {
-            'shape': 'diamond',
-            'background-color': '#FFDC00',
+            'shape': 'round-diamond',
+            // 'background-color': '#FFDC00',
             'width': 40,
             'height': 40,
             label: 'data(id)',
@@ -131,7 +152,7 @@ export class CytoscapeComponent implements OnInit {
       minZoom: 1e-50,
       maxZoom: 1e50,
       zoomingEnabled: false,
-      userZoomingEnabled: false,
+      userZoomingEnabled: true,
     });
 
     this.cy.contextMenus(this.options);
@@ -139,6 +160,9 @@ export class CytoscapeComponent implements OnInit {
     this.cy.on('tap', 'node', (event) => {
         const node = event.target;
         console.log('Clique simples no nó:', node.id());
+        console.log('Acessando o taskForm: ', this.taskFormComponent);
+        this.showForm(node.id());
+
     });
 
   }
@@ -186,7 +210,7 @@ export class CytoscapeComponent implements OnInit {
         group: 'nodes',
         data: { id: newNodeId, idParentNode: elementId },
         position: { x: nodePos.x - 100, y: nodePos.y + 50 },
-        classes: 'triangle-node'
+        classes: 'decision-node'
       },
       {
         group: 'edges',
@@ -221,6 +245,20 @@ export class CytoscapeComponent implements OnInit {
     const children = node.successors('node');
 
     return children.length > 0;
+  }
+
+  private showForm(idElemento: string): void {
+    this.selectedElementId = idElemento;
+    this.showTaskForm = true;
+  }
+
+  private hideForm(): void {
+    this.showTaskForm = false;
+    this.selectedElementId = '';
+  }
+
+  private toggleForm(): void {
+    this.showTaskForm = !this.showTaskForm;
   }
 
 

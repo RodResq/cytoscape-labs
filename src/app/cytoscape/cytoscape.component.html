@@ -1,5 +1,9 @@
 <div style="display:flex">
   <div #cyContainer style="width: 75%; height: 750px;"></div>
-  <app-task-form></app-task-form>
+  <app-task-form
+    #taskFormRef
+    *ngIf="showTaskForm"
+    [nomeElemento]="selectedElementId"
+    ></app-task-form>
 </div>
 
