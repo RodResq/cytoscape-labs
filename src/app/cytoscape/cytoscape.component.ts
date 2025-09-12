@@ -89,7 +89,11 @@ export class CytoscapeComponent implements OnInit {
           {
             data: { id: '0' },
             position: {x: 100, y: 100},
-            // style: {'background-color': 'red'}
+            style: {
+              // 'background-color': 'red',
+              'text-valign': 'top',
+            }
+
           },
         ],
         edges: [
@@ -100,6 +104,7 @@ export class CytoscapeComponent implements OnInit {
           selector: 'node',
           style: {
             // 'background-color': '#0074D9',
+            'text-valign': 'bottom',
             label: 'data(id)'
           }
         },
@@ -119,12 +124,12 @@ export class CytoscapeComponent implements OnInit {
           selector: '.event-node',
           style: {
             'shape': 'triangle',
-            'background-color': '#FF4136',
+            // 'background-color': '#FF4136',
             'width': 30,
             'height': 30,
             label: 'data(id)',
-            'text-valign': 'center',
-            'text-halign': 'center'
+            'text-valign': 'bottom',
+            'text-halign': 'left'
           }
         },
         {
@@ -135,7 +140,7 @@ export class CytoscapeComponent implements OnInit {
             'width': 40,
             'height': 40,
             label: 'data(id)',
-            'text-valign': 'center',
+            'text-valign': 'bottom',
             'text-halign': 'center'
           }
         },
@@ -193,6 +198,7 @@ export class CytoscapeComponent implements OnInit {
       },
       {
         group: 'edges',
+        style: {'background-color': '#FFDC00',},
         data: {
           id: 'edge-' + elementId + '-' + newNodeId,
           source: elementId,
