@@ -1,9 +1,12 @@
-import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, inject } from '@angular/core';
 import cytoscape from 'cytoscape';
 import contextMenus from 'cytoscape-context-menus';
 import 'cytoscape-context-menus/cytoscape-context-menus.css';
 import { TaskFormComponent } from "../task-form/task-form.component";
 import { CommonModule } from '@angular/common';
+import { TaskService } from '../task-form/task.service';
+import { Subscription } from 'rxjs';
+import { CytoscapeService } from './cytoscape.service';
 
 cytoscape.use(contextMenus);
 
@@ -17,8 +20,8 @@ export class CytoscapeComponent implements OnInit {
   @ViewChild('cyContainer', { static: true })
   cytoscapeContainer!: ElementRef;
 
-  @ViewChild('taskFormRef', {static: false})
-  taskFormComponent!: TaskFormComponent;
+  private taskSubscription: Subscription = new Subscription();
+  private taskFormReceivedData: any;
 
   showTaskForm: boolean = false;
   selectedElementId: string = '';
@@ -71,10 +74,14 @@ export class CytoscapeComponent implements OnInit {
       submenuIndicator: { src: 'assets/icons/submenu-indicator-default.svg', width: 12, height: 12 }
   };
 
-  constructor() {}
+  constructor(
+    private taskService: TaskService,
+    private cytoscapeService: CytoscapeService) {}
 
   ngOnInit(): void {
-
+    this.taskSubscription = this.taskService.data$.subscribe(data => {
+      this.taskFormReceivedData = data;
+    });
     this.cy = cytoscape({
       container: this.cytoscapeContainer.nativeElement,
       elements: {
@@ -159,10 +166,9 @@ export class CytoscapeComponent implements OnInit {
 
     this.cy.on('tap', 'node', (event) => {
         const node = event.target;
-        console.log('Clique simples no nó:', node.id());
-        console.log('Acessando o taskForm: ', this.taskFormComponent);
+        this.cytoscapeService.setNoElemento(node);
         this.showForm(node.id());
-
+        console.log('Node atual: ', node);
     });
 
   }
@@ -197,6 +203,7 @@ export class CytoscapeComponent implements OnInit {
 
     const newNode = this.cy.getElementById(newNodeId);
     console.log('Novo no criado: ', newNode);
+    this.cytoscapeService.setNoElemento(newNode);
   }
 
   private adicionarNoDeDecicao(event: any) {
@@ -262,7 +269,7 @@ export class CytoscapeComponent implements OnInit {
   }
 
   recuperarDadosForm(event: any) {
-    console.log('Dados do formulário: ', event);
+    console.log('Dados do formulário: ', this.taskFormReceivedData);
     // TODO Armazenar Informações no próprio Nó.
   }
 

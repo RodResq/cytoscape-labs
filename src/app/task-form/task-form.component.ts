@@ -1,6 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormGroup, ReactiveFormsModule, Validators, FormBuilder } from '@angular/forms';
+import { TaskService } from './task.service';
+import { CytoscapeService } from '../cytoscape/cytoscape.service';
+import { Subscription } from 'rxjs';
 
 export interface TaskData {
   codigoFluxo: string;
@@ -24,11 +27,15 @@ export class TaskFormComponent implements OnInit {
   @Input() nomeElemento: string = '';
   @Output() taskCreated = new EventEmitter<TaskData>();
   @Output() formCancelled = new EventEmitter<void>();
+  private subscription: Subscription = new Subscription();
+  private receivedNode: any = {};
 
 
   taskForm: FormGroup;
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(
+    private formBuilder: FormBuilder,
+    private cytoscapeService: CytoscapeService) {
     this.taskForm = this.formBuilder.group({
       codigoFluxo: ['', [Validators.required, Validators.minLength(2)]],
       fluxo: ['', [Validators.required, Validators.minLength(2)]],
@@ -47,6 +54,20 @@ export class TaskFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.cytoscapeService.data$.subscribe(node => {
+      const taskData = node.data().taskData;
+      if (taskData) {
+        console.log('No recebido no form no IF', taskData);
+
+        this.taskForm.setValue(taskData);
+        this.taskForm.disable();
+      } else {
+        console.log('No recebido no form no ELSE', taskData);
+        this.resetForm();
+        this.taskForm.enable();
+      }
+    });
+
     const now = new Date();
     const localDateTime = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
       .toISOString()
@@ -60,8 +81,12 @@ export class TaskFormComponent implements OnInit {
   onSubmit(): void {
     if (this.taskForm.valid) {
       const taskData: TaskData = this.taskForm.value;
-      this.taskCreated.emit(taskData);
+      this.subscription = this.cytoscapeService.data$.subscribe(node => {
+        this.receivedNode = node;
+      });
+      this.receivedNode.data({taskData})
       this.resetForm();
+      this.subscription.unsubscribe();
     }
   }
 
@@ -79,6 +104,7 @@ export class TaskFormComponent implements OnInit {
 
   onCancel() {
     this.formCancelled.emit();
+    this.subscription.unsubscribe();
     this.resetForm();
   }
 
