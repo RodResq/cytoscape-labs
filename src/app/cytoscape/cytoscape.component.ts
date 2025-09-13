@@ -147,11 +147,28 @@ export class CytoscapeComponent implements OnInit {
         {
           selector: 'edge',
           style: {
+            'line-style': 'solid',
             'width': 1,
             'line-color': '#ccc',
             'target-arrow-color': '#ccc',
             'target-arrow-shape': 'triangle',
             'curve-style': 'bezier'
+          }
+        },
+        {
+          selector: 'edge.dotted',
+          style : {
+            'line-style': 'dotted',
+            'line-color': '#009966',
+            'target-arrow-color': '#009966'
+          }
+        },
+        {
+          selector: 'edge.dashed',
+          style : {
+            'line-style': 'dashed',
+            'line-color': '#ee3f4eff',
+            'target-arrow-color': '#ee3f4eff'
           }
         }
       ],
@@ -221,7 +238,7 @@ export class CytoscapeComponent implements OnInit {
     this.cy.add([
       {
         group: 'nodes',
-        data: { id: newNodeId, idParentNode: elementId },
+        data: { id: newNodeId, idParentNode: elementId,  },
         position: { x: nodePos.x - 100, y: nodePos.y + 50 },
         classes: 'decision-node'
       },
@@ -231,7 +248,8 @@ export class CytoscapeComponent implements OnInit {
           id: 'edge-' + elementId + '-' + newNodeId,
           source: elementId,
           target: newNodeId
-        }
+        },
+        classes: 'dashed'
       }
     ]);
 
