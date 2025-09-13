@@ -1,0 +1,19 @@
+/* Global App Styles */
+.main-content {
+  min-height: calc(100vh - 70px);
+  background: #f8fafc;
+  position: relative;
+}
+
+/* Ensure the body has no margin/padding issues */
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+/* Optional: Add some padding to main content */
+@media (max-width: 768px) {
+  .main-content {
+    min-height: calc(100vh - 60px);
+  }
+}
