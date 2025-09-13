@@ -23,7 +23,7 @@ export class CytoscapeComponent implements OnInit {
   private taskSubscription: Subscription = new Subscription();
   private taskFormReceivedData: any;
 
-  showTaskForm: boolean = false;
+  showTaskForm: boolean = true;
   selectedElementId: string = '';
 
   private cy!: cytoscape.Core;
@@ -90,8 +90,12 @@ export class CytoscapeComponent implements OnInit {
             data: { id: '0' },
             position: {x: 100, y: 100},
             style: {
-              // 'background-color': 'red',
               'text-valign': 'top',
+              'shape': 'ellipse',
+              'background-color': '#f8fafc', // Cor de fundo da tela (mesmo do main-content)
+              'border-width': 5,
+              'border-color': 'silver',
+              'border-style': 'solid'
             }
 
           },
