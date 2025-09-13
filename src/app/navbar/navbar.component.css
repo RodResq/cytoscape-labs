@@ -11,32 +11,9 @@ body, fieldset {
   margin-bottom: 0px;
 }
 
-.navtop .navbar-brand {
-  padding: 10px 15px;
-}
-
-.navtop .navbar-brand > a, .navtop .navbar-brand > .titulo {
+.nav-link {
   color: #fff;
   padding: 0px 5px;
 }
 
-a, a:focus, a:hover, .btn-link:focus, .btn-link:hover {
-  text-decoration: none;
-}
 
-.navtop .navbar-brand > .logo > img {
-  height: 35px;
-}
-
-.navtop .navbar-brand {
-  padding: 10px 15px;
-}
-
-.navtop .navbar-brand > .titulo {
-  font-family: 'Open Sans regular', Arial, Verdana, sans-serif;
-}
-
-.navtop .navbar-brand > a, .navtop .navbar-brand > .titulo {
-  color: #fff;
-  padding: 0px 5px;
-}
