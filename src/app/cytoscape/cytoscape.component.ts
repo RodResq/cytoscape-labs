@@ -299,8 +299,6 @@ export class CytoscapeComponent implements OnInit {
           selector: 'edge.dotted',
           style : {
             'line-style': 'dotted',
-            // 'line-color': '#009966',
-            // 'target-arrow-color': '#009966'
           }
         },
         {
@@ -311,7 +309,6 @@ export class CytoscapeComponent implements OnInit {
             'target-arrow-color': '#ee3f4eff'
           }
         },
-        // Estilos para elementos selecionados
         {
           selector: 'node:selected',
           style: {
