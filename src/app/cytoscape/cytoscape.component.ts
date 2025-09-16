@@ -1,12 +1,11 @@
-import { Node } from './node';
-import { Component, OnInit, ElementRef, ViewChild, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import cytoscape from 'cytoscape';
 import contextMenus from 'cytoscape-context-menus';
 import 'cytoscape-context-menus/cytoscape-context-menus.css';
-import { TaskFormComponent } from "../task-form/task-form.component";
-import { CommonModule } from '@angular/common';
-import { TaskService } from '../task-form/task.service';
 import { Subscription } from 'rxjs';
+import { TaskFormComponent } from "../task-form/task-form.component";
+import { TaskService } from '../task-form/task.service';
 import { CytoscapeService } from './cytoscape.service';
 
 cytoscape.use(contextMenus);
@@ -152,12 +151,11 @@ export class CytoscapeComponent implements OnInit {
             style: {
               'text-valign': 'top',
               'shape': 'ellipse',
-              'background-color': '#f8fafc', // Cor de fundo da tela (mesmo do main-content)
+              'background-color': '#f8fafc',
               'border-width': 5,
               'border-color': 'silver',
               'border-style': 'solid'
             }
-
           },
         ],
         edges: [
@@ -167,7 +165,6 @@ export class CytoscapeComponent implements OnInit {
         {
           selector: 'task-node',
           style: {
-            // 'background-color': '#0074D9',
             'text-valign': 'bottom',
             label: 'data(id)'
           }
@@ -175,7 +172,6 @@ export class CytoscapeComponent implements OnInit {
         {
           selector: 'end-node',
           style: {
-            // 'background-color': '#FF4136',
             'text-valign': 'bottom',
             label: 'data(id)'
           }
@@ -184,7 +180,6 @@ export class CytoscapeComponent implements OnInit {
           selector: '.triangle-node',
           style: {
             'shape': 'triangle',
-            // 'background-color': '#FF4136',
             'width': 30,
             'height': 30,
             label: 'data(id)',
@@ -196,7 +191,6 @@ export class CytoscapeComponent implements OnInit {
           selector: '.event-node',
           style: {
             'shape': 'triangle',
-            // 'background-color': '#FF4136',
             'width': 30,
             'height': 30,
             label: 'data(id)',
@@ -208,7 +202,6 @@ export class CytoscapeComponent implements OnInit {
           selector: '.decision-node',
           style: {
             'shape': 'diamond',
-            // 'background-color': '#FFDC00',
             'width': 40,
             'height': 40,
             label: 'data(id)',
@@ -220,7 +213,6 @@ export class CytoscapeComponent implements OnInit {
           selector: '.system-node',
           style: {
             'shape': 'pentagon',
-            // 'background-color': '#FFDC00',
             'width': 40,
             'height': 40,
             label: 'data(id)',
@@ -232,7 +224,6 @@ export class CytoscapeComponent implements OnInit {
           selector: '.separation-node',
           style: {
             'shape': 'vee',
-            // 'background-color': '#FFDC00',
             'width': 40,
             'height': 40,
             label: 'data(id)',
@@ -245,8 +236,7 @@ export class CytoscapeComponent implements OnInit {
           style: {
             'shape': 'polygon',
             'shape-polygon-points': '-0.33 -1 0.33 -1 0.33 -0.33 1 -0.33 1 0.33 0.33 0.33 0.33 1 -0.33 1 -0.33 0.33 -1 0.33 -1 -0.33 -0.33 -0.33',
-            // 'background-color': '#1abc9c',
-            // 'border-color': '#16a085',
+            label: 'data(id)',
             'width': 40,
             'height': 40,
             'text-valign': 'bottom',
@@ -257,11 +247,11 @@ export class CytoscapeComponent implements OnInit {
           selector: '.subprocess-node',
           style: {
             'shape': 'round-rectangle',
-            'background-color': '#E8F5E8', // Verde claro típico SBGN
+            'background-color': '#E8F5E8',
             'width': 40,
             'height': 40,
-            'label': 'data(label)',
-            'text-valign': 'center',
+             label: 'data(id)',
+            'text-valign': 'bottom',
             'text-halign': 'center',
             'font-family': 'Arial, sans-serif',
             'text-wrap': 'wrap',
@@ -281,6 +271,7 @@ export class CytoscapeComponent implements OnInit {
             'background-color': '#FFEBEE',
             'border-color': '#F44336',
             'color': '#C62828',
+            label: 'data(label)',
           }
         },
         {
@@ -402,14 +393,14 @@ export class CytoscapeComponent implements OnInit {
 
     if (classes.nodeClasses === 'subprocess-node') {
       newNodeData.sbgnClass = 'macromolecule';
-      newNodeData.label = 'nAChR';
+      newNodeData.label = newNodeId;
       newNodeData.clonemarker = false;
       newNodeData.stateVariables = [];
       newNodeData.unitsOfInformation = [{
-        label: 'receptor',
+        label: newNodeId,
         entity: {
-          name: 'SBO:0000244',
-          value: 'receptor'
+          name: newNodeId,
+          value: newNodeId
         }
       }];
     }
