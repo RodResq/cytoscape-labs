@@ -7,6 +7,8 @@ import { Subscription } from 'rxjs';
 import { TaskFormComponent } from "../task-form/task-form.component";
 import { TaskService } from '../task-form/task.service';
 import { CytoscapeService } from './cytoscape.service';
+import { ContextMenuConfig } from './contexto-menu-config';
+
 
 cytoscape.use(contextMenus);
 
@@ -27,7 +29,9 @@ export class CytoscapeComponent implements OnInit {
   selectedElementId: string = '';
 
   private cy!: cytoscape.Core;
+  private options = ContextMenuConfig.getContextMenuOptions(this);
 
+  /**
   private options = {
       evtType: 'cxttap',
       menuItems: [
@@ -131,7 +135,8 @@ export class CytoscapeComponent implements OnInit {
       contextMenuClasses: [
       ],
       submenuIndicator: { src: 'assets/icons/submenu-indicator-default.svg', width: 12, height: 12 }
-  };
+  }; 
+  */
 
   constructor(
     private taskService: TaskService,
