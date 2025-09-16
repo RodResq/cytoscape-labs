@@ -54,7 +54,7 @@ export class CytoscapeComponent implements OnInit {
           selector: 'node',
           coreAsWell: true,
           onClickFunction: (event: any) => {
-            const classes = {nodeClasses: 'task-node', edgeClasses: 'dotted'};
+            const classes = {nodeClasses: 'task-node', edgeClasses: 'null'};
             this.addNode(event, classes, null);
           }
         },
@@ -76,6 +76,28 @@ export class CytoscapeComponent implements OnInit {
           selector: 'node, edge',
           onClickFunction:  (event: any) => {
             const classes = {nodeClasses: 'system-node', edgeClasses: 'dotted'};
+            this.addNode(event, classes, null);
+          },
+          disabled: false
+        },
+        {
+          id: 'add-node-separation',
+          content: 'Adcionar nó de separacao',
+          tooltipText: 'Adicionar um nó que representa separacao no fluxo',
+          selector: 'node, edge',
+          onClickFunction:  (event: any) => {
+            const classes = {nodeClasses: 'separation-node', edgeClasses: 'null'};
+            this.addNode(event, classes, null);
+          },
+          disabled: false
+        },
+        {
+          id: 'add-node-join',
+          content: 'Adcionar nó de juncao',
+          tooltipText: 'Adicionar um nó que representa juncao no fluxo',
+          selector: 'node, edge',
+          onClickFunction:  (event: any) => {
+            const classes = {nodeClasses: 'join-node', edgeClasses: 'null'};
             this.addNode(event, classes, null);
           },
           disabled: false
@@ -174,7 +196,7 @@ export class CytoscapeComponent implements OnInit {
         {
           selector: '.decision-node',
           style: {
-            'shape': 'round-diamond',
+            'shape': 'diamond',
             // 'background-color': '#FFDC00',
             'width': 40,
             'height': 40,
@@ -191,6 +213,31 @@ export class CytoscapeComponent implements OnInit {
             'width': 40,
             'height': 40,
             label: 'data(id)',
+            'text-valign': 'bottom',
+            'text-halign': 'center'
+          }
+        },
+        {
+          selector: '.separation-node',
+          style: {
+            'shape': 'vee',
+            // 'background-color': '#FFDC00',
+            'width': 40,
+            'height': 40,
+            label: 'data(id)',
+            'text-valign': 'bottom',
+            'text-halign': 'center'
+          }
+        },
+        {
+          "selector": ".join-node",
+          style: {
+            'shape': 'polygon',
+            'shape-polygon-points': '-0.33 -1 0.33 -1 0.33 -0.33 1 -0.33 1 0.33 0.33 0.33 0.33 1 -0.33 1 -0.33 0.33 -1 0.33 -1 -0.33 -0.33 -0.33',
+            // 'background-color': '#1abc9c',
+            // 'border-color': '#16a085',
+            'width': 40,
+            'height': 40,
             'text-valign': 'bottom',
             'text-halign': 'center'
           }

@@ -1,0 +1,90 @@
+{
+  "nodes": [
+    {
+      "data": {
+        "id": "start-node",
+        "type": "ellipse",
+        "label": "Início"
+      },
+      "position": { "x": 100, "y": 100 },
+      "classes": "start-node"
+    },
+    {
+      "data": {
+        "id": "task-node-1",
+        "type": "round-rectangle",
+        "label": "Tarefa 1"
+      },
+      "position": { "x": 300, "y": 100 },
+      "classes": "task-node"
+    },
+    {
+      "data": {
+        "id": "decision-node-1",
+        "type": "diamond",
+        "label": "Decisão?"
+      },
+      "position": { "x": 500, "y": 100 },
+      "classes": "decision-node"
+    },
+    {
+      "data": {
+        "id": "system-node-1",
+        "type": "hexagon",
+        "label": "Sistema"
+      },
+      "position": { "x": 300, "y": 250 },
+      "classes": "system-node"
+    },
+    {
+      "data": {
+        "id": "separation-node-1",
+        "type": "rectangle",
+        "label": "Separação"
+      },
+      "position": { "x": 500, "y": 250 },
+      "classes": "separation-node"
+    },
+    {
+      "data": {
+        "id": "join-node-1",
+        "type": "rectangle",
+        "label": "Junção"
+      },
+      "position": { "x": 700, "y": 250 },
+      "classes": "join-node"
+    },
+    {
+      "data": {
+        "id": "polygon-node-1",
+        "type": "polygon",
+        "label": "Polígono\nCustom",
+        "points": [
+          -0.33, -1,
+          0.33, -1,
+          0.33, -0.33,
+          1, -0.33,
+          1, 0.33,
+          0.33, 0.33,
+          0.33, 1,
+          -0.33, 1,
+          -0.33, 0.33,
+          -1, 0.33,
+          -1, -0.33,
+          -0.33, -0.33
+        ]
+      },
+      "position": { "x": 900, "y": 150 },
+      "classes": "polygon-node"
+    },
+    {
+      "data": {
+        "id": "end-node-1",
+        "type": "ellipse",
+        "label": "Fim"
+      },
+      "position": { "x": 700, "y": 100 },
+      "classes": "end-node"
+    }
+  ]
+}

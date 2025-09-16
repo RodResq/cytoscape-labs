@@ -1,0 +1,39 @@
+[
+  {
+    "selector": "node",
+    "style": {
+      "shape": "data(type)",
+      "label": "data(label)",
+      "height": 40,
+      "width": 40,
+      "text-valign": "center",
+      "text-halign": "center",
+      "background-color": "#666",
+      "color": "#fff",
+      "font-size": "10px",
+      "font-family": "Arial, sans-serif",
+      "border-width": "2px",
+      "border-color": "#333",
+      "text-wrap": "wrap",
+      "text-max-width": "80px"
+    }
+  },
+  {
+    "selector": "node[points]",
+    "style": {
+      "shape-polygon-points": "data(points)",
+      "label": "data(label)",
+      "text-wrap": "wrap",
+      "text-max-width": "60px"
+    }
+  },
+  {
+    "selector": ".start-node",
+    "style": {
+      "background-color": "#27ae60",
+      "border-color": "#229954",
+      "width": 50,
+      "height": 50
+    }
+  }
+]
