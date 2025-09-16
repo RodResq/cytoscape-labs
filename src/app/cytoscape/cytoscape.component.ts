@@ -103,6 +103,17 @@ export class CytoscapeComponent implements OnInit {
           disabled: false
         },
         {
+          id: 'add-node-nachr',
+          content: 'Adicionar nó sub-processo',
+          tooltipText: 'Adicionar um nó que representa um subprocesso',
+          selector: 'node, edge',
+          onClickFunction:  (event: any) => {
+            const classes = {nodeClasses: 'subprocess-node', edgeClasses: 'null'};
+            this.addNode(event, classes, null);
+          },
+          disabled: false
+        },
+        {
           id: 'add-node-final',
           content: 'Adcionar nó de final',
           tooltipText: 'Adicionar um nó final',
@@ -243,6 +254,36 @@ export class CytoscapeComponent implements OnInit {
           }
         },
         {
+          selector: '.subprocess-node',
+          style: {
+            'shape': 'round-rectangle',
+            'background-color': '#E8F5E8', // Verde claro típico SBGN
+            'width': 40,
+            'height': 40,
+            'label': 'data(label)',
+            'text-valign': 'center',
+            'text-halign': 'center',
+            'font-family': 'Arial, sans-serif',
+            'text-wrap': 'wrap',
+            'text-max-width': '90px',
+          }
+        },
+        {
+          selector: '.subprocess-node.active',
+          style: {
+            'background-color': '#C8E6C9',
+            'border-color': '#4CAF50',
+          }
+        },
+        {
+          selector: '.subprocess-node.blocked',
+          style: {
+            'background-color': '#FFEBEE',
+            'border-color': '#F44336',
+            'color': '#C62828',
+          }
+        },
+        {
           selector: 'edge',
           style: {
             'line-style': 'solid',
@@ -250,7 +291,8 @@ export class CytoscapeComponent implements OnInit {
             'line-color': '#ccc',
             'target-arrow-color': '#ccc',
             'target-arrow-shape': 'triangle',
-            'curve-style': 'bezier'
+            'curve-style': 'bezier',
+            'label': '',
           }
         },
         {
@@ -267,6 +309,22 @@ export class CytoscapeComponent implements OnInit {
             'line-style': 'dashed',
             'line-color': '#ee3f4eff',
             'target-arrow-color': '#ee3f4eff'
+          }
+        },
+        // Estilos para elementos selecionados
+        {
+          selector: 'node:selected',
+          style: {
+            'border-width': 4,
+            'border-color': '#ff6b6b'
+          }
+        },
+        {
+          selector: 'edge:selected',
+          style: {
+            'line-color': '#ff6b6b',
+            'target-arrow-color': '#ff6b6b',
+            'width': 4
           }
         }
       ],
@@ -339,6 +397,26 @@ export class CytoscapeComponent implements OnInit {
     const newNodeId = `${classes.nodeClasses}-` + Date.now();
     const nodePos = clickedElement.position();
 
+    const newNodeData: any = {
+      id: newNodeId,
+      idParentNode: elementId,
+      label: this.getNodeLabel(classes.nodeClasses)
+    };
+
+    if (classes.nodeClasses === 'subprocess-node') {
+      newNodeData.sbgnClass = 'macromolecule';
+      newNodeData.label = 'nAChR';
+      newNodeData.clonemarker = false;
+      newNodeData.stateVariables = [];
+      newNodeData.unitsOfInformation = [{
+        label: 'receptor',
+        entity: {
+          name: 'SBO:0000244',
+          value: 'receptor'
+        }
+      }];
+    }
+
     this.cy.add([
       {
         group: 'nodes',
@@ -352,11 +430,49 @@ export class CytoscapeComponent implements OnInit {
         data: {
           id: 'edge-' + elementId + '-' + newNodeId,
           source: elementId,
-          target: newNodeId
+          target: newNodeId,
+          label: '',
         },
         classes: classes.edgeClasses
       }
     ]);
+  }
+
+
+  private getNodeLabel(nodeClass: string): string {
+    const labels: { [key: string]: string } = {
+      'task-node': 'Nova Tarefa',
+      'decision-node': 'Decisão?',
+      'system-node': 'Sistema',
+      'separation-node': 'Separação',
+      'join-node': 'Junção',
+      'end-node': 'Fim',
+      'subprocess-node': 'nAChR'
+    };
+    return labels[nodeClass] || 'Novo Nó';
+  }
+
+  activateSubProcessNode(nodeId: string): void {
+    const node = this.cy.getElementById(nodeId);
+    if (node.hasClass('subprocess-node')) {
+      node.removeClass('blocked');
+      node.addClass('active');
+    }
+  }
+
+  blockSubProcessNode(nodeId: string): void {
+    const node = this.cy.getElementById(nodeId);
+    if (node.hasClass('subprocess-node')) {
+      node.removeClass('active');
+      node.addClass('blocked');
+    }
+  }
+
+  resetSubProccessNode(nodeId: string): void {
+    const node = this.cy.getElementById(nodeId);
+    if (node.hasClass('subprocess-node')) {
+      node.removeClass('active blocked');
+    }
   }
 
 }
