@@ -11,6 +11,7 @@ import { ContextMenuConfig } from './contexto-menu-config';
 
 
 cytoscape.use(contextMenus);
+cytoscape.warnings(true);
 
 @Component({
   selector: 'app-cytoscape',
@@ -24,119 +25,11 @@ export class CytoscapeComponent implements OnInit {
 
   private taskSubscription: Subscription = new Subscription();
   private taskFormReceivedData: any;
-
-  showTaskForm: boolean = true;
-  selectedElementId: string = '';
-
   private cy!: cytoscape.Core;
   private options = ContextMenuConfig.getContextMenuOptions(this);
 
-  /**
-  private options = {
-      evtType: 'cxttap',
-      menuItems: [
-        {
-          id: 'Remove Nó',
-          content: 'remove',
-          tooltipText: 'remove',
-          image: {src : "assets/icons/remove.svg", width : 12, height : 12, x : 6, y : 4},
-          selector: 'node, edge',
-          onClickFunction: (event: any) => {
-            this.removerElemento(event);
-          },
-          disabled: false,
-          show: true,
-          hasTrailingDivider: true,
-          coreAsWell: false
-        },
-        {
-          id: 'add-node',
-          content: 'Adicionar Nó de Tarefa',
-          tooltipText: 'Adicionar um nó para tarefa no fluxo',
-          image: {src : "assets/icons/add.svg", width : 12, height : 12, x : 6, y : 4},
-          selector: 'node',
-          coreAsWell: true,
-          onClickFunction: (event: any) => {
-            const classes = {nodeClasses: 'task-node', edgeClasses: 'null'};
-            this.addNode(event, classes, null);
-          }
-        },
-        {
-          id: 'add-note-decisão',
-          content: 'Adicionar nó de decisão',
-          tooltipText: 'Adcione um nó de decisão no fluxo',
-          selector: 'node, edge',
-          onClickFunction:  (event: any) => {
-            const classes = {nodeClasses: 'decision-node', edgeClasses: 'dashed'};
-            this.addNode(event, classes, null);
-          },
-          disabled: false
-        },
-        {
-          id: 'add-node-ssitema',
-          content: 'Adcionar nó de sistema',
-          tooltipText: 'Adicionar um nó que representa o sitema com um todo',
-          selector: 'node, edge',
-          onClickFunction:  (event: any) => {
-            const classes = {nodeClasses: 'system-node', edgeClasses: 'dotted'};
-            this.addNode(event, classes, null);
-          },
-          disabled: false
-        },
-        {
-          id: 'add-node-separation',
-          content: 'Adcionar nó de separacao',
-          tooltipText: 'Adicionar um nó que representa separacao no fluxo',
-          selector: 'node, edge',
-          onClickFunction:  (event: any) => {
-            const classes = {nodeClasses: 'separation-node', edgeClasses: 'null'};
-            this.addNode(event, classes, null);
-          },
-          disabled: false
-        },
-        {
-          id: 'add-node-join',
-          content: 'Adcionar nó de juncao',
-          tooltipText: 'Adicionar um nó que representa juncao no fluxo',
-          selector: 'node, edge',
-          onClickFunction:  (event: any) => {
-            const classes = {nodeClasses: 'join-node', edgeClasses: 'null'};
-            this.addNode(event, classes, null);
-          },
-          disabled: false
-        },
-        {
-          id: 'add-node-nachr',
-          content: 'Adicionar nó sub-processo',
-          tooltipText: 'Adicionar um nó que representa um subprocesso',
-          selector: 'node, edge',
-          onClickFunction:  (event: any) => {
-            const classes = {nodeClasses: 'subprocess-node', edgeClasses: 'null'};
-            this.addNode(event, classes, null);
-          },
-          disabled: false
-        },
-        {
-          id: 'add-node-final',
-          content: 'Adcionar nó de final',
-          tooltipText: 'Adicionar um nó final',
-          selector: 'node, edge',
-          onClickFunction:  (event: any) => {
-            const classes = {nodeClasses: 'end-node', edgeClasses: 'dotted'};
-            const style = { 'background-color': 'black' };
-
-            this.addNode(event, classes, style);
-          },
-          disabled: false
-        }
-      ],
-      menuItemClasses: [
-      ],
-      contextMenuClasses: [
-      ],
-      submenuIndicator: { src: 'assets/icons/submenu-indicator-default.svg', width: 12, height: 12 }
-  }; 
-  */
+  showTaskForm: boolean = true;
+  selectedElementId: string = '';
 
   constructor(
     private taskService: TaskService,
@@ -151,8 +44,17 @@ export class CytoscapeComponent implements OnInit {
       elements: {
         nodes: [
           {
+            group: 'nodes',
             data: { id: '0' },
-            position: {x: 100, y: 100},
+            scratch: {
+              _fluxo: 'initial_fluxo' // contexto de excucao de app fields
+            },
+            position: {x: 750, y: 100},
+            selected: true,
+            selectable: true,
+            locked: true,
+            grabbable: false,
+            classes: ['fluxo', 'start'],
             style: {
               'text-valign': 'top',
               'shape': 'ellipse',
@@ -163,8 +65,7 @@ export class CytoscapeComponent implements OnInit {
             }
           },
         ],
-        edges: [
-        ]
+        edges: []
       },
       style: [
         {
@@ -334,12 +235,18 @@ export class CytoscapeComponent implements OnInit {
     });
 
     this.cy.contextMenus(this.options);
+    let collection = this.cy.collection();
 
     this.cy.on('tap', 'node', (event) => {
         const node = event.target;
+
+        collection.union(node);
         this.cytoscapeService.setNoElemento(node);
         this.showForm(node.id());
+
         console.log('Node atual: ', node);
+        console.log('Collection: ', collection);
+        console.log('Selector Class: ', this.cy.elements('.task-node'));
     });
 
   }
@@ -385,10 +292,13 @@ export class CytoscapeComponent implements OnInit {
 
 
   private addNode(event: any, classes: any, style: {} | null) {
+
     const clickedElement = event.target || event.cyTarget;
     const elementId = clickedElement.id();
     const newNodeId = `${classes.nodeClasses}-` + Date.now();
     const nodePos = clickedElement.position();
+    console.log('Classe do node: ', classes.nodeClasses);
+
 
     const newNodeData: any = {
       id: newNodeId,
@@ -414,9 +324,10 @@ export class CytoscapeComponent implements OnInit {
       {
         group: 'nodes',
         data: { id: newNodeId, idParentNode: elementId,  },
-        position: { x: nodePos.x - 100, y: nodePos.y + 50 },
-        classes: classes.nodeClasses,
-        style: style ? style: null
+        scratch: { _fluxo: newNodeId },
+        renderedPosition: { x: nodePos.x - 100, y: nodePos.y + 50 },
+        classes: [classes.nodeClasses],
+        // style: style ? style: null
       },
       {
         group: 'edges',
@@ -429,6 +340,8 @@ export class CytoscapeComponent implements OnInit {
         classes: classes.edgeClasses
       }
     ]);
+    console.log('Node adicionado: ', this.cy.getElementById(newNodeId));
+
   }
 
 
