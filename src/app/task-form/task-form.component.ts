@@ -1,9 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormGroup, ReactiveFormsModule, Validators, FormBuilder } from '@angular/forms';
-import { TaskService } from './task.service';
-import { CytoscapeService } from '../cytoscape/cytoscape.service';
+import { Component, EventEmitter, input, OnInit, Output } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
+import { CytoscapeService } from '../cytoscape/cytoscape.service';
 
 export interface TaskData {
   codigoFluxo: string;
@@ -24,7 +23,7 @@ export interface TaskData {
   styleUrl: './task-form.component.css'
 })
 export class TaskFormComponent implements OnInit {
-  @Input() nomeElemento: string = '';
+  nomeElemento = input.required<string>();
   @Output() taskCreated = new EventEmitter<TaskData>();
   @Output() formCancelled = new EventEmitter<void>();
   private subscription: Subscription = new Subscription();
