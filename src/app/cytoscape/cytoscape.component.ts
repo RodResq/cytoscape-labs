@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import cytoscape from 'cytoscape';
+import cytoscape, { Core, EventObject } from 'cytoscape';
 import contextMenus from 'cytoscape-context-menus';
 import 'cytoscape-context-menus/cytoscape-context-menus.css';
 import { Subscription } from 'rxjs';
@@ -27,6 +27,7 @@ export class CytoscapeComponent implements OnInit {
   private taskFormReceivedData: any;
   private cy!: cytoscape.Core;
   private options = ContextMenuConfig.getContextMenuOptions(this);
+  private isWaitingForEdges = true;
 
   showTaskForm: boolean = true;
   selectedElementId: string = '';
@@ -249,6 +250,40 @@ export class CytoscapeComponent implements OnInit {
         console.log('Selector Class: ', this.cy.elements('.task-node'));
     });
 
+    this.waitForEdgeClick();
+
+  }
+
+  private async waitForEdgeClick() {
+    try {
+      while (this.isWaitingForEdges) {
+        const event: any =  await this.cy.promiseOn('tap', 'edge');
+        console.log('Edge Clicada: ', event.target);
+
+        this.processEdgeClicked(event.target);
+      }
+    } catch(error) {
+      console.error('Erro: ', error);
+    }
+  }
+
+  private processEdgeClicked(edge: any) {
+    const edgeId = edge.id();
+    const sourceId = edge.source().id();
+    const targerId = edge.target().id();
+
+    console.log('Process Edge: ', edgeId, `${sourceId} -> ${targerId}`);
+  }
+
+  private stopWaitingForEdge() {
+    this.isWaitingForEdges = false;
+  }
+
+  private startWaintingForEdge() {
+    if (!this.isWaitingForEdges) {
+      this.isWaitingForEdges = true;
+      this.waitForEdgeClick();
+    }
   }
 
   private removerElemento(event: any) {
@@ -379,6 +414,12 @@ export class CytoscapeComponent implements OnInit {
     if (node.hasClass('subprocess-node')) {
       node.removeClass('active blocked');
     }
+  }
+
+  ngOnDestroy(): void {
+    this.stopWaitingForEdge();
+    console.log('Nao escutando mais por edges');
+
   }
 
 }
