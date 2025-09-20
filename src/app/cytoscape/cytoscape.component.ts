@@ -40,6 +40,11 @@ export class CytoscapeComponent implements OnInit {
     this.taskSubscription = this.taskService.data$.subscribe(data => {
       this.taskFormReceivedData = data;
     });
+    this.initCytoscape();
+    this.waitForEdgeClick();
+  }
+
+  private initCytoscape() {
     this.cy = cytoscape({
       container: this.cytoscapeContainer.nativeElement,
       elements: {
@@ -50,7 +55,7 @@ export class CytoscapeComponent implements OnInit {
             scratch: {
               _fluxo: 'initial_fluxo' // contexto de excucao de app fields
             },
-            position: {x: 750, y: 100},
+            position: { x: 750, y: 100 },
             selected: true,
             selectable: true,
             locked: true,
@@ -157,7 +162,7 @@ export class CytoscapeComponent implements OnInit {
             'background-color': '#E8F5E8',
             'width': 40,
             'height': 40,
-             label: 'data(id)',
+            label: 'data(id)',
             'text-valign': 'bottom',
             'text-halign': 'center',
             'font-family': 'Arial, sans-serif',
@@ -195,13 +200,13 @@ export class CytoscapeComponent implements OnInit {
         },
         {
           selector: 'edge.dotted',
-          style : {
+          style: {
             'line-style': 'dotted',
           }
         },
         {
           selector: 'edge.dashed',
-          style : {
+          style: {
             'line-style': 'dashed',
             'line-color': '#ee3f4eff',
             'target-arrow-color': '#ee3f4eff'
@@ -239,19 +244,16 @@ export class CytoscapeComponent implements OnInit {
     let collection = this.cy.collection();
 
     this.cy.on('tap', 'node', (event) => {
-        const node = event.target;
+      const node = event.target;
 
-        collection.union(node);
-        this.cytoscapeService.setNoElemento(node);
-        this.showForm(node.id());
+      collection.union(node);
+      this.cytoscapeService.setNoElemento(node);
+      this.showForm(node.id());
 
-        console.log('Node atual: ', node);
-        console.log('Collection: ', collection);
-        console.log('Selector Class: ', this.cy.elements('.task-node'));
+      console.log('Node atual: ', node);
+      console.log('Collection: ', collection);
+      console.log('Selector Class: ', this.cy.elements('.task-node'));
     });
-
-    this.waitForEdgeClick();
-
   }
 
   private async waitForEdgeClick() {
