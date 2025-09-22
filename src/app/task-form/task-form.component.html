@@ -1,95 +1,31 @@
-<div class="task-form-container">
-      <form [formGroup]="taskForm" (ngSubmit)="onSubmit()">
-        <div class="mb-3">
-          <label class="form-label" for="nomeTarefa">Código do Fluxo* {{ nomeElemento() }}</label>
-          <input
-            id="codigoFluxo"
-            class="form-control"
-            type="text"
-            formControlName="codigoFluxo"
-            placeholder="Digite o código do fluxo"
-            [class.error]="isFieldInvalid('codigoFluxo')"
-          />
-          <div *ngIf="isFieldInvalid('nomeTarefa')" class="error-message">
-            Código do Fluxo é Obrigatório.
-          </div>
-        </div>
-        <div class="mb-3">
-          <label class="form-label" for="eventos">Fluxo*: </label>
-          <input
-            id="fluxo"
-            class="form-control"
-            type="text"
-            formControlName="fluxo"
-            placeholder="Entre com o nome fluxo"
-            [class.error]="isFieldInvalid('fluxo')"
-          />
-          <div *ngIf="isFieldInvalid('fluxo')" class="error-message">
-            Nome do Fluxo é Inválido.
-          </div>
-        </div>
-        <div class="mb-3">
-          <label class="form-label" for="dataCriacao">Prazo (dias):</label>
-          <input
-            id="prazo"
-            class="form-control"
-            type="datetime-local"
-            formControlName="prazo"/>
-        </div>
-        <div class="mb-3">
-          <label class="form-label" for="eventos">Parâmetros: </label>
-          <input
-            id="parametros"
-            class="form-control"
-            type="text"
-            formControlName="parametros"
-            placeholder="Entre com os parâmetros da tarefa"
-          />
-        </div>
-        <div class="mb-3">
-          <label class="form-label" for="nomeTarefa">Identificador*</label>
-          <input
-            id="identificador"
-            class="form-control"
-            type="text"
-            formControlName="identificador"
-            placeholder="Digite o identificador do fluxo"
-          />
-        </div>
-        <div class="mb-3">
-          <label class="form-label" for="nomeTarefa">Nome do Processo*</label>
-          <input
-            id="nomeProcesso"
-            class="form-control"
-            type="text"
-            formControlName="nomeProcesso"
-            placeholder="Digite o nomeProcesso do fluxo"
-          />
-        </div>
-        <div class="mb-3">
-          <label class="form-label" for="descricao">Descrição</label>
-          <textarea
-            id="descricao"
-            class="form-control"
-            formControlName="descricao"
-            placeholder="Digite a descricao do fluxo"
-          ></textarea>
-        </div>
-        <div class="form-actions">
-          <button
-            type="button"
-            (click)="onCancel()"
-            class="btn btn-secondary"
-          >
-            Cancelar
-          </button>
-          <button
-            type="submit"
-            [disabled]="taskForm.invalid"
-            class="btn btn-primary"
-          >
-            Criar
-          </button>
-        </div>
-      </form>
-    </div>
+<div class="card grid grid-cols-1 md:grid-cols-2 gap-4">
+    <p-inputgroup class="w-full md:!w-[30rem]">
+        <input pInputText [(ngModel)]="text1" placeholder="Codigo" />
+    </p-inputgroup>
+
+    <p-inputgroup>
+        <input pInputText [(ngModel)]="text1" placeholder="Nome" />
+    </p-inputgroup>
+
+    <p-inputgroup>
+        <p-inputnumber [(ngModel)]="number" placeholder="Prazo em dias" />
+    </p-inputgroup>
+
+    <p-inputgroup>
+        <input pInputText [(ngModel)]="text1" placeholder="Parametros" />
+    </p-inputgroup>
+
+    <p-inputgroup>
+        <input pInputText [(ngModel)]="text1" placeholder="Identificador" />
+    </p-inputgroup>
+
+    <p-inputgroup>
+        <input pInputText [(ngModel)]="text1" placeholder="Nome do Processo" />
+    </p-inputgroup>
+
+    <p-inputgroup>
+      <div>
+          <textarea rows="5" pTextarea  [(ngModel)]="text1"></textarea>
+      </div>
+    </p-inputgroup>
+</div>

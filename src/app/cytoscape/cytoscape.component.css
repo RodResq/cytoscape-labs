@@ -1,0 +1,10 @@
+.card {
+  height: 100vh;
+  width: 100%;
+}
+
+:host {
+  display: block;
+  height: 100%;
+  width: 100%;
+}

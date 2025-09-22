@@ -1,8 +1,14 @@
-import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { InputTextModule } from 'primeng/inputtext';
+import { SelectModule } from 'primeng/select';
+import { TextareaModule } from 'primeng/textarea';
+
 import { Subscription } from 'rxjs';
-import { CytoscapeService } from '../cytoscape/cytoscape.service';
+import { CytoscapeService } from '../graph/cytoscape.service';
 
 export interface TaskData {
   codigoFluxo: string;
@@ -16,19 +22,35 @@ export interface TaskData {
 }
 
 
+interface City {
+    name: string;
+    code: string;
+}
+
 @Component({
   selector: 'app-task-form',
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [FormsModule, InputGroupModule, InputGroupAddonModule, InputTextModule, SelectModule, InputNumberModule, TextareaModule],
   templateUrl: './task-form.component.html',
   styleUrl: './task-form.component.css'
 })
 export class TaskFormComponent implements OnInit {
-  nomeElemento = input.required<string>();
+  nomeElemento = input<string>();
   @Output() taskCreated = new EventEmitter<TaskData>();
   @Output() formCancelled = new EventEmitter<void>();
   private subscription: Subscription = new Subscription();
   private receivedNode: any = {};
 
+  text1: string | undefined;
+  text2: string | undefined;
+  number: string | undefined;
+  selectedCity: City | undefined;
+  cities: City[] = [
+        { name: 'New York', code: 'NY' },
+        { name: 'Rome', code: 'RM' },
+        { name: 'London', code: 'LDN' },
+        { name: 'Istanbul', code: 'IST' },
+        { name: 'Paris', code: 'PRS' },
+    ];
 
   taskForm: FormGroup;
 
@@ -53,28 +75,6 @@ export class TaskFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.cytoscapeService.data$.subscribe(node => {
-      const taskData = node.data().taskData;
-      if (taskData) {
-        console.log('No recebido no form no IF', taskData);
-
-        this.taskForm.setValue(taskData);
-        this.taskForm.disable();
-      } else {
-        console.log('No recebido no form no ELSE', taskData);
-        this.resetForm();
-        this.taskForm.enable();
-      }
-    });
-
-    const now = new Date();
-    const localDateTime = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
-      .toISOString()
-      .slice(0, 16);
-
-    this.taskForm.patchValue({
-      dataCriacao: localDateTime
-    });
   }
 
   onSubmit(): void {

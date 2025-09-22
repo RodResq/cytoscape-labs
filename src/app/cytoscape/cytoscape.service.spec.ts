@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { CytoscapeService } from './cytoscape.service';
+import { CytoscapeService } from '../graph/cytoscape.service';
 
 describe('CytoscapeService', () => {
   let service: CytoscapeService;
