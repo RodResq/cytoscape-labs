@@ -1,31 +1,73 @@
-<div class="card grid grid-cols-1 md:grid-cols-2 gap-4">
-    <p-inputgroup class="w-full md:!w-[30rem]">
-        <input pInputText [(ngModel)]="text1" placeholder="Codigo" />
+<form [formGroup]="taskForm" (ngSubmit)="onSubmit()">
+  <div class="card grid grid-cols-1 md:grid-cols-2 gap-4">
+
+    <p-inputgroup class="w-full md:!w-[15rem]">
+      <input
+        pInputText
+        formControlName="codigoFluxo"
+        placeholder="Codigo"
+        [class.ng-invalid]="isFieldInvalid('codigoFluxo')" />
     </p-inputgroup>
 
     <p-inputgroup>
-        <input pInputText [(ngModel)]="text1" placeholder="Nome" />
+      <input
+        pInputText
+        formControlName="fluxo"
+        placeholder="Nome"
+        [class.ng-invalid]="isFieldInvalid('fluxo')" />
     </p-inputgroup>
 
     <p-inputgroup>
-        <p-inputnumber [(ngModel)]="number" placeholder="Prazo em dias" />
+      <p-inputnumber
+        formControlName="prazo"
+        placeholder="Prazo em dias" />
     </p-inputgroup>
 
     <p-inputgroup>
-        <input pInputText [(ngModel)]="text1" placeholder="Parametros" />
+      <input
+        pInputText
+        formControlName="parametros"
+        placeholder="Parametros" />
     </p-inputgroup>
 
     <p-inputgroup>
-        <input pInputText [(ngModel)]="text1" placeholder="Identificador" />
+      <input
+        pInputText
+        formControlName="identificador"
+        placeholder="Identificador" />
     </p-inputgroup>
 
     <p-inputgroup>
-        <input pInputText [(ngModel)]="text1" placeholder="Nome do Processo" />
+      <input
+        pInputText
+        formControlName="nomeProcesso"
+        placeholder="Nome do Processo" />
     </p-inputgroup>
 
     <p-inputgroup>
       <div>
-          <textarea rows="5" pTextarea  [(ngModel)]="text1"></textarea>
+        <textarea
+          rows="5"
+          pTextarea
+          formControlName="descricao"
+          placeholder="Descrição">
+        </textarea>
       </div>
     </p-inputgroup>
+  </div>
+</form>
+
+<!-- Mensagens de erro -->
+<div class="mt-4">
+  @if (taskForm.get('codigoFluxo')?.invalid && taskForm.get('codigoFluxo')?.touched) {
+    <div class="text-red-500 text-sm">
+      Código do fluxo é obrigatório (mínimo 2 caracteres)
+    </div>
+  }
+
+  @if (taskForm.get('fluxo')?.invalid && taskForm.get('fluxo')?.touched) {
+    <div class="text-red-500 text-sm">
+      Nome do fluxo é obrigatório (mínimo 2 caracteres)
+    </div>
+  }
 </div>
