@@ -54,17 +54,17 @@ export interface MenuInteConfig {
 }
 
 export class ContextMenuConfig {
-    static createMenuItems(component: any): MenuInteConfig[] {
+    static createMenuItems(component: any): any[] {
         return [
             {
                 id: 'Remove Nó',
                 content: 'remove',
                 tooltipText: 'remove',
                 image: {
-                  src: "assets/icons/remove.svg", 
-                  width: 12, 
-                  height: 12, 
-                  x: 6, 
+                  src: "assets/icons/remove.svg",
+                  width: 12,
+                  height: 12,
+                  x: 6,
                   y: 4
                 },
                 selector: 'node, edge',
@@ -74,24 +74,25 @@ export class ContextMenuConfig {
                 disabled: false,
                 show: true,
                 hasTrailingDivider: true,
-                coreAsWell: false
+                coreAsWell: false,
+                submenu: []
             },
             {
                 id: 'add-node',
                 content: 'Adicionar Nó de Tarefa',
                 tooltipText: 'Adicionar um nó para tarefa no fluxo',
                 image: {
-                    src : "assets/icons/add.svg", 
-                    width : 12, 
-                    height : 12, 
-                    x : 6, 
+                    src : "assets/icons/add.svg",
+                    width : 12,
+                    height : 12,
+                    x : 6,
                     y : 4
                 },
                 selector: 'node',
                 coreAsWell: true,
                 onClickFunction: (event: any) => {
                   const classes: MenuItemClasses = {
-                    nodeClasses: 'task-node', 
+                    nodeClasses: 'task-node',
                     edgeClasses: 'null'
                     };
                   component.addNode(event, classes, null);
@@ -104,7 +105,7 @@ export class ContextMenuConfig {
                 selector: 'node, edge',
                 onClickFunction:  (event: any) => {
                   const classes: MenuItemClasses = {
-                    nodeClasses: 'decision-node', 
+                    nodeClasses: 'decision-node',
                     edgeClasses: 'dashed'
                     };
                   component.addNode(event, classes, null);
@@ -118,7 +119,7 @@ export class ContextMenuConfig {
                 selector: 'node, edge',
                 onClickFunction:  (event: any) => {
                   const classes: MenuItemClasses = {
-                    nodeClasses: 'system-node', 
+                    nodeClasses: 'system-node',
                     edgeClasses: 'dotted'
                     };
                   component.addNode(event, classes, null);
@@ -132,7 +133,7 @@ export class ContextMenuConfig {
                 selector: 'node, edge',
                 onClickFunction:  (event: any) => {
                   const classes: MenuItemClasses = {
-                    nodeClasses: 'separation-node', 
+                    nodeClasses: 'separation-node',
                     edgeClasses: 'null'
                     };
                   component.addNode(event, classes, null);
@@ -146,7 +147,7 @@ export class ContextMenuConfig {
                 selector: 'node, edge',
                 onClickFunction:  (event: any) => {
                   const classes: MenuItemClasses = {
-                    nodeClasses: 'join-node', 
+                    nodeClasses: 'join-node',
                     edgeClasses: 'null'
                     };
                   component.addNode(event, classes, null);
@@ -160,7 +161,7 @@ export class ContextMenuConfig {
                 selector: 'node, edge',
                 onClickFunction:  (event: any) => {
                   const classes: MenuItemClasses = {
-                    nodeClasses: 'subprocess-node', 
+                    nodeClasses: 'subprocess-node',
                     edgeClasses: 'null'
                     };
                   component.addNode(event, classes, null);
@@ -174,11 +175,11 @@ export class ContextMenuConfig {
                 selector: 'node, edge',
                 onClickFunction:  (event: any) => {
                     const classes: MenuItemClasses = {
-                        nodeClasses: 'end-node', 
+                        nodeClasses: 'end-node',
                         edgeClasses: 'dotted'
                     };
                     const style = { 'background-color': 'black' };
-        
+
                     component.addNode(event, classes, style);
                 },
                 disabled: false
@@ -195,9 +196,9 @@ export class ContextMenuConfig {
             submenuIndicador: {
                 src: 'assets/icons/submenu-indicator-default.svg',
                 width: 12,
-                height: 12 
+                height: 12
             }
         }
-    } 
+    }
 
 }
