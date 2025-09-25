@@ -1,25 +1,39 @@
 import { CommonModule } from '@angular/common';
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { StepperModule } from 'primeng/stepper';
 import { ButtonModule } from 'primeng/button';
 import { TaskFormComponent } from '../task-form/task-form.component';
 import { StepperCacheService } from '../task-form/stepper-cache.service';
+import { DrawerModule } from 'primeng/drawer';
+import { Subscription } from 'rxjs';
+import { FluxoService } from './fluxo.service';
 
 @Component({
   selector: 'app-fluxo-form',
-  imports: [ButtonModule, StepperModule, CommonModule, TaskFormComponent],
+  imports: [ButtonModule, DrawerModule, CommonModule, TaskFormComponent],
   standalone: true,
   templateUrl: './fluxo-form.component.html',
   styleUrl: './fluxo-form.component.css'
 })
-export class FluxoFormComponent {
+export class FluxoFormComponent implements OnInit {
 
   @ViewChild(TaskFormComponent) taskFormComponent!: TaskFormComponent;
+  private drawerSubscription: Subscription = new Subscription();
 
   showTaskForm: boolean = true;
   currentStep: number = 1;
+  visible: boolean = false;
 
-  constructor(private stepperCacheService: StepperCacheService) {}
+  constructor(
+    private stepperCacheService: StepperCacheService,
+    private fluxoService: FluxoService
+  ) {}
+  
+  ngOnInit(): void {
+    this.fluxoService.status$.subscribe(status => {
+      this.visible = status;
+    })
+  }
 
   saveStep2Data(data: any) {
     this.stepperCacheService.saveStepData('step2', data);

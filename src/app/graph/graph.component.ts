@@ -64,7 +64,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
             scratch: {
               _fluxo: 'initial_fluxo' // contexto de excucao de app fields
             },
-            position: { x: 750, y: 100 },
+            position: { x: 900, y: 100 },
             selected: true,
             selectable: true,
             locked: true,
