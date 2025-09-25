@@ -1,23 +1,27 @@
-import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { Injectable } from '@angular/core';
+
+export interface Acao {
+  visible: boolean,
+  acao: string | undefined
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class FluxoService {
 
-  private statusDrawer = new BehaviorSubject<boolean>(false);
-  public status$ = this.statusDrawer.asObservable();
+  private acao = new BehaviorSubject<Acao>({visible: false, acao:''});
+  public acao$ = this.acao.asObservable();
 
   constructor() {}
 
-  openDrawer() {
-    console.log('Abrindo o drawer');
-    return this.statusDrawer.next(true);
-  }
-
-  getStatusDrawer() {
-    return this.statusDrawer.value;
+  setAcao(acao: string | undefined) {
+    console.log('Ação clicada: ', acao);
+    this.acao.next({
+      visible: true,
+      acao: acao
+    });
   }
   
 }

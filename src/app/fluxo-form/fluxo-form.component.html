@@ -1,5 +1,5 @@
 <div class="card flex justify-center">
-  <p-drawer header="Drawer" [(visible)]="visible" styleClass="!w-full md:!w-80 lg:!w-[30rem]">
+  <p-drawer [header]="nomeAcao" [(visible)]="visible" styleClass="!w-full md:!w-80 lg:!w-[30rem]">
          @if (showTaskForm) {
             <app-task-form
             #taskForm

@@ -1,6 +1,6 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FluxoService } from '../fluxo-form/fluxo.service';
-import { CommonModule } from '@angular/common';
 import { MenuComponent } from './menu/menu.component';
 
 @Component({
@@ -12,9 +12,5 @@ import { MenuComponent } from './menu/menu.component';
 export class NavbarComponent {
 
   constructor(private fluxoService: FluxoService) {}
-
-  openFluxoForm() {
-    this.fluxoService.openDrawer();
-  }
 
 }

@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { MenuItem, MessageService } from 'primeng/api';
+
+import { FluxoService } from '../../fluxo-form/fluxo.service';
 import { Menubar } from 'primeng/menubar';
 import { ToastModule } from 'primeng/toast';
-import { FluxoService } from '../../fluxo-form/fluxo.service';
-
 
 @Component({
   selector: 'app-menu',
@@ -24,8 +24,9 @@ export class MenuComponent implements OnInit {
     this.items = [
       {
         label: 'Criar Fluxo',
-        command: () => {
-          this.openFluxoForm();
+        command: ($event) => {
+          const nomeAcao: string | undefined = $event.item?.label?.toString();
+          this.fluxoService.setAcao(nomeAcao)
         }
       },
       {
@@ -37,10 +38,5 @@ export class MenuComponent implements OnInit {
     ]
   }
 
-
-  private openFluxoForm() {
-    this.messageService.add({severity: 'success', summary: 'sucess', detail: 'Criação de Fluxo', life: 3000});
-    this.fluxoService.openDrawer();
-  }
 }
 

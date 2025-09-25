@@ -1,12 +1,13 @@
-import { CommonModule } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { StepperModule } from 'primeng/stepper';
+
 import { ButtonModule } from 'primeng/button';
-import { TaskFormComponent } from '../task-form/task-form.component';
-import { StepperCacheService } from '../task-form/stepper-cache.service';
+import { CommonModule } from '@angular/common';
 import { DrawerModule } from 'primeng/drawer';
-import { Subscription } from 'rxjs';
 import { FluxoService } from './fluxo.service';
+import { StepperCacheService } from '../task-form/stepper-cache.service';
+import { StepperModule } from 'primeng/stepper';
+import { Subscription } from 'rxjs';
+import { TaskFormComponent } from '../task-form/task-form.component';
 
 @Component({
   selector: 'app-fluxo-form',
@@ -23,6 +24,7 @@ export class FluxoFormComponent implements OnInit {
   showTaskForm: boolean = true;
   currentStep: number = 1;
   visible: boolean = false;
+  nomeAcao: string | undefined = "";
 
   constructor(
     private stepperCacheService: StepperCacheService,
@@ -30,9 +32,10 @@ export class FluxoFormComponent implements OnInit {
   ) {}
   
   ngOnInit(): void {
-    this.fluxoService.status$.subscribe(status => {
-      this.visible = status;
-    })
+    this.fluxoService.acao$.subscribe(acao => {
+      this.visible = acao.visible;
+      this.nomeAcao = acao.acao;
+    });
   }
 
   saveStep2Data(data: any) {
