@@ -1,3 +1,4 @@
+import { StepperCacheService } from './../task-form/stepper-cache.service';
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { CytoscapeService } from './cytoscape.service';
@@ -35,7 +36,8 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
   constructor(
     private taskService: TaskService,
-    private cytoscapeService: CytoscapeService) {}
+    private cytoscapeService: CytoscapeService,
+    private stepperCacheService: StepperCacheService) {}
 
 
   ngOnInit(): void {
@@ -66,7 +68,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
             selected: true,
             selectable: true,
             locked: true,
-            grabbable: false,
+            grabbable: true,
             classes: ['fluxo', 'start'],
             style: {
               'text-valign': 'top',
@@ -337,6 +339,8 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
   private addNode(event: any, classes: any, style: {} | null) {
     console.log('Adiconando elemento: ', event);
+    console.log('Stepper Atual: ', this.stepperCacheService.getCurrentStep());
+
 
     const clickedElement = event.target || event.cyTarget;
     const elementId = clickedElement.id();

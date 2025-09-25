@@ -47,8 +47,8 @@
                       </div>
                   </div>
                   <div class="flex py-6 gap-2">
-                      <p-button label="Back" severity="secondary" (onClick)="activateCallback(1)" />
-                      <p-button label="Next" (onClick)="activateCallback(3)" />
+                      <p-button label="Back" severity="secondary" (onClick)="cancelStepper()" />
+                      <p-button label="Next" (onClick)="goToNextStep(activateCallback)" />
                   </div>
               </ng-template>
           </p-step-panel>
@@ -66,102 +66,11 @@
                       </div>
                   </div>
                   <div class="py-6">
-                      <p-button label="Back" severity="secondary" (onClick)="activateCallback(2)" />
+                      <p-button label="Back" severity="secondary" (onClick)="cancelStepper()" />
+                      <p-button label="Next" (onClick)="goToNextStep(activateCallback)" />
                   </div>
               </ng-template>
           </p-step-panel>
       </p-step-item>
-        <!-- <p-step-list>
-            <p-step [value]="1">Fluxo</p-step>
-            <p-step [value]="2">Criar Nos</p-step>
-            <p-step [value]="3">Events</p-step>
-        </p-step-list>
-        <p-step-panels>
-            <p-step-panel [value]="1">
-                <ng-template #content let-activateCallback="activateCallback">
-                    <div class="flex flex-col h-48">
-                        <div
-                            class="border-2 border-dashed border-surface-200 dark:border-surface-700 rounded bg-surface-50 dark:bg-surface-950 flex-auto flex justify-center items-center font-medium"
-                        >
-                        @if (showTaskForm) {
-                          <app-task-form
-                            #taskForm
-                            (taskCreated)="saveStep2Data($event)"
-                            (stepCompleted)="canProceedToNextStep()"
-                          ></app-task-form>
-                        }
-                        </div>
-                    </div>
-                    <div class="flex pt-6 justify-end">
-                      <p-button
-                        label="Cancelar"
-                        severity="secondary"
-                        class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
-                        (onClick)="cancelStepper()">
-                      </p-button>
-                      <p-button
-                        label="Proximo"
-                        icon="pi pi-arrow-right"
-                        iconPos="right"
-                        [disabled]="!canProceedToNextStep"
-                        (onClick)="goToNextStep(activateCallback)" />
-                    </div>
-                </ng-template>
-            </p-step-panel>
-
-            <p-step-panel [value]="2">
-                <ng-template #content let-activateCallback="activateCallback">
-                    <div class="flex flex-col h-48">
-                        <div
-                            class="border-2 border-dashed border-surface-200 dark:border-surface-700 rounded bg-surface-50 dark:bg-surface-950 flex-auto flex justify-center items-center font-medium"
-                        >
-                            <div class="text-center">
-                                <h3>Configuração de Nodes</h3>
-                                Implementar formulário do step 2 aqui
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex pt-6 justify-between">
-                        <p-button
-                          label="Anterior"
-                          severity="secondary"
-                          icon="pi pi-arrow-left"
-                          (onClick)="goToPreviousStep(activateCallback)" />
-                        <p-button
-                          label="Next"
-                          icon="pi pi-arrow-right"
-                          iconPos="right"
-                          (onClick)="goToNextStep(activateCallback)" />
-                    </div>
-                </ng-template>
-            </p-step-panel>
-
-            <p-step-panel [value]="3">
-                <ng-template #content let-activateCallback="activateCallback">
-                    <div class="flex flex-col h-48">
-                        <div
-                            class="border-2 border-dashed border-surface-200 dark:border-surface-700 rounded bg-surface-50 dark:bg-surface-950 flex-auto flex justify-center items-center font-medium"
-                        >
-                            <div class="text-center">
-                                <h3>Configuração de Events</h3>
-                                Implementar formulário do step 3 aqui
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex pt-6 justify-start">
-                        <p-button
-                          label="Anterior"
-                          severity="secondary"
-                          icon="pi pi-arrow-left"
-                          (onClick)="goToPreviousStep(activateCallback)" />
-                        <p-button
-                          label="Finalizar"
-                          icon="pi pi-arrow-left"
-                          iconPos="right"
-                          (onClick)="finishStepper()" />
-                    </div>
-                </ng-template>
-            </p-step-panel>
-        </p-step-panels> -->
     </p-stepper>
 </div>

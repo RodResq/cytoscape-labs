@@ -15,6 +15,7 @@ export interface StepperData {
 export class StepperCacheService {
 
   private stepperDataSubject = new BehaviorSubject<StepperData>({});
+  private currentStepSubject = new BehaviorSubject<number>(0);
   public stepperData$ = this.stepperDataSubject.asObservable();
 
   constructor() {}
@@ -62,6 +63,14 @@ export class StepperCacheService {
   areAllStepsValid(): boolean {
     const data = this.stepperDataSubject.value;
     return !!(data.step1 && data.step2 && data.step3);
+  }
+
+  setCurrentStep(currentStep: number) {
+    this.currentStepSubject.next(currentStep);
+  }
+
+  getCurrentStep(): number {
+    return this.currentStepSubject.value;
   }
 
 }

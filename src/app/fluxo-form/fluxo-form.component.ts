@@ -43,6 +43,7 @@ export class FluxoFormComponent {
         activateCallBack(3)
       }
     }
+    this.stepperCacheService.setCurrentStep(this.currentStep);
   }
 
   goToPreviousStep(activateCallBack: (step: number) => void): void {
