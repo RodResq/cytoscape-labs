@@ -76,7 +76,8 @@ export class GraphComponent implements OnInit, AfterViewInit {
               'background-color': '#f8fafc',
               'border-width': 5,
               'border-color': 'silver',
-              'border-style': 'solid'
+              'border-style': 'solid',
+              label: 'Initial Node'
             }
           },
         ],
@@ -252,16 +253,24 @@ export class GraphComponent implements OnInit, AfterViewInit {
     this.cy.contextMenus(this.options);
     let collection = this.cy.collection();
 
+    this.waitForNodeClick(collection);
+  }
+
+  private waitForNodeClick(collection: cytoscape.CollectionReturnValue) {
     this.cy.on('tap', 'node', (event) => {
       const node = event.target;
 
-      collection.union(node);
-      this.cytoscapeService.setNoElemento(node);
-      this.showForm(node.id());
+      if (node.isNode()) {
+        collection.union(node);
+        this.cytoscapeService.setNoElemento(node);
+        this.showForm(node.id());
 
-      console.log('Node atual: ', node);
-      console.log('Collection: ', collection);
-      console.log('Selector Class: ', this.cy.elements('.task-node'));
+        console.log('NodeId atual: ', node.id());
+        console.log('Collection: ', collection);
+        console.log('Selector Class: ', this.cy.elements('.task-node'));
+      } else {
+        console.log('Elemento selecionado nao e um no');
+      }
     });
   }
 
@@ -337,7 +346,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
   }
 
 
-  private addNode(event: any, classes: any, style: {} | null) {
+  private addNode(event: any, classes: any, position: {x: number, y: number}, style?: {}) {
     console.log('Adiconando elemento: ', event);
     console.log('Stepper Atual: ', this.stepperCacheService.getCurrentStep());
 
@@ -374,9 +383,9 @@ export class GraphComponent implements OnInit, AfterViewInit {
         group: 'nodes',
         data: { id: newNodeId, idParentNode: elementId,  },
         scratch: { _fluxo: newNodeId },
-        renderedPosition: { x: nodePos.x - 100, y: nodePos.y + 50 },
+        renderedPosition: { x: nodePos.x - position.x, y: nodePos.y + position.y },
         classes: [classes.nodeClasses],
-        // style: style ? style: null
+        style: style ? style: null
       },
       {
         group: 'edges',

@@ -13,4 +13,8 @@ export class NavbarComponent {
 
   constructor(private fluxoService: FluxoService) {}
 
+  //TODO Criar Funcao para exportar o graph em JSON
+  // cy.json()
+  // https://js.cytoscape.org/#cy.json
+
 }

@@ -95,7 +95,8 @@ export class ContextMenuConfig {
                     nodeClasses: 'task-node',
                     edgeClasses: 'null'
                     };
-                  component.addNode(event, classes, null);
+                  const position =  {x: 100, y: 70};
+                  component.addNode(event, classes, position);
                 }
             },
             {
@@ -108,7 +109,8 @@ export class ContextMenuConfig {
                     nodeClasses: 'decision-node',
                     edgeClasses: 'dashed'
                     };
-                  component.addNode(event, classes, null);
+                  const position = {x: 0, y: 110}
+                  component.addNode(event, classes, position);
                 },
                 disabled: false
             },
@@ -122,7 +124,8 @@ export class ContextMenuConfig {
                     nodeClasses: 'system-node',
                     edgeClasses: 'dotted'
                     };
-                  component.addNode(event, classes, null);
+                  const position =  {x: 100, y: 70};
+                  component.addNode(event, classes, position);
                 },
                 disabled: false
             },
@@ -136,7 +139,8 @@ export class ContextMenuConfig {
                     nodeClasses: 'separation-node',
                     edgeClasses: 'null'
                     };
-                  component.addNode(event, classes, null);
+                  const position = {x: 0, y: 100};
+                  component.addNode(event, classes, position);
                 },
                 disabled: false
             },
@@ -150,7 +154,8 @@ export class ContextMenuConfig {
                     nodeClasses: 'join-node',
                     edgeClasses: 'null'
                     };
-                  component.addNode(event, classes, null);
+                  const position = {x: 0, y: 110};
+                  component.addNode(event, classes, position);
                 },
                 disabled: false
             },
@@ -164,7 +169,8 @@ export class ContextMenuConfig {
                     nodeClasses: 'subprocess-node',
                     edgeClasses: 'null'
                     };
-                  component.addNode(event, classes, null);
+                  const position = {x: 0, y: 110};
+                  component.addNode(event, classes, position);
                 },
                 disabled: false
             },
@@ -179,8 +185,8 @@ export class ContextMenuConfig {
                         edgeClasses: 'dotted'
                     };
                     const style = { 'background-color': 'black' };
-
-                    component.addNode(event, classes, style);
+                    const position = {x: 0, y: 110};
+                  component.addNode(event, classes, position, style);
                 },
                 disabled: false
             }
