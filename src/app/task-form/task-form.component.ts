@@ -10,6 +10,7 @@ import { TextareaModule } from 'primeng/textarea';
 
 import { Subscription } from 'rxjs';
 import { CytoscapeService } from '../graph/cytoscape.service';
+import { IftaLabelModule } from 'primeng/iftalabel';
 
 export interface TaskData {
   codigoFluxo: string;
@@ -32,7 +33,8 @@ export interface TaskData {
     InputTextModule,
     SelectModule,
     InputNumberModule,
-    TextareaModule
+    TextareaModule,
+    IftaLabelModule
   ],
   templateUrl: './task-form.component.html',
   styleUrl: './task-form.component.css'

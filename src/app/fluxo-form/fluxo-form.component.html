@@ -1,12 +1,35 @@
 <div class="card flex justify-center">
   <p-drawer [header]="nomeAcao" [(visible)]="visible" styleClass="!w-full md:!w-80 lg:!w-[30rem]">
-         @if (showTaskForm) {
+         @if (showFluxoForm) {
             <app-task-form
             #taskForm
             (taskCreated)="saveStep2Data($event)"
             (stepCompleted)="canProceedToNextStep()"
             ></app-task-form>
         }
+
+        @if (showNodeForm) {
+          <app-node-form></app-node-form>
+        }
+
+        @if (showEventForm) {
+          <app-event-form></app-event-form>
+        }
+
+        <div class="py-6">
+          <p-button
+            label="Cancelar"
+            severity="secondary"
+            class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+            (onClick)="cancelStepper()">
+          </p-button>
+          <p-button
+            label="Proximo"
+            icon="pi pi-arrow-right"
+            iconPos="right"
+            [disabled]="!canProceedToNextStep()"
+            (onClick)="goToNextStep(1, $event)" />
+        </div>
     </p-drawer>
 </div>
 
