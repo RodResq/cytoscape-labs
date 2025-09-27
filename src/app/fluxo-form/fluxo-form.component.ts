@@ -1,3 +1,4 @@
+import { StepperData } from './../task-form/stepper-cache.service';
 import { StepperService } from './../cytoscape/stepper/stepper.service';
 import { Component, OnInit, ViewChild } from '@angular/core';
 
@@ -31,6 +32,8 @@ export class FluxoFormComponent implements OnInit {
   showNodeForm: boolean = false;
   showEventForm: boolean = false;
 
+  labelCancelarOrAnterior: string = 'Cancelar';
+
   constructor(
     private stepperCacheService: StepperCacheService,
     private fluxoService: FluxoService,
@@ -43,7 +46,10 @@ export class FluxoFormComponent implements OnInit {
       this.nomeAcao = acao.acao;
     });
 
-    this.stepperService.stepperData$.subscribe(step => this.currentStep == step);
+    this.stepperService.stepperData$.subscribe(step => {
+      this.currentStep == step
+    });
+
   }
 
   saveStep2Data(data: any) {
@@ -54,26 +60,37 @@ export class FluxoFormComponent implements OnInit {
     return true;
   }
 
-  //TODO rEFATORAR
-  goToNextStep(step: number, data: any): void {
-    console.log('Next Step: ', step);
+  goToNextStep(data: any): void {
+    this.salvarDadosFormAnterior(data);
+    this.showFluxoForm = false;
+    this.labelCancelarOrAnterior = 'Anterior'
 
-    this.stepperCacheService.saveStepData('step2', data);
     if (this.currentStep === 1) {
-        this.showFluxoForm = !this.showFluxoForm;
-        this.showNodeForm = !this.showNodeForm;
+
       if (this.taskFormComponent && this.taskFormComponent.saveStepData()) {
-        this.stepperService.setNextStepper(step++);
+        this.stepperService.setNextStepper(this.currentStep++);
+        this.nomeAcao = 'Configurar Nos';
       } else {
         alert('Por favor, preencha todos os campos obrigatórios antes de continuar.');
       }
+      this.showNodeForm = true;
+
     } else if (this.currentStep === 2) {
+
       if (this.validateStep2()) {
-        this.stepperService.setNextStepper(step++);
+        this.nomeAcao = 'Configurar Eventos';
+        this.showNodeForm = false;
+        this.showEventForm = true;
+
+        this.stepperService.setNextStepper(this.currentStep++);
       }
     }
-    this.stepperCacheService.setCurrentStep(step);
+    this.stepperCacheService.setCurrentStep(this.currentStep);
+  }
 
+  private salvarDadosFormAnterior(data: any) {
+    let previosStepeStr = 'step' + this.currentStep;
+    this.stepperCacheService.saveStepData(<keyof StepperData>previosStepeStr, data);
   }
 
   goToPreviousStep(activateCallBack: (step: number) => void): void {
@@ -89,16 +106,18 @@ export class FluxoFormComponent implements OnInit {
   }
 
   canProceedToNextStep(): boolean {
-    // switch(this.currentStep) {
-    //   case 1:
-    //     return this.stepperCacheService.isStepValid('step1');
-    //   case 2:
-    //     return this.stepperCacheService.isStepValid('step1');
-    //   case 3:
-    //     return this.stepperCacheService.isStepValid('step3');
-    //   default:
-    //     return false;
-    // }
+    switch(this.currentStep) {
+      case 1:
+        return this.stepperCacheService.isStepValid('step1');
+      case 2:
+        // return this.stepperCacheService.isStepValid('step2'); TODO RETORNAR LOGICA DEPOIS
+        return true
+      case 3:
+        // return this.stepperCacheService.isStepValid('step3'); TODO RETORNAR LOGICA DEPOIS
+        return true
+      default:
+        return false;
+    }
     return true;
   }
 
