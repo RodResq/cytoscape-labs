@@ -8,6 +8,7 @@ import contextMenus from 'cytoscape-context-menus';
 import { CommonModule } from '@angular/common';
 import 'cytoscape-context-menus/cytoscape-context-menus.css';
 import { ContextMenuConfig } from './contexto-menu-config';
+import { NodeService } from '../node-form/node.service';
 
 
 cytoscape.use(contextMenus);
@@ -31,13 +32,14 @@ export class GraphComponent implements OnInit, AfterViewInit {
   private options = ContextMenuConfig.getContextMenuOptions(this);
   private isWaitingForEdges = true;
 
-  showTaskForm: boolean = true;
+  showNodeForm: boolean = true;
   selectedElementId: string = '';
 
   constructor(
     private taskService: TaskService,
     private cytoscapeService: CytoscapeService,
-    private stepperCacheService: StepperCacheService) {}
+    private stepperCacheService: StepperCacheService,
+    private nodeService: NodeService) {}
 
 
   ngOnInit(): void {
@@ -262,8 +264,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
       if (node.isNode()) {
         collection.union(node);
-        this.cytoscapeService.setNoElemento(node);
-        this.showForm(node.id());
+        this.nodeService.getELement(node);
 
         console.log('NodeId atual: ', node.id());
         console.log('Collection: ', collection);
@@ -329,16 +330,16 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
   private showForm(idElemento: string): void {
     this.selectedElementId = idElemento;
-    this.showTaskForm = true;
+    this.showNodeForm = true;
   }
 
   private hideForm(): void {
-    this.showTaskForm = false;
+    this.showNodeForm = false;
     this.selectedElementId = '';
   }
 
   private toggleForm(): void {
-    this.showTaskForm = !this.showTaskForm;
+    this.showNodeForm = !this.showNodeForm;
   }
 
   recuperarDadosForm(event: any) {

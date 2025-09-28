@@ -19,7 +19,7 @@
             [label]="labelCancelarOrAnterior"
             severity="secondary"
             class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
-            (onClick)="cancelStepper()">
+            (onClick)="goTopreviousStep()">
           </p-button>
           <p-button
             label="Proximo"
@@ -30,80 +30,3 @@
         </div>
     </p-drawer>
 </div>
-
-<!-- <div class="">
-    <p-stepper [value]="1">
-      <p-step-item [value]="1">
-          <p-step>Criar Fluxo</p-step>
-          <p-step-panel>
-              <ng-template #content let-activateCallback="activateCallback">
-                  <div class="flex flex-col h-48">
-                      <div
-                          class="border-2 border-dashed border-surface-200 dark:border-surface-700 rounded bg-surface-50 dark:bg-surface-950 flex-auto flex justify-center items-center font-medium"
-                      >
-                          @if (showTaskForm) {
-                          <app-task-form
-                            #taskForm
-                            (taskCreated)="saveStep2Data($event)"
-                            (stepCompleted)="canProceedToNextStep()"
-                          ></app-task-form>
-                        }
-                      </div>
-                  </div>
-                  <div class="py-6">
-                     <p-button
-                        label="Cancelar"
-                        severity="secondary"
-                        class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
-                        (onClick)="cancelStepper()">
-                      </p-button>
-                      <p-button
-                        label="Proximo"
-                        icon="pi pi-arrow-right"
-                        iconPos="right"
-                        [disabled]="!canProceedToNextStep"
-                        (onClick)="goToNextStep(activateCallback)" />
-                  </div>
-              </ng-template>
-          </p-step-panel>
-      </p-step-item>
-
-      <p-step-item [value]="2">
-          <p-step>Configurar Nos</p-step>
-          <p-step-panel>
-              <ng-template #content let-activateCallback="activateCallback">
-                  <div class="flex flex-col h-48">
-                      <div
-                          class="border-2 border-dashed border-surface-200 dark:border-surface-700 rounded bg-surface-50 dark:bg-surface-950 flex-auto flex justify-center items-center font-medium"
-                      >
-                          Content II
-                      </div>
-                  </div>
-                  <div class="flex py-6 gap-2">
-                      <p-button label="Back" severity="secondary" (onClick)="cancelStepper()" />
-                      <p-button label="Next" (onClick)="goToNextStep(activateCallback)" />
-                  </div>
-              </ng-template>
-          </p-step-panel>
-      </p-step-item>
-
-      <p-step-item [value]="3">
-          <p-step>Configurar Eventos</p-step>
-          <p-step-panel>
-              <ng-template #content let-activateCallback="activateCallback">
-                  <div class="flex flex-col h-48">
-                      <div
-                          class="border-2 border-dashed border-surface-200 dark:border-surface-700 rounded bg-surface-50 dark:bg-surface-950 flex-auto flex justify-center items-center font-medium"
-                      >
-                          Content III
-                      </div>
-                  </div>
-                  <div class="py-6">
-                      <p-button label="Back" severity="secondary" (onClick)="cancelStepper()" />
-                      <p-button label="Next" (onClick)="goToNextStep(activateCallback)" />
-                  </div>
-              </ng-template>
-          </p-step-panel>
-      </p-step-item>
-    </p-stepper>
-</div> -->

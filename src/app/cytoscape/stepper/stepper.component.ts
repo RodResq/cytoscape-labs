@@ -1,8 +1,10 @@
-import { StepperService } from './stepper.service';
-import { StepperCacheService } from './../../task-form/stepper-cache.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, effect } from '@angular/core';
+
 import { ButtonModule } from 'primeng/button';
 import { StepperModule } from 'primeng/stepper';
+
+import { StepperService } from './stepper.service';
+
 
 @Component({
   selector: 'app-stepper',
@@ -16,12 +18,14 @@ export class StepperComponent implements OnInit{
 
   constructor(
     private stepperService: StepperService
-  ) {}
+  ) {
+    effect(() => {
+      this.currentStep = this.stepperService.getCurrentStep();
+    })
+
+  }
 
   ngOnInit(): void {
-    this.stepperService.stepperData$.subscribe(step => {
-      this.currentStep = step
-    })
   }
 
 }

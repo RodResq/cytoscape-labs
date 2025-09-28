@@ -1,1 +1,14 @@
-<p>node-form works!</p>
+<p>{{nomeElemento}}</p>
+<div class="card grid grid-cols-1 md:grid-cols-2 gap-4">
+  <p-input-group>
+    <input
+      pInputText
+      [(ngModel)]="nome"
+      placeholder="Nome"
+    >
+  </p-input-group>
+  <p-input-group>
+    <p-checkbox inputId="inputAtivo" name="ativo" value="true" [(ngModel)]="ativo" />
+    <label for="inputAtivo" class="ml-2"> Ativo </label>
+  </p-input-group>
+</div>

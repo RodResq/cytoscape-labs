@@ -1,24 +1,20 @@
-import { StepperCacheService } from './../../task-form/stepper-cache.service';
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { computed, Injectable, signal } from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
 })
 export class StepperService {
 
-  private stepperSubscription = new BehaviorSubject<number>(1);
-  public stepperData$ = this.stepperSubscription.asObservable();
+  private currentStepSignal = signal<number>(1);
 
-  constructor(private stepperCacheService: StepperCacheService) {}
+  getCurrentStep = computed(() => this.currentStepSignal());
 
   public setNextStepper(actualStepper: number) {
-    this.stepperSubscription.next(++actualStepper);
+    this.currentStepSignal.set(++actualStepper);
   }
 
-  public setPreviosStepper() {
-    let currentStep: number = this.stepperCacheService.getCurrentStep();
-    this.stepperSubscription.next(--currentStep);
+  public setPreviousStepper() {
+    this.currentStepSignal.set(this.currentStepSignal() - 1)
   }
 
 }
