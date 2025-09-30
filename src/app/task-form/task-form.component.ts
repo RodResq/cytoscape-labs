@@ -1,5 +1,5 @@
 import { StepperCacheService } from './stepper-cache.service';
-import { Component, EventEmitter, input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
@@ -9,7 +9,6 @@ import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
 
 import { Subscription } from 'rxjs';
-import { CytoscapeService } from '../graph/cytoscape.service';
 import { IftaLabelModule } from 'primeng/iftalabel';
 
 export interface TaskData {
@@ -40,6 +39,8 @@ export interface TaskData {
   styleUrl: './task-form.component.css'
 })
 export class TaskFormComponent implements OnInit, OnDestroy {
+  private stepperCacheService = inject(StepperCacheService);
+
   nomeElemento = input<string>();
   @Output() taskCreated = new EventEmitter<TaskData>();
   @Output() formCancelled = new EventEmitter<void>();
@@ -51,9 +52,7 @@ export class TaskFormComponent implements OnInit, OnDestroy {
   taskForm: FormGroup;
 
   constructor(
-    private formBuilder: FormBuilder,
-    private cytoscapeService: CytoscapeService,
-    private stepperCacheService: StepperCacheService) {
+    private formBuilder: FormBuilder) {
     this.taskForm = this.formBuilder.group({
       codigoFluxo: ['', [Validators.required, Validators.minLength(2)]],
       fluxo: ['', [Validators.required, Validators.minLength(2)]],

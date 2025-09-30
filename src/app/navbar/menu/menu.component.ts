@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { MenuItem, MessageService } from 'primeng/api';
 
 import { FluxoService } from '../../fluxo-form/fluxo.service';
@@ -14,11 +14,9 @@ import { ToastModule } from 'primeng/toast';
   providers: [MessageService]
 })
 export class MenuComponent implements OnInit {
+  private fluxoService = inject(FluxoService);
+  private messageService = inject(MessageService)
   items: MenuItem[] | undefined;
-
-  constructor(
-    private messageService: MessageService,
-    private fluxoService: FluxoService) {}
   
   ngOnInit(): void {
     this.items = [

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { ButtonModule } from 'primeng/button';
@@ -21,6 +21,9 @@ import { TaskFormComponent } from '../task-form/task-form.component';
   styleUrl: './fluxo-form.component.css'
 })
 export class FluxoFormComponent implements OnInit {
+  private stepperService = inject(StepperService);
+  private stepperCacheService = inject(StepperCacheService);
+  private fluxoService = inject(FluxoService);
 
   showFluxoForm: boolean = true;
   currentStep: number = 1;
@@ -31,11 +34,7 @@ export class FluxoFormComponent implements OnInit {
 
   labelCancelarOrAnterior: string = 'Cancelar';
 
-  constructor(
-    private stepperCacheService: StepperCacheService,
-    private fluxoService: FluxoService,
-    private stepperService: StepperService
-  ) {}
+  constructor() {}
 
   ngOnInit(): void {
     this.fluxoService.acao$.subscribe(acao => {

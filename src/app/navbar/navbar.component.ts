@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FluxoService } from '../fluxo-form/fluxo.service';
 import { MenuComponent } from './menu/menu.component';
 
 @Component({
@@ -11,7 +10,7 @@ import { MenuComponent } from './menu/menu.component';
 })
 export class NavbarComponent {
 
-  constructor(private fluxoService: FluxoService) {}
+  constructor() {}
 
   //TODO Criar Funcao para exportar o graph em JSON
   // cy.json()

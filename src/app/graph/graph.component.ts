@@ -1,5 +1,5 @@
 import { StepperCacheService } from './../task-form/stepper-cache.service';
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { CytoscapeService } from './cytoscape.service';
 import { TaskService } from '../task-form/task.service';
@@ -25,8 +25,10 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
   @ViewChild('cyContainer', { static: true })
   cytoscapeContainer!: ElementRef<HTMLDivElement>;
+  private taskService = inject(TaskService);
+  private stepperCacheService = inject(StepperCacheService);
+  private nodeService = inject(NodeService)
 
-  private taskSubscription: Subscription = new Subscription();
   private taskFormReceivedData: any;
   private cy!: cytoscape.Core;
   private options = ContextMenuConfig.getContextMenuOptions(this);
@@ -35,17 +37,10 @@ export class GraphComponent implements OnInit, AfterViewInit {
   showNodeForm: boolean = true;
   selectedElementId: string = '';
 
-  constructor(
-    private taskService: TaskService,
-    private cytoscapeService: CytoscapeService,
-    private stepperCacheService: StepperCacheService,
-    private nodeService: NodeService) {}
-
-
   ngOnInit(): void {
     console.log(' Graph works!', this.cytoscapeContainer);
 
-    this.taskSubscription = this.taskService.data$.subscribe(data => {
+    this.taskService.data$.subscribe(data => {
       this.taskFormReceivedData = data;
     });
   }
