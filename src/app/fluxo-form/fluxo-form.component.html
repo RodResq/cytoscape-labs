@@ -1,32 +1,17 @@
 <div class="flex justify-center">
   <p-drawer [header]="nomeAcao" [(visible)]="visible" styleClass="!w-full md:!w-80 lg:!w-[30rem]">
-         @if (showFluxoForm) {
-            <app-task-form
-            #taskForm
-            ></app-task-form>
+        @if (showFluxoForm) {
+            <app-task-form #taskForm />
         }
 
         @if (showNodeForm) {
-          <app-node-form></app-node-form>
+          <app-node-form />
         }
 
         @if (showEventForm) {
-          <app-event-form></app-event-form>
+          <app-event-form />
         }
 
-        <div class="py-6">
-          <p-button
-            [label]="labelCancelarOrAnterior"
-            severity="secondary"
-            class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
-            (onClick)="goTopreviousStep()">
-          </p-button>
-          <p-button
-            label="Proximo"
-            icon="pi pi-arrow-right"
-            iconPos="right"
-            [disabled]="!canProceedToNextStep()"
-            (onClick)="goToNextStep($event)" />
-        </div>
+        <app-buttons-form />
     </p-drawer>
 </div>
