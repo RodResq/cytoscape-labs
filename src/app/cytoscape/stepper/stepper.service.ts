@@ -5,12 +5,12 @@ import { computed, Injectable, signal } from '@angular/core';
 })
 export class StepperService {
 
-  private currentStepSignal = signal<number>(1);
+  currentStepSignal = signal<number>(1);
 
   getCurrentStep = computed(() => this.currentStepSignal());
 
   public setNextStepper(actualStepper: number) {
-    this.currentStepSignal.set(++actualStepper);
+    this.currentStepSignal.set(actualStepper);
   }
 
   public setPreviousStepper() {

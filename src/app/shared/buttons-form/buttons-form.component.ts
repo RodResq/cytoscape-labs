@@ -13,7 +13,6 @@ import { ButtonsService } from './buttons.service';
 export class ButtonsFormComponent {
 
   private stepperCacheService = inject(StepperCacheService);
-  private stepperService = inject(StepperService);
   private buttonsService = inject(ButtonsService);
 
   currentStep: number = 1;
@@ -58,7 +57,6 @@ export class ButtonsFormComponent {
         this.buttonsService.setShowEventForm();
         break;
     }
-    this.stepperService.setNextStepper(this.stepperCacheService.getCurrentStep())
   }
 
 

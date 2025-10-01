@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, effect } from '@angular/core';
+import { Component, OnInit, effect, inject } from '@angular/core';
 
 import { ButtonModule } from 'primeng/button';
 import { StepperModule } from 'primeng/stepper';
@@ -14,13 +14,14 @@ import { StepperService } from './stepper.service';
   imports: [ButtonModule, StepperModule]
 })
 export class StepperComponent implements OnInit{
-  private stepperService = Inject(StepperService);
+  private stepperService = inject(StepperService);
+
   currentStep: number = 1;
 
   constructor() {
     effect(() => {
       this.currentStep = this.stepperService.getCurrentStep();
-    })
+    });
   }
 
   ngOnInit(): void {
