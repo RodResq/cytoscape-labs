@@ -1,12 +1,9 @@
 import { StepperCacheService } from './../task-form/stepper-cache.service';
 import { AfterViewInit, Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { CytoscapeService } from './cytoscape.service';
 import { TaskService } from '../task-form/task.service';
 import cytoscape from 'cytoscape';
 import contextMenus from 'cytoscape-context-menus';
 import { CommonModule } from '@angular/common';
-import 'cytoscape-context-menus/cytoscape-context-menus.css';
 import { ContextMenuConfig } from './contexto-menu-config';
 import { NodeService } from '../node-form/node.service';
 
@@ -18,7 +15,7 @@ cytoscape.warnings(true);
   selector: 'app-graph',
   standalone: true,
   imports: [CommonModule, ],
-  template: `<div #cyContainer style="width: 100%; height: 100%;"></div>`,
+  template: `<div #cyContainer></div>`,
   styleUrl: './graph.component.css'
 })
 export class GraphComponent implements OnInit, AfterViewInit {
