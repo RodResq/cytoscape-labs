@@ -9,22 +9,22 @@ export class ButtonsService {
   private stepperService = inject(StepperService);
 
   showFluxoFormSignal = signal<boolean>(true);
-  showFormNodeSignal = signal<boolean>(false);
+  showNodeFormSignal = signal<boolean>(false);
   showEventFormSignal = signal<boolean>(false);
 
-  getShowFormNode = computed(() => this.showFormNodeSignal());
+  getShowNodeForm = computed(() => this.showNodeFormSignal());
   getShowFluxoForm = computed(() => this.showFluxoFormSignal());
   getShowEventForm = computed(() => this.showEventFormSignal());
 
   setShowFluxoForm() {
     this.showFluxoFormSignal.set(true);
-    this.showFormNodeSignal.set(false);
+    this.showNodeFormSignal.set(false);
     this.showEventFormSignal.set(false);
     this.stepperService.setNextStepper(StepperEnum.CRIAR_FLUXO);
   }
 
   setShowNodeForm() {
-    this.showFormNodeSignal.set(true);
+    this.showNodeFormSignal.set(true);
     this.showFluxoFormSignal.set(false);
     this.showEventFormSignal.set(false);
     this.stepperService.setNextStepper(StepperEnum.CONFIGURAR_NOS);
@@ -32,7 +32,7 @@ export class ButtonsService {
 
   setShowEventForm() {
     this.showEventFormSignal.set(true);
-    this.showFormNodeSignal.set(false);
+    this.showNodeFormSignal.set(false);
     this.showFluxoFormSignal.set(false);
     this.stepperService.setNextStepper(StepperEnum.CONFIGURAR_EVENTOS);
   }

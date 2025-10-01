@@ -22,7 +22,7 @@ export class FluxoFormComponent implements OnInit {
   private fluxoService = inject(FluxoService);
   private buttonsService = inject(ButtonsService)
 
-  showFluxoForm: boolean = false;
+  showFluxoForm: boolean = true;
   showNodeForm: boolean = false;
   showEventForm: boolean = false;
 
@@ -32,7 +32,7 @@ export class FluxoFormComponent implements OnInit {
   constructor() {
     effect(() => {
       this.showFluxoForm = this.buttonsService.getShowFluxoForm();
-      this.showNodeForm = this.buttonsService.getShowFluxoForm();
+      this.showNodeForm = this.buttonsService.getShowNodeForm()
       this.showEventForm = this.buttonsService.getShowEventForm();
     });
   }

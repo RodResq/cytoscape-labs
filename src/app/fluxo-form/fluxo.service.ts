@@ -1,5 +1,5 @@
 import { BehaviorSubject } from 'rxjs';
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 
 export interface Acao {
   visible: boolean,
@@ -9,7 +9,7 @@ export interface Acao {
 @Injectable({
   providedIn: 'root'
 })
-export class FluxoService {
+export class FluxoService implements OnDestroy {
 
   private acao = new BehaviorSubject<Acao>({visible: false, acao:''});
   public acao$ = this.acao.asObservable();
@@ -22,6 +22,10 @@ export class FluxoService {
       visible: true,
       acao: acao
     });
+  }
+
+  ngOnDestroy(): void {
+    this.acao.unsubscribe();
   }
   
 }

@@ -39,6 +39,16 @@ export class ButtonsFormComponent {
     switch(this.stepperCacheService.getCurrentStep()) {
       case 1:
         this.buttonsService.setShowFluxoForm();
+        break;
+      case 2:
+        this.buttonsService.setShowNodeForm();
+        break;
+      case 3:
+        this.buttonsService.setShowEventForm();
+        break;
+      default:
+        this.buttonsService.setShowFluxoForm();
+        break;
     }
   }
 
