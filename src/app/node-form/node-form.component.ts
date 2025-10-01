@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputTextModule } from 'primeng/inputtext';
@@ -12,13 +12,11 @@ import { Checkbox } from 'primeng/checkbox';
   styleUrl: './node-form.component.css'
 })
 export class NodeFormComponent implements OnInit{
+  private nodeService = inject(NodeService)
 
   nomeElemento: string = '';
   nome: string = '';
   ativo: boolean = false;
-
-  constructor(private nodeService: NodeService) {}
-
 
   ngOnInit(): void {
     const elementoSelecionado = this.nodeService.getElementoSelecionado();
