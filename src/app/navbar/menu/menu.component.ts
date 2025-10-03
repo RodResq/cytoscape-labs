@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { MenuItem, MessageService } from 'primeng/api';
+import { MenuItem } from 'primeng/api';
 
 import { FluxoService } from '../../fluxo-form/fluxo.service';
 import { Menubar } from 'primeng/menubar';
@@ -11,11 +11,9 @@ import { ToastModule } from 'primeng/toast';
   styleUrl: './menu.component.css',
   standalone: true,
   imports: [Menubar, ToastModule],
-  providers: [MessageService]
 })
 export class MenuComponent implements OnInit {
   private fluxoService = inject(FluxoService);
-  private messageService = inject(MessageService)
   items: MenuItem[] | undefined;
   
   ngOnInit(): void {
