@@ -38,6 +38,7 @@ export class ButtonsFormComponent {
   goTopreviousStep() {
     switch(this.stepperCacheService.getCurrentStep()) {
       case 1:
+         this.labelCancelarOrAnterior = 'Cancelar';
         this.buttonsService.setShowFluxoForm();
         break;
       case 2:
@@ -56,6 +57,8 @@ export class ButtonsFormComponent {
   goToNextStep(data: any): void {
     this.salvarDadosFormAnterior(data);
     console.log('Stepper Atual: ', this.stepperCacheService.getCurrentStep());
+
+    this.labelCancelarOrAnterior = 'Anterior';
 
     switch(this.stepperCacheService.getCurrentStep()) {
       case 0:
