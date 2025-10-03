@@ -1,12 +1,13 @@
 import { Component, inject } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { StepperCacheService, StepperData } from '../../task-form/stepper-cache.service';
-import { StepperService } from '../../cytoscape/stepper/stepper.service';
 import { ButtonsService } from './buttons.service';
+import { ButtonsCancelPreviousComponent } from "./buttons-cancel-previous/buttons-cancel-previous.component";
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-buttons-form',
-  imports: [ButtonModule],
+  imports: [ButtonModule, ButtonsCancelPreviousComponent, CommonModule],
   templateUrl: './buttons-form.component.html',
   styleUrl: './buttons-form.component.css'
 })
@@ -17,7 +18,11 @@ export class ButtonsFormComponent {
 
   currentStep: number = 1;
 
-  labelCancelarOrAnterior: string = 'Cancelar';
+  labelCancelarOrAnterior: string = '';
+
+  constructor() {
+    this.labelCancelarOrAnterior = 'Cancelar';
+  }
 
 
   canProceedToNextStep(): boolean {

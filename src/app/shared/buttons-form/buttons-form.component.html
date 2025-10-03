@@ -1,10 +1,11 @@
 <div class="py-6">
-  <p-button
-    [label]="labelCancelarOrAnterior"
-    severity="secondary"
-    class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
-    (onClick)="goTopreviousStep()">
-  </p-button>
+  <app-buttons-cancel-previous>
+    <i [ngClass]="{
+      'pi pi-times': labelCancelarOrAnterior == 'Cancelar',
+      'pi pi-arrow-left': labelCancelarOrAnterior != 'Cancelar'
+    }"></i>
+    {{ labelCancelarOrAnterior }}
+  </app-buttons-cancel-previous>
   <p-button
     label="Proximo"
     icon="pi pi-arrow-right"
