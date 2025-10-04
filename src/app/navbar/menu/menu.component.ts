@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 
-import { FluxoService } from '../../fluxo-form/fluxo.service';
+import { FluxoService } from '../../fluxo/fluxo-form/fluxo.service';
 import { Menubar } from 'primeng/menubar';
 import { ToastModule } from 'primeng/toast';
 
@@ -15,7 +15,7 @@ import { ToastModule } from 'primeng/toast';
 export class MenuComponent implements OnInit {
   private fluxoService = inject(FluxoService);
   items: MenuItem[] | undefined;
-  
+
   ngOnInit(): void {
     this.items = [
       {
@@ -27,7 +27,7 @@ export class MenuComponent implements OnInit {
       },
       {
         label: 'Importar'
-      }, 
+      },
       {
         label: 'Exportar'
       }

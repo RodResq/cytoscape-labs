@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { EventNodeFormComponent } from './event-node-form.component';
+import { FluxoComponent } from './fluxo.component';
 
-describe('EventNodeFormComponent', () => {
-  let component: EventNodeFormComponent;
-  let fixture: ComponentFixture<EventNodeFormComponent>;
+describe('FluxoComponent', () => {
+  let component: FluxoComponent;
+  let fixture: ComponentFixture<FluxoComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [EventNodeFormComponent]
+      imports: [FluxoComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(EventNodeFormComponent);
+    fixture = TestBed.createComponent(FluxoComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

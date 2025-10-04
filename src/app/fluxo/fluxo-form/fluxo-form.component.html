@@ -1,4 +1,4 @@
-<form [formGroup]="taskForm" (ngSubmit)="onSubmit()">
+<form [formGroup]="fluxoForm" (ngSubmit)="onSubmit()">
   <div class="card grid grid-cols-1 md:grid-cols-2 gap-4">
 
     <p-inputgroup class="w-full md:!w-[15rem]">
@@ -59,13 +59,11 @@
 
 <!-- Mensagens de erro -->
 <div class="mt-4">
-  @if (taskForm.get('codigoFluxo')?.invalid && taskForm.get('codigoFluxo')?.touched) {
+  @if (fluxoForm.get('codigoFluxo')?.invalid && fluxoForm.get('codigoFluxo')?.touched) {
     <div class="text-red-500 text-sm">
       Código do fluxo é obrigatório (mínimo 2 caracteres)
     </div>
-  }
-
-  @if (taskForm.get('fluxo')?.invalid && taskForm.get('fluxo')?.touched) {
+  } @else if (fluxoForm.get('fluxo')?.invalid && fluxoForm.get('fluxo')?.touched) {
     <div class="text-red-500 text-sm">
       Nome do fluxo é obrigatório (mínimo 2 caracteres)
     </div>

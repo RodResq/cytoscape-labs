@@ -1,11 +1,10 @@
-import { StepperCacheService } from './../task-form/stepper-cache.service';
+import { StepperCacheService } from '../cytoscape/stepper/stepper-cache.service';
 import { AfterViewInit, Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
-import { TaskService } from '../task-form/task.service';
 import cytoscape from 'cytoscape';
 import contextMenus from 'cytoscape-context-menus';
 import { CommonModule } from '@angular/common';
 import { ContextMenuConfig } from './contexto-menu-config';
-import { NodeService } from '../node-form/node.service';
+import { NodeService } from '../fluxo/node-form/node.service';
 
 
 cytoscape.use(contextMenus);
@@ -22,7 +21,6 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
   @ViewChild('cyContainer', { static: true })
   cytoscapeContainer!: ElementRef<HTMLDivElement>;
-  private taskService = inject(TaskService);
   private stepperCacheService = inject(StepperCacheService);
   private nodeService = inject(NodeService)
 
@@ -36,10 +34,6 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     console.log(' Graph works!', this.cytoscapeContainer);
-
-    this.taskService.data$.subscribe(data => {
-      this.taskFormReceivedData = data;
-    });
   }
 
   ngAfterViewInit(): void {

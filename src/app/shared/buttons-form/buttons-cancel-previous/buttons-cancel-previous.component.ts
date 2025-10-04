@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
+import { StepperCacheService } from '../../../cytoscape/stepper/stepper-cache.service';
+import { ButtonsService } from '../buttons.service';
 
 @Component({
   selector: 'app-buttons-cancel-previous',
@@ -8,5 +10,27 @@ import { ButtonModule } from 'primeng/button';
   styleUrl: './buttons-cancel-previous.component.css'
 })
 export class ButtonsCancelPreviousComponent {
+
+  private stepperCacheService = inject(StepperCacheService);
+  private buttonsService = inject(ButtonsService);
+  labelCancelarOrAnterior: string = '';
+
+  goTopreviousStep() {
+    switch(this.stepperCacheService.getCurrentStep()) {
+      case 1:
+         this.labelCancelarOrAnterior = 'Cancelar';
+        this.buttonsService.setShowFluxoForm();
+        break;
+      case 2:
+        this.buttonsService.setShowNodeForm();
+        break;
+      case 3:
+        this.buttonsService.setShowEventForm();
+        break;
+      default:
+        this.buttonsService.setShowFluxoForm();
+        break;
+    }
+  }
 
 }

@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { TaskData } from './task-form.component';
 import { BehaviorSubject } from 'rxjs';
+import { FluxoData } from '../../fluxo/fluxo-form/fluxo-form.component';
 
 
 export interface StepperData {
-  step1?: TaskData,
+  step1?: FluxoData,
   step2?: any;
   step3?: any;
 }

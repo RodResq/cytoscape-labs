@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
-import { StepperCacheService, StepperData } from '../../task-form/stepper-cache.service';
+import { StepperCacheService, StepperData } from '../../cytoscape/stepper/stepper-cache.service';
 import { ButtonsService } from './buttons.service';
 import { ButtonsCancelPreviousComponent } from "./buttons-cancel-previous/buttons-cancel-previous.component";
 import { CommonModule } from '@angular/common';
@@ -18,12 +18,7 @@ export class ButtonsFormComponent {
 
   currentStep: number = 1;
 
-  labelCancelarOrAnterior: string = '';
-
-  constructor() {
-    this.labelCancelarOrAnterior = 'Cancelar';
-  }
-
+  labelCancelarOrAnterior: string = 'Cancelar';
 
   canProceedToNextStep(): boolean {
     switch(this.currentStep) {
@@ -37,25 +32,6 @@ export class ButtonsFormComponent {
         return true;
     }
     return true;
-  }
-
-
-  goTopreviousStep() {
-    switch(this.stepperCacheService.getCurrentStep()) {
-      case 1:
-         this.labelCancelarOrAnterior = 'Cancelar';
-        this.buttonsService.setShowFluxoForm();
-        break;
-      case 2:
-        this.buttonsService.setShowNodeForm();
-        break;
-      case 3:
-        this.buttonsService.setShowEventForm();
-        break;
-      default:
-        this.buttonsService.setShowFluxoForm();
-        break;
-    }
   }
 
 
