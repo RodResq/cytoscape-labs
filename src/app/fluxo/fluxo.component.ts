@@ -27,9 +27,9 @@ import { BuildXmlComponent } from './build-xml/build-xml.component';
 })
 export class FluxoComponent {
   public nomeAcao: string = "";
-  public visible: boolean = false;
+  public drawVisible: boolean = false;
 
-  public showFluxoForm: boolean = true;
+  public showFluxoForm: boolean = false;
   public showNodeForm: boolean = false;
   public showEventForm: boolean = false;
   public showBuildXml: boolean = false;
@@ -40,18 +40,17 @@ export class FluxoComponent {
 
   constructor() {
     effect(() => {
+      const abrirForm = this.fluxoService.getFormSignal().visible;
+      if (abrirForm) {
+        this.drawVisible = true;
+      }
+
       this.showFluxoForm = this.buttonsService.getShowFluxoForm();
-      this.showNodeForm = this.buttonsService.getShowNodeForm()
+      this.showNodeForm = this.buttonsService.getShowNodeForm();
       this.showEventForm = this.buttonsService.getShowEventForm();
       this.showBuildXml = this.buttonsService.getShowBuildXml();
       this.nomeAcao = this.stepperService.getCurrentStepLabel();
     })
-  }
-
-  ngOnInit(): void {
-    this.fluxoService.acao$.subscribe(acao => {
-      this.visible = acao.visible;
-    });
   }
 
 }

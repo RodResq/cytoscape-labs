@@ -1,6 +1,4 @@
-import { computed, inject, Injectable, signal } from '@angular/core';
-import { StepperService } from '../../cytoscape/stepper/stepper.service';
-import { StepperEnum } from '../../cytoscape/stepper/steppper.enum';
+import { computed, Injectable, signal } from '@angular/core';
 
 @Injectable({
   providedIn: 'root'

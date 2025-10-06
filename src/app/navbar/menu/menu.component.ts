@@ -20,9 +20,8 @@ export class MenuComponent implements OnInit {
     this.items = [
       {
         label: 'Criar Fluxo',
-        command: ($event) => {
-          const nomeAcao: string | undefined = $event.item?.label?.toString();
-          this.fluxoService.setAcao(nomeAcao)
+        command: () => {
+          this.fluxoService.openForm();
         }
       },
       {

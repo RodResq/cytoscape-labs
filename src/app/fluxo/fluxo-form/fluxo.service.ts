@@ -1,5 +1,4 @@
-import { BehaviorSubject } from 'rxjs';
-import { Injectable, OnDestroy } from '@angular/core';
+import { computed, Injectable, signal } from '@angular/core';
 
 export interface Acao {
   visible: boolean,
@@ -9,23 +8,16 @@ export interface Acao {
 @Injectable({
   providedIn: 'root'
 })
-export class FluxoService implements OnDestroy {
+export class FluxoService  {
+  private formSignal = signal<Acao>({visible: false, acao: ''});
+  getFormSignal = computed(() => this.formSignal());
 
-  private acao = new BehaviorSubject<Acao>({visible: false, acao:''});
-  public acao$ = this.acao.asObservable();
-
-  constructor() {}
-
-  setAcao(acao: string | undefined) {
-    console.log('Ação clicada: ', acao);
-    this.acao.next({
+  openForm() {
+    this.formSignal.set({
       visible: true,
-      acao: acao
+      acao: ''
     });
   }
 
-  ngOnDestroy(): void {
-    this.acao.unsubscribe();
-  }
-  
+
 }

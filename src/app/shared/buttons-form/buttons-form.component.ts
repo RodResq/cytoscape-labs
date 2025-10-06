@@ -44,6 +44,8 @@ export class ButtonsFormComponent {
 
     switch(this.currentStep) {
       case StepperEnum.CRIAR_FLUXO:
+        console.log('Clicou no Proximo');
+
         this.buttonsService.setShowNodeForm();
         this.stepperService.setStepperLabel(StepperLabelEnum.CONFIGURAR_NOS);
         break;
