@@ -1,7 +1,5 @@
-import { Component, inject, input, OnInit, output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, effect, inject, input, OnInit, output } from '@angular/core';
 
-import { FluxoService } from './fluxo.service';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
@@ -11,7 +9,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { TextareaModule } from 'primeng/textarea';
 import { IftaLabelModule } from 'primeng/iftalabel';
 import { Subscription } from 'rxjs';
-import { StepperCacheService } from '../../cytoscape/stepper/stepper-cache.service';
+import { FormsDataService } from '../../services/forms-data.service';
 
 export interface FluxoData {
   codigoFluxo: string;
@@ -43,10 +41,9 @@ export interface FluxoData {
   styleUrl: './fluxo-form.component.css'
 })
 export class FluxoFormComponent implements OnInit {
-  private stepperCacheService = inject(StepperCacheService);
+  private formsDataService = inject(FormsDataService);
 
   private formSubscription: Subscription = new Subscription();
-  private subscription: Subscription = new Subscription();
 
   public fluxoCreated = output<FluxoData>();
   public stepCompleted = output<boolean>();
@@ -66,11 +63,17 @@ export class FluxoFormComponent implements OnInit {
       descricao: [''],
       dataCriacao: [''],
     });
+
+    effect(() => {
+      const savedForm = this.formsDataService.getFormByStep('step1');
+      if (savedForm) {
+        this.fluxoForm.patchValue(savedForm.value, {emitEvent: false});
+      }
+    })
   }
 
   ngOnInit(): void {
     this.setCurrentDate();
-    this.loadCacheData();
     this.setupAutoSave();
   }
 
@@ -82,74 +85,28 @@ export class FluxoFormComponent implements OnInit {
 
     this.fluxoForm.patchValue({
       dataCriacao: localDateTime
-    });
-  }
-
-  private loadCacheData() {
-    const cacheData = this.stepperCacheService.getStepData('step1');
-    if (cacheData) {
-      this.fluxoForm.patchValue(cacheData);
-      console.log('Dados Carregados do Cache: ', cacheData);
-    } else {
-      console.log('Nao existe dados em cache');
-    }
+    }, { emitEvent: false });
   }
 
   private setupAutoSave() {
-    this.formSubscription = this.fluxoForm.valueChanges.subscribe(formData => {
-      if (this.fluxoForm.valid) {
-        this.saveToCache(formData);
-        this.stepCompleted.emit(true);
-      } else {
-        this.stepCompleted.emit(false);
-      }
-    });
+    this.formSubscription = this.fluxoForm.valueChanges.subscribe(() => {
+      this.formsDataService.setFormData('step1', this.fluxoForm);
+
+      this.stepCompleted.emit(this.fluxoForm.valid);
+    })
   }
-
-   private saveToCache(formData: FluxoData) {
-    this.stepperCacheService.saveStepData('step1', formData);
-  }
-
-
-  public saveStepData(): boolean {
-    if (this.fluxoForm.valid) {
-      const taskData: FluxoData = this.fluxoForm.value;
-      this.saveToCache(taskData);
-      return true;
-    } else {
-      Object.keys(this.fluxoForm.controls).forEach(key => {
-        this.fluxoForm.get(key)?.markAllAsTouched();
-      });
-      return false;
-    }
-  }
-
-  isFieldInvalid(fieldName: string): boolean {
-    const field = this.fluxoForm.get(fieldName);
-    return !!(field && field.invalid && (field.dirty || field.touched));
-  }
-
 
   onSubmit(): void {
-    this.saveStepData();
+    console.log('Salvando dados no onSubmit: ', this.fluxoForm);
   }
 
   onCancel() {
     this.formCancelled.emit();
-    this.stepperCacheService.clearCache();
+    this.formsDataService.clearFormData('step1');
   }
 
   ngOnDestroy(): void {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
-    if (this.formSubscription) {
-      this.formSubscription.unsubscribe();
-    }
-  }
-
-  public getCurrentFormData(): FluxoData {
-    return this.fluxoForm.value;
+    this.formSubscription.unsubscribe();
   }
 
   public isStepValid(): boolean {

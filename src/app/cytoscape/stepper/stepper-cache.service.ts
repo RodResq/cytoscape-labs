@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { FormsDataService } from './../../services/forms-data.service';
+import { inject, Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { FluxoData } from '../../fluxo/fluxo-form/fluxo-form.component';
 
@@ -13,7 +14,6 @@ export interface StepperData {
   providedIn: 'root'
 })
 export class StepperCacheService {
-
   private stepperDataSubject = new BehaviorSubject<StepperData>({});
   private currentStepSubject = new BehaviorSubject<number>(0);
   public stepperData$ = this.stepperDataSubject.asObservable();
@@ -27,7 +27,7 @@ export class StepperCacheService {
       [step]: data
     };
     this.stepperDataSubject.next(updateData);
-    console.log(`Dados do ${step} salvos em cache: `, data);
+    // this.formsDataService.setFormData(data)
   }
 
   getStepData(step: keyof StepperData) {

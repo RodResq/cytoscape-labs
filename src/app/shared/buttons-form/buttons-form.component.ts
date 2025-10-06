@@ -4,6 +4,7 @@ import { StepperCacheService, StepperData } from '../../cytoscape/stepper/steppe
 import { ButtonsService } from './buttons.service';
 import { ButtonsCancelPreviousComponent } from "./buttons-cancel-previous/buttons-cancel-previous.component";
 import { CommonModule } from '@angular/common';
+import { FormsDataService } from '../../services/forms-data.service';
 
 @Component({
   selector: 'app-buttons-form',
@@ -15,6 +16,7 @@ export class ButtonsFormComponent {
 
   private stepperCacheService = inject(StepperCacheService);
   private buttonsService = inject(ButtonsService);
+  private formsDataService = inject(FormsDataService);
 
   currentStep: number = 1;
 
@@ -34,10 +36,7 @@ export class ButtonsFormComponent {
     return true;
   }
 
-
   goToNextStep(data: any): void {
-    this.salvarDadosFormAnterior(data);
-    console.log('Stepper Atual: ', this.stepperCacheService.getCurrentStep());
 
     this.labelCancelarOrAnterior = 'Anterior';
 
@@ -47,20 +46,12 @@ export class ButtonsFormComponent {
         this.buttonsService.setShowNodeForm();
         break;
       case 1:
+        this.formsDataService.setFormData('step2', this.stepperCacheService.getStepData('step2'));
         this.stepperCacheService.setCurrentStep(2);
         this.buttonsService.setShowEventForm();
         break;
     }
   }
-
-
-  private salvarDadosFormAnterior(data: any) {
-    let previosStepeStr = 'step' + this.currentStep;
-    console.log('Salvando Step: ', previosStepeStr);
-
-    this.stepperCacheService.saveStepData(<keyof StepperData>previosStepeStr, data);
-  }
-
 
   finishStepper(): void {
     if (this.validateAllSteps()) {
@@ -72,7 +63,6 @@ export class ButtonsFormComponent {
       alert('Complete todos os steps antes de finalizar');
     }
   }
-
 
   validateAllSteps(): boolean {
     return this.stepperCacheService.areAllStepsValid();
