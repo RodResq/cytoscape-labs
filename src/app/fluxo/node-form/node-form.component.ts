@@ -4,6 +4,7 @@ import { InputGroupModule } from 'primeng/inputgroup';
 import { InputTextModule } from 'primeng/inputtext';
 import { Checkbox } from 'primeng/checkbox';
 import { FormsDataService } from '../../services/forms-data.service';
+import { StepperService } from '../../cytoscape/stepper/stepper.service';
 
 @Component({
   selector: 'app-node-form',
@@ -13,9 +14,10 @@ import { FormsDataService } from '../../services/forms-data.service';
 })
 export class NodeFormComponent implements OnInit{
   private formsDataService = inject(FormsDataService);
+  private stepperService = inject(StepperService);
   public stepCompleted = output<boolean>();
 
-  nomeElemento: string = 'Node Forms Works';
+  nomeElemento: string = '';
   nome: string = '';
   ativo: boolean = false;
 
@@ -28,11 +30,10 @@ export class NodeFormComponent implements OnInit{
     });
 
     effect(() => {
+      this.nomeElemento = this.stepperService.getCurrentStepLabel();
       const savedData = this.formsDataService.getFormByStep('step2');
-      if (savedData) {
-        console.log('Dados do step1: ', this.formsDataService.getFormByStep('step1').value);
-        console.log('Dados do step2: ', savedData.value);
 
+      if (savedData) {
         this.nodeForm.patchValue(savedData.value, {emitEvent: false});
       }
     })

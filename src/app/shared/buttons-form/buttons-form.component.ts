@@ -4,7 +4,7 @@ import { StepperCacheService } from '../../cytoscape/stepper/stepper-cache.servi
 import { ButtonsService } from './buttons.service';
 import { ButtonsCancelPreviousComponent } from "./buttons-cancel-previous/buttons-cancel-previous.component";
 import { CommonModule } from '@angular/common';
-import { StepperEnum } from '../../cytoscape/stepper/steppper.enum';
+import { StepperEnum, StepperLabelEnum } from '../../cytoscape/stepper/steppper.enum';
 import { StepperService } from '../../cytoscape/stepper/stepper.service';
 
 @Component({
@@ -45,15 +45,15 @@ export class ButtonsFormComponent {
     switch(this.currentStep) {
       case StepperEnum.CRIAR_FLUXO:
         this.buttonsService.setShowNodeForm();
+        this.stepperService.setStepperLabel(StepperLabelEnum.CONFIGURAR_NOS);
         break;
       case StepperEnum.CONFIGURAR_NOS:
         this.buttonsService.setShowEventForm();
+        this.stepperService.setStepperLabel(StepperLabelEnum.CONFIGURAR_EVENTOS);
         break;
       case StepperEnum.CONFIGURAR_EVENTOS:
-        this.buttonsService.setShowEventForm;
-        break;
-      case StepperEnum.GERAR_XML:
-        this.buttonsService.setShowEventForm();
+        this.buttonsService.setShowBuildXml();
+        this.stepperService.setStepperLabel(StepperLabelEnum.GERAR_XML);
         break;
       }
   }

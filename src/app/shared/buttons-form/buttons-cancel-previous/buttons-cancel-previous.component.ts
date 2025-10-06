@@ -2,6 +2,8 @@ import { Component, inject } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { StepperCacheService } from '../../../cytoscape/stepper/stepper-cache.service';
 import { ButtonsService } from '../buttons.service';
+import { StepperService } from '../../../cytoscape/stepper/stepper.service';
+import { StepperLabelEnum } from '../../../cytoscape/stepper/steppper.enum';
 
 @Component({
   selector: 'app-buttons-cancel-previous',
@@ -11,24 +13,32 @@ import { ButtonsService } from '../buttons.service';
 })
 export class ButtonsCancelPreviousComponent {
 
-  private stepperCacheService = inject(StepperCacheService);
+  private stepperService = inject(StepperService);
   private buttonsService = inject(ButtonsService);
   labelCancelarOrAnterior: string = '';
 
   goTopreviousStep() {
-    switch(this.stepperCacheService.getCurrentStep()) {
+    const currentStep = this.stepperService.getCurrentStep();
+    switch(currentStep) {
       case 1:
-        this.labelCancelarOrAnterior = 'Cancelar';
         this.buttonsService.setShowFluxoForm();
+        this.stepperService.setPreviousStepper();
+        this.stepperService.setStepperLabel(StepperLabelEnum.CRIAR_FLUXO);
         break;
       case 2:
         this.buttonsService.setShowNodeForm();
+        this.stepperService.setPreviousStepper();
+        this.stepperService.setStepperLabel(StepperLabelEnum.CONFIGURAR_NOS);
         break;
       case 3:
         this.buttonsService.setShowEventForm();
+        this.stepperService.setPreviousStepper();
+        this.stepperService.setStepperLabel(StepperLabelEnum.CONFIGURAR_EVENTOS);
         break;
       default:
         this.buttonsService.setShowFluxoForm();
+         this.stepperService.setPreviousStepper();
+        this.stepperService.setStepperLabel(StepperLabelEnum.GERAR_XML);
         break;
     }
   }

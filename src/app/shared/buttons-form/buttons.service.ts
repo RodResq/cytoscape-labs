@@ -6,15 +6,15 @@ import { StepperEnum } from '../../cytoscape/stepper/steppper.enum';
   providedIn: 'root'
 })
 export class ButtonsService {
-  private stepperService = inject(StepperService);
-
   showFluxoFormSignal = signal<boolean>(true);
   showNodeFormSignal = signal<boolean>(false);
   showEventFormSignal = signal<boolean>(false);
+  showBuildXmlSignal = signal<boolean>(false);
 
   getShowNodeForm = computed(() => this.showNodeFormSignal());
   getShowFluxoForm = computed(() => this.showFluxoFormSignal());
   getShowEventForm = computed(() => this.showEventFormSignal());
+  getShowBuildXml = computed(() => this.showBuildXmlSignal());
 
   setShowFluxoForm() {
     this.showFluxoFormSignal.set(true);
@@ -32,6 +32,13 @@ export class ButtonsService {
     this.showEventFormSignal.set(true);
     this.showNodeFormSignal.set(false);
     this.showFluxoFormSignal.set(false);
+  }
+
+  setShowBuildXml() {
+    this.showEventFormSignal.set(false);
+    this.showNodeFormSignal.set(false);
+    this.showFluxoFormSignal.set(false);
+    this.showBuildXmlSignal.set(true);
   }
 
 }

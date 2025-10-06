@@ -8,6 +8,8 @@ import { ButtonsFormComponent } from '../shared/buttons-form/buttons-form.compon
 import { FluxoService } from './fluxo-form/fluxo.service';
 import { ButtonsService } from '../shared/buttons-form/buttons.service';
 import { FluxoFormComponent } from './fluxo-form/fluxo-form.component';
+import { StepperService } from '../cytoscape/stepper/stepper.service';
+import { BuildXmlComponent } from './build-xml/build-xml.component';
 
 
 @Component({
@@ -17,34 +19,38 @@ import { FluxoFormComponent } from './fluxo-form/fluxo-form.component';
     FluxoFormComponent,
     NodeFormComponent,
     EventFormComponent,
+    BuildXmlComponent,
     ButtonsFormComponent
   ],
   templateUrl: './fluxo.component.html',
   styleUrl: './fluxo.component.css'
 })
 export class FluxoComponent {
-  public nomeAcao: string | undefined = "";
+  public nomeAcao: string = "";
   public visible: boolean = false;
 
   public showFluxoForm: boolean = true;
   public showNodeForm: boolean = false;
   public showEventForm: boolean = false;
+  public showBuildXml: boolean = false;
 
   private fluxoService = inject(FluxoService);
   private buttonsService = inject(ButtonsService);
+  private stepperService = inject(StepperService);
 
   constructor() {
     effect(() => {
       this.showFluxoForm = this.buttonsService.getShowFluxoForm();
       this.showNodeForm = this.buttonsService.getShowNodeForm()
       this.showEventForm = this.buttonsService.getShowEventForm();
+      this.showBuildXml = this.buttonsService.getShowBuildXml();
+      this.nomeAcao = this.stepperService.getCurrentStepLabel();
     })
   }
 
   ngOnInit(): void {
     this.fluxoService.acao$.subscribe(acao => {
       this.visible = acao.visible;
-      this.nomeAcao = acao.acao;
     });
   }
 
