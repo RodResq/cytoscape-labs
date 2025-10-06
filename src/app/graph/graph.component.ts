@@ -1,10 +1,12 @@
 import { StepperCacheService } from '../cytoscape/stepper/stepper-cache.service';
-import { AfterViewInit, Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, effect, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
 import cytoscape from 'cytoscape';
 import contextMenus from 'cytoscape-context-menus';
 import { CommonModule } from '@angular/common';
 import { ContextMenuConfig } from './contexto-menu-config';
 import { NodeService } from '../fluxo/node-form/node.service';
+import { FormsDataService } from '../services/forms-data.service';
+import { FluxoData } from '../fluxo/fluxo-form/fluxo-form.component';
 
 
 cytoscape.use(contextMenus);
@@ -23,6 +25,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
   cytoscapeContainer!: ElementRef<HTMLDivElement>;
   private stepperCacheService = inject(StepperCacheService);
   private nodeService = inject(NodeService)
+  private formsDataService = inject(FormsDataService);
 
   private taskFormReceivedData: any;
   private cy!: cytoscape.Core;
@@ -31,6 +34,22 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
   showNodeForm: boolean = true;
   selectedElementId: string = '';
+  private codigoFluxo: string = '';
+
+  constructor() {
+    effect(() => {
+      const formValue = <FluxoData>this.formsDataService.getFormByStep('step1').value;
+      if (formValue && this.cy) {
+        this.codigoFluxo = formValue.codigoFluxo;
+        const node = this.cy.getElementById('0');
+
+        if (node.length > 0) {
+          node.selectify();
+          node.style('label', this.codigoFluxo);
+        }
+      }
+    }, { allowSignalWrites: true })
+  }
 
   ngOnInit(): void {
     console.log(' Graph works!', this.cytoscapeContainer);
@@ -53,7 +72,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
               _fluxo: 'initial_fluxo' // contexto de excucao de app fields
             },
             position: { x: 900, y: 100 },
-            selected: true,
+            selected: false,
             selectable: true,
             locked: true,
             grabbable: true,
@@ -61,7 +80,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
             style: {
               'text-valign': 'top',
               'shape': 'ellipse',
-              'background-color': '#f8fafc',
+              // 'background-color': '#f8fafc',
               'border-width': 5,
               'border-color': 'silver',
               'border-style': 'solid',
