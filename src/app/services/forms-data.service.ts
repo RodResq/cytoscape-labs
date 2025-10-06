@@ -18,11 +18,9 @@ export class FormsDataService {
     this.formData.set(updateData);
   }
 
-
   getFormByStep(step: keyof StepperData): FormGroup {
     return <FormGroup>this.formData()[step];
   }
-
 
   clearFormData(step: keyof StepperData) {
     this.formData.update(currentData => {

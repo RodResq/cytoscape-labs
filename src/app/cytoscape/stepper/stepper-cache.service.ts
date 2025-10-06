@@ -65,7 +65,7 @@ export class StepperCacheService {
     return !!(data.step1 && data.step2 && data.step3);
   }
 
-  setCurrentStep(currentStep: number) {
+  setNextStep(currentStep: number) {
     this.currentStepSubject.next(currentStep);
   }
 

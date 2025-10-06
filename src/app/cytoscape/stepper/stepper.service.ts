@@ -5,12 +5,14 @@ import { computed, Injectable, signal } from '@angular/core';
 })
 export class StepperService {
 
-  currentStepSignal = signal<number>(1);
+  currentStepSignal = signal<number>(0);
 
   getCurrentStep = computed(() => this.currentStepSignal());
 
   public setNextStepper(actualStepper: number) {
-    this.currentStepSignal.set(actualStepper);
+    const proximoStep = actualStepper + 1;
+    console.log(' Setando proximo stepper: ', proximoStep);
+    this.currentStepSignal.set(proximoStep);
   }
 
   public setPreviousStepper() {

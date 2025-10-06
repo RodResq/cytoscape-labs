@@ -1,10 +1,11 @@
 import { Component, inject } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
-import { StepperCacheService, StepperData } from '../../cytoscape/stepper/stepper-cache.service';
+import { StepperCacheService } from '../../cytoscape/stepper/stepper-cache.service';
 import { ButtonsService } from './buttons.service';
 import { ButtonsCancelPreviousComponent } from "./buttons-cancel-previous/buttons-cancel-previous.component";
 import { CommonModule } from '@angular/common';
-import { FormsDataService } from '../../services/forms-data.service';
+import { StepperEnum } from '../../cytoscape/stepper/steppper.enum';
+import { StepperService } from '../../cytoscape/stepper/stepper.service';
 
 @Component({
   selector: 'app-buttons-form',
@@ -15,6 +16,7 @@ import { FormsDataService } from '../../services/forms-data.service';
 export class ButtonsFormComponent {
 
   private stepperCacheService = inject(StepperCacheService);
+  private stepperService = inject(StepperService);
   private buttonsService = inject(ButtonsService);
 
   currentStep: number = 1;
@@ -24,7 +26,7 @@ export class ButtonsFormComponent {
   canProceedToNextStep(): boolean {
     switch(this.currentStep) {
       case 1:
-        return this.stepperCacheService.isStepValid('step1');
+        return true;
       case 2:
         return true
       case 3:
@@ -35,27 +37,31 @@ export class ButtonsFormComponent {
   }
 
   goToNextStep(): void {
-
+    this.currentStep = this.stepperService.getCurrentStep();
     this.labelCancelarOrAnterior = 'Anterior';
 
-    switch(this.stepperCacheService.getCurrentStep()) {
-      case 0:
-        this.stepperCacheService.setCurrentStep(1);
+    this.stepperService.setNextStepper(this.currentStep);
+
+    switch(this.currentStep) {
+      case StepperEnum.CRIAR_FLUXO:
         this.buttonsService.setShowNodeForm();
         break;
-      case 1:
-        this.stepperCacheService.setCurrentStep(2);
+      case StepperEnum.CONFIGURAR_NOS:
         this.buttonsService.setShowEventForm();
         break;
-    }
+      case StepperEnum.CONFIGURAR_EVENTOS:
+        this.buttonsService.setShowEventForm;
+        break;
+      case StepperEnum.GERAR_XML:
+        this.buttonsService.setShowEventForm();
+        break;
+      }
   }
 
   finishStepper(): void {
     if (this.validateAllSteps()) {
       const allData = this.stepperCacheService.submitAllData();
       console.log('Dados Finais submetidos: ', allData);
-      this.stepperCacheService.clearCache();
-      alert('Dados salvos com sucesso');
     } else {
       alert('Complete todos os steps antes de finalizar');
     }

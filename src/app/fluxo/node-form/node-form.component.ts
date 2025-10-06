@@ -15,7 +15,7 @@ export class NodeFormComponent implements OnInit{
   private formsDataService = inject(FormsDataService);
   public stepCompleted = output<boolean>();
 
-  nomeElemento: string = '';
+  nomeElemento: string = 'Node Forms Works';
   nome: string = '';
   ativo: boolean = false;
 

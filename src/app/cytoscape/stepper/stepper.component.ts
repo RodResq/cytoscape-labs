@@ -16,7 +16,7 @@ import { StepperService } from './stepper.service';
 export class StepperComponent implements OnInit{
   private stepperService = inject(StepperService);
 
-  currentStep: number = 1;
+  currentStep: number = 0;
 
   constructor() {
     effect(() => {
