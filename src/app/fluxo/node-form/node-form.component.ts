@@ -1,9 +1,8 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, effect, inject, OnInit, output } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputTextModule } from 'primeng/inputtext';
 import { Checkbox } from 'primeng/checkbox';
-import { StepperCacheService } from '../../cytoscape/stepper/stepper-cache.service';
 import { FormsDataService } from '../../services/forms-data.service';
 
 @Component({
@@ -14,7 +13,7 @@ import { FormsDataService } from '../../services/forms-data.service';
 })
 export class NodeFormComponent implements OnInit{
   private formsDataService = inject(FormsDataService);
-  private stepperCacheService = inject(StepperCacheService);
+  public stepCompleted = output<boolean>();
 
   nomeElemento: string = '';
   nome: string = '';
@@ -27,52 +26,31 @@ export class NodeFormComponent implements OnInit{
       nome: ['', [Validators.required, Validators.minLength(2)]],
       ativo:['true']
     });
+
+    effect(() => {
+      const savedData = this.formsDataService.getFormByStep('step2');
+      if (savedData) {
+        console.log('Dados do step1: ', this.formsDataService.getFormByStep('step1').value);
+        console.log('Dados do step2: ', savedData.value);
+
+        this.nodeForm.patchValue(savedData.value, {emitEvent: false});
+      }
+    })
   }
 
   ngOnInit(): void {
-    this.setupAutoSave(this.nodeForm);
-    this.loadCacheData();
+    this.setupAutoSave();
   }
 
-  setupAutoSave(form: FormGroup) {
-    form.valueChanges.subscribe(formData => {
-      if (formData.valid) {
-        this.saveToCache(formData);
-      } else {
-      }
+  setupAutoSave() {
+    this.nodeForm.valueChanges.subscribe(() => {
+      this.formsDataService.setFormData('step2', this.nodeForm);
+
+      this.stepCompleted.emit(this.nodeForm.valid);
     });
   }
 
-  private saveToCache(formData: any) {
-    this.stepperCacheService.saveStepData('step2', formData);
-  }
-
-  loadCacheData() {
-    const cacheData = this.stepperCacheService.getStepData('step2');
-    console.log('Dados carregados do cache: ', cacheData);
-    if (cacheData) {
-      this.nodeForm.patchValue(cacheData);
-    } else {
-      console.log('Nao existe dados em chache');
-    }
-  }
-
   onSubmit() {
-    this.saveStepData();
-  }
-
-
-  saveStepData(): boolean {
-    if (this.nodeForm.valid) {
-      const nodeFormData: any = this.nodeForm.value;
-      this.saveToCache(nodeFormData);
-      return true;
-    } else {
-      Object.keys(this.nodeForm.controls).forEach(key => {
-        this.nodeForm.get(key)?.markAllAsTouched();
-      });
-      return false;
-    }
   }
 
 }

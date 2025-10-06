@@ -16,7 +16,6 @@ export class ButtonsFormComponent {
 
   private stepperCacheService = inject(StepperCacheService);
   private buttonsService = inject(ButtonsService);
-  private formsDataService = inject(FormsDataService);
 
   currentStep: number = 1;
 
@@ -33,10 +32,9 @@ export class ButtonsFormComponent {
       default:
         return true;
     }
-    return true;
   }
 
-  goToNextStep(data: any): void {
+  goToNextStep(): void {
 
     this.labelCancelarOrAnterior = 'Anterior';
 
@@ -46,7 +44,6 @@ export class ButtonsFormComponent {
         this.buttonsService.setShowNodeForm();
         break;
       case 1:
-        this.formsDataService.setFormData('step2', this.stepperCacheService.getStepData('step2'));
         this.stepperCacheService.setCurrentStep(2);
         this.buttonsService.setShowEventForm();
         break;
