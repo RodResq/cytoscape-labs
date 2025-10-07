@@ -1,6 +1,5 @@
 import { Component, inject } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
-import { StepperCacheService } from '../../../cytoscape/stepper/stepper-cache.service';
 import { ButtonsService } from '../buttons.service';
 import { StepperService } from '../../../cytoscape/stepper/stepper.service';
 import { StepperLabelEnum } from '../../../cytoscape/stepper/steppper.enum';
