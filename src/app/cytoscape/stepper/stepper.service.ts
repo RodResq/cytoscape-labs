@@ -13,12 +13,13 @@ export class StepperService {
   getCurrentStepLabel = computed(() => this.currentStepLabel());
 
   public setNextStepper(actualStepper: number) {
-    const proximoStep = actualStepper + 1;
-    this.currentStepSignal.set(proximoStep);
+    // const proximoStep = actualStepper + 1;
+    this.currentStepSignal.update(value => value + 1)
   }
 
   public setPreviousStepper() {
-    this.currentStepSignal.set(this.currentStepSignal() - 1)
+    // this.currentStepSignal.set(this.currentStepSignal() - 1);
+    this.currentStepSignal.update(value => value -1)
   }
 
   public setStepperLabel(value: string) {
