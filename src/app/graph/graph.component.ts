@@ -7,6 +7,7 @@ import { ContextMenuConfig } from './contexto-menu-config';
 import { NodeService } from '../fluxo/node-form/node.service';
 import { FormsDataService } from '../services/forms-data.service';
 import { FluxoData } from '../fluxo/fluxo-form/fluxo-form.component';
+import { GrafoService } from '../services/grafo.service';
 
 
 cytoscape.use(contextMenus);
@@ -26,6 +27,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
   private stepperCacheService = inject(StepperCacheService);
   private nodeService = inject(NodeService)
   private formsDataService = inject(FormsDataService);
+  private grafoService = inject(GrafoService);
 
   private taskFormReceivedData: any;
   private cy!: cytoscape.Core;
@@ -38,17 +40,16 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
   constructor() {
     effect(() => {
-      const formValue = <FluxoData>this.formsDataService.getFormByStep('step1').value;
+      const formValue = <any>this.formsDataService.getFormByStep('step1').value;
       if (formValue && this.cy) {
         this.codigoFluxo = formValue.codigoFluxo;
-        const node = this.cy.getElementById('0');
-
-        if (node.length > 0) {
-          node.selectify();
-          node.style('label', this.codigoFluxo);
+        const grafo = this.grafoService.getGrafo();
+        if (grafo?.collection.length == 1) {
+          grafo.node.select();
+          grafo.node.style('label', this.codigoFluxo);
         }
       }
-    }, { allowSignalWrites: true })
+    }, { allowSignalWrites: true });
   }
 
   ngOnInit(): void {
@@ -261,6 +262,13 @@ export class GraphComponent implements OnInit, AfterViewInit {
     let collection = this.cy.collection();
 
     this.waitForNodeClick(collection);
+
+    this.grafoService.setGrafo({
+      length: 1,
+      node: this.cy.getElementById('0'),
+      form: {},
+      collection: this.cy.nodes()
+    });
   }
 
   private waitForNodeClick(collection: cytoscape.CollectionReturnValue) {
@@ -404,8 +412,16 @@ export class GraphComponent implements OnInit, AfterViewInit {
         classes: classes.edgeClasses
       }
     ]);
-    console.log('Node adicionado: ', this.cy.getElementById(newNodeId));
+    this.cy.nodes().unselect();
+    const nodeAdicionado =  this.cy.getElementById(newNodeId);
+    console.log('Contexto Adicao de no: ', nodeAdicionado.id());
 
+    this.grafoService.setGrafo({
+      length: this.cy.nodes().length,
+      node: nodeAdicionado,
+      form: {},
+      collection: this.cy.nodes()
+    });
   }
 
 

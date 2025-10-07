@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, effect, inject } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { StepperCacheService } from '../../cytoscape/stepper/stepper-cache.service';
 import { ButtonsService } from './buttons.service';
@@ -6,6 +6,7 @@ import { ButtonsCancelPreviousComponent } from "./buttons-cancel-previous/button
 import { CommonModule } from '@angular/common';
 import { StepperEnum, StepperLabelEnum } from '../../cytoscape/stepper/steppper.enum';
 import { StepperService } from '../../cytoscape/stepper/stepper.service';
+import { GrafoFormData, GrafoService } from '../../services/grafo.service';
 
 @Component({
   selector: 'app-buttons-form',
@@ -18,10 +19,16 @@ export class ButtonsFormComponent {
   private stepperCacheService = inject(StepperCacheService);
   private stepperService = inject(StepperService);
   private buttonsService = inject(ButtonsService);
+  private grafoService = inject(GrafoService);
 
-  currentStep: number = 1;
+  private currentStep: number = 0;
+  private currentGrafoFormData: GrafoFormData | null = null;
 
   labelCancelarOrAnterior: string = 'Cancelar';
+
+  constructor() {
+    effect(() => this.currentGrafoFormData = this.grafoService.getGrafo());
+  }
 
   canProceedToNextStep(): boolean {
     switch(this.currentStep) {
@@ -40,12 +47,22 @@ export class ButtonsFormComponent {
     this.currentStep = this.stepperService.getCurrentStep();
     this.labelCancelarOrAnterior = 'Anterior';
 
-    this.stepperService.setNextStepper(this.currentStep);
+    if (this.currentGrafoFormData?.length == 1) {
+      alert('Primeiramente adicione um no no grafo!');
+      return;
+    }
 
+    console.clear();
+    this.currentGrafoFormData?.node.select();
+    const idParentNode = this.currentGrafoFormData?.node.data('idParentNode');
+    const parenteNode = this.currentGrafoFormData?.collection.getElementById(idParentNode)
+    parenteNode?.unselect();
+    console.log('Tentattiva get parente No -> Context Btn:', parenteNode);
+
+
+    this.stepperService.setNextStepper(this.currentStep);
     switch(this.currentStep) {
       case StepperEnum.CRIAR_FLUXO:
-        console.log('Clicou no Proximo');
-
         this.buttonsService.setShowNodeForm();
         this.stepperService.setStepperLabel(StepperLabelEnum.CONFIGURAR_NOS);
         break;
