@@ -47,19 +47,16 @@ export class FluxoComponent {
       this.nomeAcao = this.stepperService.getCurrentStepLabel();
 
       const formSignal = this.fluxoService.getFormSignal();
-      console.log('Contexto Fluxo COmponente, numero do formulario passado: ', formSignal.formNumber);
       switch (formSignal.formNumber) {
         case 0:
           this.showFluxoForm = true;
           break;
           default:
             this.showFluxoForm = false;
-            console.log('Entrou no case default com ShowFLuxoForm: ', this.showFluxoForm);
             this.showNodeForm = true;
             break;
       }
       this.drawVisible = formSignal.visible;
-
     })
   }
 
