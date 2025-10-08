@@ -8,6 +8,7 @@ import { NodeService } from '../fluxo/node-form/node.service';
 import { FormsDataService } from '../services/forms-data.service';
 import { FluxoData } from '../fluxo/fluxo-form/fluxo-form.component';
 import { GrafoService } from '../services/grafo.service';
+import { FluxoService } from '../fluxo/fluxo-form/fluxo.service';
 
 
 cytoscape.use(contextMenus);
@@ -28,6 +29,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
   private nodeService = inject(NodeService)
   private formsDataService = inject(FormsDataService);
   private grafoService = inject(GrafoService);
+  private fluxoService = inject(FluxoService);
 
   private taskFormReceivedData: any;
   private cy!: cytoscape.Core;
@@ -278,10 +280,23 @@ export class GraphComponent implements OnInit, AfterViewInit {
       if (node.isNode()) {
         collection.union(node);
         this.nodeService.getELement(node);
-
         console.log('NodeId atual: ', node.id());
-        console.log('Collection: ', collection);
-        console.log('Selector Class: ', this.cy.elements('.task-node'));
+        this.grafoService.setGrafo({
+          length: collection.length,
+          node: node,
+          collection: collection,
+          form: {},
+        });
+        const idNode = node.id();
+        switch (idNode) {
+          case '0':
+            this.fluxoService.openForm(0);
+            break;
+          default:
+            this.fluxoService.openForm(1);
+            break;
+        }
+
       } else {
         console.log('Elemento selecionado nao e um no');
       }

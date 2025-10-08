@@ -1,3 +1,4 @@
+import { FormsDataService } from './../../services/forms-data.service';
 import { Component, effect, inject } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { StepperCacheService } from '../../cytoscape/stepper/stepper-cache.service';
@@ -20,6 +21,7 @@ export class ButtonsFormComponent {
   private stepperService = inject(StepperService);
   private buttonsService = inject(ButtonsService);
   private grafoService = inject(GrafoService);
+  private FormsDataService = inject(FormsDataService);
 
   private currentStep: number = 0;
   private currentGrafoFormData: GrafoFormData | null = null;
@@ -46,6 +48,7 @@ export class ButtonsFormComponent {
   goToNextStep(): void {
     this.currentStep = this.stepperService.getCurrentStep();
     this.labelCancelarOrAnterior = 'Anterior';
+
 
     if (this.currentGrafoFormData?.length == 1) {
       alert('Primeiramente adicione um no no grafo!');

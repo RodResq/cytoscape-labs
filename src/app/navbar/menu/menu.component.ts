@@ -21,7 +21,7 @@ export class MenuComponent implements OnInit {
       {
         label: 'Criar Fluxo',
         command: () => {
-          this.fluxoService.openForm();
+          this.fluxoService.openForm(0);
         }
       },
       {
