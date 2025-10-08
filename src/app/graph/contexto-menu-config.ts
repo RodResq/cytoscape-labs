@@ -170,7 +170,7 @@ export class ContextMenuConfig {
         disabled: false
       };
 
-      
+
         return [
             {
                 id: 'Remove Nó',
@@ -214,6 +214,16 @@ export class ContextMenuConfig {
                   subNodeProcess,
                   subNodeEnd
                 ]
+            },
+            {
+              id: 'setup-node',
+              content: 'Configurar Nó',
+              selector: 'node, edge',
+              tootipText: 'Opção para abrir o form de configuração',
+              coreAsWell: true,
+              onClickFunction: function () {
+                console.log('Click configuração');
+              },
             },
         ]
     }
