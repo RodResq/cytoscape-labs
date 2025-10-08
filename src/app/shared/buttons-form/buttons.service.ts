@@ -26,6 +26,12 @@ export class ButtonsService {
     this.showEventFormSignal.set(false);
   }
 
+  setHiddenNodeForm() {
+    this.showNodeFormSignal.set(false);
+    this.showFluxoFormSignal.set(false);
+    this.showEventFormSignal.set(false);
+  }
+
   setShowEventForm() {
     this.showEventFormSignal.set(true);
     this.showNodeFormSignal.set(false);

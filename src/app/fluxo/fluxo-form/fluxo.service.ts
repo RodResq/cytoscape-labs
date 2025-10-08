@@ -21,4 +21,12 @@ export class FluxoService  {
     });
   }
 
+  hiddenForm(formNumber: number) {
+    this.formSignal.set({
+      formNumber: formNumber,
+      visible: false,
+      acao: ''
+    });
+  }
+
 }

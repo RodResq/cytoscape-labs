@@ -8,6 +8,7 @@ import { CommonModule } from '@angular/common';
 import { StepperEnum, StepperLabelEnum } from '../../cytoscape/stepper/steppper.enum';
 import { StepperService } from '../../cytoscape/stepper/stepper.service';
 import { GrafoFormData, GrafoService } from '../../services/grafo.service';
+import { FluxoService } from '../../fluxo/fluxo-form/fluxo.service';
 
 @Component({
   selector: 'app-buttons-form',
@@ -21,7 +22,7 @@ export class ButtonsFormComponent {
   private stepperService = inject(StepperService);
   private buttonsService = inject(ButtonsService);
   private grafoService = inject(GrafoService);
-  private FormsDataService = inject(FormsDataService);
+  private fluxoService = inject(FluxoService);
 
   private currentStep: number = 0;
   private currentGrafoFormData: GrafoFormData | null = null;
@@ -49,31 +50,28 @@ export class ButtonsFormComponent {
     this.currentStep = this.stepperService.getCurrentStep();
     this.labelCancelarOrAnterior = 'Anterior';
 
-
-    if (this.currentGrafoFormData?.length == 1) {
-      alert('Primeiramente adicione um no no grafo!');
-      return;
-    }
-
-    console.clear();
     this.currentGrafoFormData?.node.select();
+
     const idParentNode = this.currentGrafoFormData?.node.data('idParentNode');
     const parenteNode = this.currentGrafoFormData?.collection.getElementById(idParentNode)
+    
     parenteNode?.unselect();
+
+
     console.log('Tentattiva get parente No -> Context Btn:', parenteNode);
 
 
     this.stepperService.setNextStepper(this.currentStep);
     switch(this.currentStep) {
       case StepperEnum.CRIAR_FLUXO:
-        this.buttonsService.setShowNodeForm();
+        this.fluxoService.hiddenForm(0);
         this.stepperService.setStepperLabel(StepperLabelEnum.CONFIGURAR_NOS);
         break;
       case StepperEnum.CONFIGURAR_NOS:
         this.buttonsService.setShowEventForm();
         this.stepperService.setStepperLabel(StepperLabelEnum.CONFIGURAR_EVENTOS);
         break;
-      case StepperEnum.CONFIGURAR_EVENTOS:
+      case StepperEnum.CONFIGURAR_TRANSACOES:
         this.buttonsService.setShowBuildXml();
         this.stepperService.setStepperLabel(StepperLabelEnum.GERAR_XML);
         break;

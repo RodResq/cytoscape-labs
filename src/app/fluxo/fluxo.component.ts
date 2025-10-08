@@ -40,23 +40,13 @@ export class FluxoComponent {
 
   constructor() {
     effect(() => {
+      this.drawVisible = this.fluxoService.getFormSignal().visible;
+      
       this.showFluxoForm = this.buttonsService.getShowFluxoForm();
       this.showNodeForm = this.buttonsService.getShowNodeForm();
       this.showEventForm = this.buttonsService.getShowEventForm();
       this.showBuildXml = this.buttonsService.getShowBuildXml();
       this.nomeAcao = this.stepperService.getCurrentStepLabel();
-
-      const formSignal = this.fluxoService.getFormSignal();
-      switch (formSignal.formNumber) {
-        case 0:
-          this.showFluxoForm = true;
-          break;
-          default:
-            this.showFluxoForm = false;
-            this.showNodeForm = true;
-            break;
-      }
-      this.drawVisible = formSignal.visible;
     })
   }
 

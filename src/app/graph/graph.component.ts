@@ -6,7 +6,6 @@ import { CommonModule } from '@angular/common';
 import { ContextMenuConfig } from './contexto-menu-config';
 import { NodeService } from '../fluxo/node-form/node.service';
 import { FormsDataService } from '../services/forms-data.service';
-import { FluxoData } from '../fluxo/fluxo-form/fluxo-form.component';
 import { GrafoService } from '../services/grafo.service';
 import { FluxoService } from '../fluxo/fluxo-form/fluxo.service';
 
@@ -42,13 +41,18 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
   constructor() {
     effect(() => {
-      const formValue = <any>this.formsDataService.getFormByStep('step1').value;
-      if (formValue && this.cy) {
-        this.codigoFluxo = formValue.codigoFluxo;
-        const grafo = this.grafoService.getGrafo();
-        if (grafo?.collection.length == 1) {
-          grafo.node.select();
-          grafo.node.style('label', this.codigoFluxo);
+      const formStep1 = this.formsDataService.getFormByStep('step1');
+
+      if (formStep1) {
+        const formValue = formStep1.value;
+
+        if (formValue && this.cy) {
+          const grafo = this.grafoService.getGrafo();
+
+          if (grafo?.collection.length == 1) {
+            grafo.node.select();
+            grafo.node.style('label', formValue.codigoFluxo);
+          }
         }
       }
     }, { allowSignalWrites: true });
