@@ -66,6 +66,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
       }
 
     }, { allowSignalWrites: true });
+    
   }
 
   ngOnInit(): void {
@@ -75,6 +76,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     this.initCytoscape();
     this.waitForEdgeClick();
+    this.waitForRightClick();
   }
 
   private initCytoscape() {
@@ -313,13 +315,13 @@ export class GraphComponent implements OnInit, AfterViewInit {
             this.fluxoService.openForm(1);
             break;
         }
-
       } else {
         console.log('Elemento selecionado nao e um no');
       }
     });
+  }
 
-
+  private waitForRightClick() {
     this.cy.on('cxttap', 'node', (event) => {
       const node = event.target;
       console.log('Instancia do menu de contexto ativa: ', this.contexMenuInstance.isActive());
@@ -332,8 +334,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
           target.style('background-color', 'yellow');
         }
       });
-
-    })
+    });
   }
 
   private async waitForEdgeClick() {
