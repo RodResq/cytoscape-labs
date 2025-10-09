@@ -37,7 +37,8 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
   showNodeForm: boolean = true;
   selectedElementId: string = '';
-  private codigoFluxo: string = '';
+
+  private contexMenuInstance!: contextMenus.ContextMenu;
 
   constructor() {
     effect(() => {
@@ -273,7 +274,9 @@ export class GraphComponent implements OnInit, AfterViewInit {
       userZoomingEnabled: true,
     });
 
-    this.cy.contextMenus(this.options);
+    this.contexMenuInstance = this.cy.contextMenus(this.options);
+
+
     let collection = this.cy.collection();
 
     this.waitForNodeClick(collection);
@@ -303,6 +306,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
         const idNode = node.id();
         switch (idNode) {
           case '0':
+
             this.fluxoService.openForm(0);
             break;
           default:
@@ -314,6 +318,22 @@ export class GraphComponent implements OnInit, AfterViewInit {
         console.log('Elemento selecionado nao e um no');
       }
     });
+
+
+    this.cy.on('cxttap', 'node', (event) => {
+      const node = event.target;
+      console.log('Instancia do menu de contexto ativa: ', this.contexMenuInstance.isActive());
+      this.contexMenuInstance.appendMenuItem({
+        id: 'teste-menu-dinamico',
+        content: 'Destacar',
+        selector: 'node',
+        onClickFunction: (event) => {
+          const target = event.target || event.cy;
+          target.style('background-color', 'yellow');
+        }
+      });
+
+    })
   }
 
   private async waitForEdgeClick() {

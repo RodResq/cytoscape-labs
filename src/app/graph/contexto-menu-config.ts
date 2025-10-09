@@ -87,7 +87,7 @@ export class ContextMenuConfig {
         disabled: false
       };
 
-      
+
       const subNodeSystem = {
         id: 'add-node-ssitema',
         content: 'Nó de sistema',
@@ -104,7 +104,7 @@ export class ContextMenuConfig {
         disabled: false
       };
 
-      
+
       const subNodeSeparation = {
         id: 'add-node-separation',
         content: 'Nó de separacao',
