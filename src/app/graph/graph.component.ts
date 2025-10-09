@@ -324,17 +324,103 @@ export class GraphComponent implements OnInit, AfterViewInit {
   private waitForRightClick() {
     this.cy.on('cxttap', 'node', (event) => {
       const node = event.target;
-      console.log('Instancia do menu de contexto ativa: ', this.contexMenuInstance.isActive());
-      this.contexMenuInstance.appendMenuItem({
-        id: 'teste-menu-dinamico',
-        content: 'Destacar',
-        selector: 'node',
-        onClickFunction: (event) => {
-          const target = event.target || event.cy;
-          target.style('background-color', 'yellow');
+
+      console.log('Nó clicado: ', node.id());
+      let menuItemRemoveNodeExist = this.menuItemExiste('remove-node');
+      
+      if (node && node.id() == '0') {
+        if (menuItemRemoveNodeExist) {
+          this.contexMenuInstance.removeMenuItem('remove-node');
         }
-      });
+        
+        let menuItemTesteExist = this.menuItemExiste('teste-menu-dinamico');
+        if (!menuItemTesteExist) {
+          this.addMenuItemTest();
+        }
+      } else if(node && String(node.id()).includes('end-node')) {
+        let menuItemAddNodeExist = this.menuItemExiste('add-node');
+        console.log('menuItemAddNodeExist: ', menuItemAddNodeExist);
+        
+        if (menuItemAddNodeExist) {
+          this.contexMenuInstance.removeMenuItem('add-node');
+        } 
+        this.appendMenuItem();
+      } else {
+        if (!menuItemRemoveNodeExist) {
+          this.addMenuItemRemoveNode();
+        }
+      }
     });
+  }
+
+  private appendMenuItem() {
+    this.contexMenuInstance.appendMenuItem({
+      id: 'remove-node',
+      content: 'remove',
+      tooltipText: 'remove',
+      image: {
+        src: "assets/icons/remove.svg",
+        width: 12,
+        height: 12,
+        x: 6,
+        y: 4
+      },
+      selector: 'node, edge',
+      onClickFunction: (event: any) => {
+        this.removerElemento(event);
+      },
+      disabled: false,
+      show: true,
+      hasTrailingDivider: true,
+      coreAsWell: false
+    }
+    );
+  }
+
+  private addMenuItemRemoveNode() {
+    this.contexMenuInstance.insertBeforeMenuItem({
+      id: 'remove-node',
+      content: 'remove',
+      tooltipText: 'remove',
+      image: {
+        src: "assets/icons/remove.svg",
+        width: 12,
+        height: 12,
+        x: 6,
+        y: 4
+      },
+      selector: 'node, edge',
+      onClickFunction: (event: any) => {
+        this.removerElemento(event);
+      },
+      disabled: false,
+      show: true,
+      hasTrailingDivider: true,
+      coreAsWell: false
+    }, 'add-node');
+  }
+
+  private addMenuItemTest() {
+    this.contexMenuInstance.appendMenuItem({
+      id: 'teste-menu-dinamico',
+      content: 'Destacar',
+      selector: 'node',
+      onClickFunction: (event) => {
+        const target = event.target || event.cy;
+        target.style('background-color', 'yellow');
+      }
+    });
+  }
+
+  private menuItemExiste(menuItem: string): boolean {
+    let menuItemRemoveNodeExiste = false;
+    try {
+      this.contexMenuInstance.showMenuItem(menuItem);
+      menuItemRemoveNodeExiste = true;
+    } catch (error) {
+      menuItemRemoveNodeExiste = false;
+    }
+    return menuItemRemoveNodeExiste;
   }
 
   private async waitForEdgeClick() {

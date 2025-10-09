@@ -57,7 +57,7 @@ export class ContextMenuConfig {
     static createMenuItems(component: any): any[] {
 
       const subNodeTarefa = {
-        id: 'add-node',
+        id: 'add-node-task',
         content: 'Nó de Tarefa',
         tooltipText: 'Adicionar um nó de tarefa',
         onClickFunction: (event: any) => {
@@ -154,7 +154,7 @@ export class ContextMenuConfig {
       };
 
       const subNodeEnd = {
-        id: 'add-node-final',
+        id: 'end-node',
         content: 'Adcionar nó de final',
         tooltipText: 'Adicionar um nó final',
         selector: 'node, edge',
@@ -173,7 +173,7 @@ export class ContextMenuConfig {
 
         return [
             {
-                id: 'Remove Nó',
+                id: 'remove-node',
                 content: 'remove',
                 tooltipText: 'remove',
                 image: {
