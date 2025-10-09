@@ -6,7 +6,6 @@ import { NodeFormComponent } from './node-form/node-form.component';
 import { EventFormComponent } from './event-form/event-form.component';
 import { ButtonsFormComponent } from '../shared/buttons-form/buttons-form.component';
 import { FluxoService } from './fluxo-form/fluxo.service';
-import { ButtonsService } from '../shared/buttons-form/buttons.service';
 import { FluxoFormComponent } from './fluxo-form/fluxo-form.component';
 import { StepperService } from '../cytoscape/stepper/stepper.service';
 import { BuildXmlComponent } from './build-xml/build-xml.component';
@@ -35,17 +34,24 @@ export class FluxoComponent {
   public showBuildXml: boolean = false;
 
   private fluxoService = inject(FluxoService);
-  private buttonsService = inject(ButtonsService);
   private stepperService = inject(StepperService);
 
   constructor() {
     effect(() => {
-      this.drawVisible = this.fluxoService.getFormSignal().visible;
-      
-      this.showFluxoForm = this.buttonsService.getShowFluxoForm();
-      this.showNodeForm = this.buttonsService.getShowNodeForm();
-      this.showEventForm = this.buttonsService.getShowEventForm();
-      this.showBuildXml = this.buttonsService.getShowBuildXml();
+      const fluxo = this.fluxoService.getFormSignal();
+      this.drawVisible  = fluxo.visible;
+
+      console.log('Contexto Fluxo Component: ', fluxo);
+
+      if (fluxo.formNumber > 0) {
+        this.showNodeForm = true;
+        this.showFluxoForm = false;
+        this.showEventForm = false;
+        this.showBuildXml = false;
+      } else {
+        this.showFluxoForm = true;
+      }
+
       this.nomeAcao = this.stepperService.getCurrentStepLabel();
     })
   }

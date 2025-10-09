@@ -41,13 +41,12 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
   constructor() {
     effect(() => {
+      const grafo = this.grafoService.getGrafo();
       const formStep1 = this.formsDataService.getFormByStep('step1');
 
       if (formStep1) {
         const formValue = formStep1.value;
-
         if (formValue && this.cy) {
-          const grafo = this.grafoService.getGrafo();
 
           if (grafo?.collection.length == 1) {
             grafo.node.select();
@@ -55,6 +54,16 @@ export class GraphComponent implements OnInit, AfterViewInit {
           }
         }
       }
+
+      const formSetupNode = this.formsDataService.getFormByStep('step2');
+      if (formSetupNode) {
+        const formSetupNodeValue = formSetupNode.value;
+        if (formSetupNodeValue && this.cy) {
+          grafo?.node.select();
+          grafo?.node.style('label', formSetupNodeValue.nome);
+        }
+      }
+
     }, { allowSignalWrites: true });
   }
 
@@ -383,13 +392,10 @@ export class GraphComponent implements OnInit, AfterViewInit {
     console.log('Adiconando elemento: ', event);
     console.log('Stepper Atual: ', this.stepperCacheService.getCurrentStep());
 
-
     const clickedElement = event.target || event.cyTarget;
     const elementId = clickedElement.id();
     const newNodeId = `${classes.nodeClasses}-` + Date.now();
     const nodePos = clickedElement.position();
-    console.log('Classe do node: ', classes.nodeClasses);
-
 
     const newNodeData: any = {
       id: newNodeId,
@@ -433,7 +439,6 @@ export class GraphComponent implements OnInit, AfterViewInit {
     ]);
     this.cy.nodes().unselect();
     const nodeAdicionado =  this.cy.getElementById(newNodeId);
-    console.log('Contexto Adicao de no: ', nodeAdicionado.id());
 
     this.grafoService.setGrafo({
       length: this.cy.nodes().length,
