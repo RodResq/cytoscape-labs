@@ -1,5 +1,5 @@
 import { StepperCacheService } from '../cytoscape/stepper/stepper-cache.service';
-import { AfterViewInit, Component, effect, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, effect, ElementRef, inject, OnInit, viewChild } from '@angular/core';
 import cytoscape from 'cytoscape';
 import contextMenus from 'cytoscape-context-menus';
 import { CommonModule } from '@angular/common';
@@ -22,8 +22,10 @@ cytoscape.warnings(true);
 })
 export class GraphComponent implements OnInit, AfterViewInit {
 
-  @ViewChild('cyContainer', { static: true })
-  cytoscapeContainer!: ElementRef<HTMLDivElement>;
+  // @ViewChild('cyContainer', { static: true })
+  // cytoscapeContainer!: ElementRef<HTMLDivElement>;
+  private cytoscapeContainer = viewChild.required<ElementRef<HTMLDivElement>>('cyContainer');
+
   private stepperCacheService = inject(StepperCacheService);
   private nodeService = inject(NodeService)
   private formsDataService = inject(FormsDataService);
@@ -81,7 +83,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
   private initCytoscape() {
     this.cy = cytoscape({
-      container: this.cytoscapeContainer.nativeElement,
+      container: this.cytoscapeContainer().nativeElement,
       elements: {
         nodes: [
           {
