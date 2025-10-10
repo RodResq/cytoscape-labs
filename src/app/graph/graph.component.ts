@@ -196,7 +196,6 @@ export class GraphComponent implements OnInit, AfterViewInit {
         this.appendMenuItem();
       } else {
         if (!menuItemRemoveNodeExist) {
-
           this.addMenuItemRemoveNode();
         }
       }

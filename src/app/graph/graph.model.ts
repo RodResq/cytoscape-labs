@@ -3,11 +3,11 @@ export class Graph {
 
     constructor(
         public nome: string,
-        public tipo: TipoGraph
+        public tipo: TypeNode
     ) {}
 }
 
-export enum TipoGraph {
+export enum TypeNode {
     INICIAL = 'Incial',
     ELEMENTO = 'elemento',
     FINAL = 'Final'
