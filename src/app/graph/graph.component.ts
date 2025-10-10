@@ -8,6 +8,7 @@ import { NodeService } from '../fluxo/node-form/node.service';
 import { FormsDataService } from '../services/forms-data.service';
 import { GrafoService } from '../services/grafo.service';
 import { FluxoService } from '../fluxo/fluxo-form/fluxo.service';
+import { cytoscapeStyles } from './cytoscape-styles';
 
 
 cytoscape.use(contextMenus);
@@ -22,8 +23,6 @@ cytoscape.warnings(true);
 })
 export class GraphComponent implements OnInit, AfterViewInit {
 
-  // @ViewChild('cyContainer', { static: true })
-  // cytoscapeContainer!: ElementRef<HTMLDivElement>;
   private cytoscapeContainer = viewChild.required<ElementRef<HTMLDivElement>>('cyContainer');
 
   private stepperCacheService = inject(StepperCacheService);
@@ -82,7 +81,24 @@ export class GraphComponent implements OnInit, AfterViewInit {
   }
 
   private initCytoscape() {
-    this.cy = cytoscape({
+    this.cy = cytoscape(this.addStartNode());
+
+    this.contexMenuInstance = this.cy.contextMenus(this.options);
+
+    let collection = this.cy.collection();
+
+    this.waitForNodeClick(collection);
+
+    this.grafoService.setGrafo({
+      length: 1,
+      node: this.cy.getElementById('0'),
+      form: {},
+      collection: this.cy.nodes()
+    });
+  }
+
+  private addStartNode(): cytoscape.CytoscapeOptions | undefined {
+    return {
       container: this.cytoscapeContainer().nativeElement,
       elements: {
         nodes: [
@@ -111,161 +127,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
         ],
         edges: []
       },
-      style: [
-        {
-          selector: 'task-node',
-          style: {
-            'text-valign': 'bottom',
-            label: 'data(id)'
-          }
-        },
-        {
-          selector: 'end-node',
-          style: {
-            'text-valign': 'bottom',
-            label: 'data(id)'
-          }
-        },
-        {
-          selector: '.triangle-node',
-          style: {
-            'shape': 'triangle',
-            'width': 30,
-            'height': 30,
-            label: 'data(id)',
-            'text-valign': 'center',
-            'text-halign': 'center'
-          }
-        },
-        {
-          selector: '.event-node',
-          style: {
-            'shape': 'triangle',
-            'width': 30,
-            'height': 30,
-            label: 'data(id)',
-            'text-valign': 'bottom',
-            'text-halign': 'left'
-          }
-        },
-        {
-          selector: '.decision-node',
-          style: {
-            'shape': 'diamond',
-            'width': 40,
-            'height': 40,
-            label: 'data(id)',
-            'text-valign': 'bottom',
-            'text-halign': 'center'
-          }
-        },
-        {
-          selector: '.system-node',
-          style: {
-            'shape': 'pentagon',
-            'width': 40,
-            'height': 40,
-            label: 'data(id)',
-            'text-valign': 'bottom',
-            'text-halign': 'center'
-          }
-        },
-        {
-          selector: '.separation-node',
-          style: {
-            'shape': 'vee',
-            'width': 40,
-            'height': 40,
-            label: 'data(id)',
-            'text-valign': 'bottom',
-            'text-halign': 'center'
-          }
-        },
-        {
-          "selector": ".join-node",
-          style: {
-            'shape': 'polygon',
-            'shape-polygon-points': '-0.33 -1 0.33 -1 0.33 -0.33 1 -0.33 1 0.33 0.33 0.33 0.33 1 -0.33 1 -0.33 0.33 -1 0.33 -1 -0.33 -0.33 -0.33',
-            label: 'data(id)',
-            'width': 40,
-            'height': 40,
-            'text-valign': 'bottom',
-            'text-halign': 'center'
-          }
-        },
-        {
-          selector: '.subprocess-node',
-          style: {
-            'shape': 'round-rectangle',
-            'background-color': '#E8F5E8',
-            'width': 40,
-            'height': 40,
-            label: 'data(id)',
-            'text-valign': 'bottom',
-            'text-halign': 'center',
-            'font-family': 'Arial, sans-serif',
-            'text-wrap': 'wrap',
-            'text-max-width': '90px',
-          }
-        },
-        {
-          selector: '.subprocess-node.active',
-          style: {
-            'background-color': '#C8E6C9',
-            'border-color': '#4CAF50',
-          }
-        },
-        {
-          selector: '.subprocess-node.blocked',
-          style: {
-            'background-color': '#FFEBEE',
-            'border-color': '#F44336',
-            'color': '#C62828',
-            label: 'data(label)',
-          }
-        },
-        {
-          selector: 'edge',
-          style: {
-            'line-style': 'solid',
-            'width': 1,
-            'line-color': '#ccc',
-            'target-arrow-color': '#ccc',
-            'target-arrow-shape': 'triangle',
-            'curve-style': 'bezier',
-            'label': '',
-          }
-        },
-        {
-          selector: 'edge.dotted',
-          style: {
-            'line-style': 'dotted',
-          }
-        },
-        {
-          selector: 'edge.dashed',
-          style: {
-            'line-style': 'dashed',
-            'line-color': '#ee3f4eff',
-            'target-arrow-color': '#ee3f4eff'
-          }
-        },
-        {
-          selector: 'node:selected',
-          style: {
-            'border-width': 4,
-            'border-color': '#ff6b6b'
-          }
-        },
-        {
-          selector: 'edge:selected',
-          style: {
-            'line-color': '#ff6b6b',
-            'target-arrow-color': '#ff6b6b',
-            'width': 4
-          }
-        }
-      ],
+      style: cytoscapeStyles,
       layout: {
         name: 'grid',
         rows: 1
@@ -276,21 +138,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
       maxZoom: 1e50,
       zoomingEnabled: false,
       userZoomingEnabled: true,
-    });
-
-    this.contexMenuInstance = this.cy.contextMenus(this.options);
-
-
-    let collection = this.cy.collection();
-
-    this.waitForNodeClick(collection);
-
-    this.grafoService.setGrafo({
-      length: 1,
-      node: this.cy.getElementById('0'),
-      form: {},
-      collection: this.cy.nodes()
-    });
+    };
   }
 
   private waitForNodeClick(collection: cytoscape.CollectionReturnValue) {
@@ -307,10 +155,9 @@ export class GraphComponent implements OnInit, AfterViewInit {
           collection: collection,
           form: {},
         });
-        const idNode = node.id();
-        switch (idNode) {
-          case '0':
 
+        switch (node.id()) {
+          case '0':
             this.fluxoService.openForm(0);
             break;
           default:
@@ -349,6 +196,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
         this.appendMenuItem();
       } else {
         if (!menuItemRemoveNodeExist) {
+
           this.addMenuItemRemoveNode();
         }
       }
