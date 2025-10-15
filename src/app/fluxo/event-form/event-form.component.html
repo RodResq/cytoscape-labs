@@ -1,1 +1,24 @@
-<p>event-form works!</p>
+<p>{{nomeElemento}}</p>
+<div class="card grid grid-cols-1 md:grid-cols-2 gap-4">
+  <form [formGroup]="eventForm" (ngSubmit)="onSubmit()">
+    <div class="card flex justify-center">
+        <p-listbox 
+            [options]="tiposEventos" 
+            formControlName="tipoEvento" 
+            class="w-full md:w-56"/>
+    </div>
+    <p-input-group>
+      <input
+        pInputText
+        formControlName="nome"
+        placeholder="Evento">
+    </p-input-group>
+    <p-input-group>
+      <p-checkbox
+        formControlName="ativo"
+        inputId="inputAtivo"
+        value="true"/>
+      <label for="inputAtivo" class="ml-2">Ativo</label>
+    </p-input-group>
+  </form>
+</div>

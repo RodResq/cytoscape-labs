@@ -43,14 +43,29 @@ export class FluxoComponent {
 
       console.log('Contexto Fluxo Component: ', fluxo);
 
-      if (fluxo.formNumber > 0) {
-        this.showNodeForm = true;
-        this.showFluxoForm = false;
-        this.showEventForm = false;
-        this.showBuildXml = false;
-      } else {
-        this.showFluxoForm = true;
+      switch (fluxo.formNumber) {
+        case 0:
+          this.showFluxoForm = true;
+          break;
+        case 1:
+          this.showNodeForm = true;
+          break;
+        case 2:
+          this.showEventForm = true;
+          break;
+        case 3:
+          this.showBuildXml = true;
+          break;
       }
+
+      // if (fluxo.formNumber > 0) {
+      //   this.showNodeForm = true;
+      //   this.showFluxoForm = false;
+      //   this.showEventForm = false;
+      //   this.showBuildXml = false;
+      // } else {
+      //   this.showFluxoForm = true;
+      // }
 
       this.nomeAcao = this.stepperService.getCurrentStepLabel();
     })

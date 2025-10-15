@@ -202,6 +202,29 @@ export class GraphComponent implements OnInit, AfterViewInit {
     });
   }
 
+  private async waitForEdgeClick() {
+    try {
+      while (this.isWaitingForEdges) {
+        const event: any =  await this.cy.promiseOn('tap', 'edge');
+        console.log('Edge Clicada: ', event.target);
+
+        this.processEdgeClicked(event.target);
+      }
+    } catch(error) {
+      console.error('Erro: ', error);
+    }
+  }
+
+  private processEdgeClicked(edge: any) {
+    const edgeId = edge.id();
+    const sourceId = edge.source().id();
+    const targerId = edge.target().id();
+
+    console.log('Process Edge: ', edgeId, `${sourceId} -> ${targerId}`);
+    this.fluxoService.openForm(2);
+
+  }
+
   private appendMenuItem() {
     this.contexMenuInstance.appendMenuItem({
       id: 'remove-node',
@@ -272,26 +295,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
     return menuItemRemoveNodeExiste;
   }
 
-  private async waitForEdgeClick() {
-    try {
-      while (this.isWaitingForEdges) {
-        const event: any =  await this.cy.promiseOn('tap', 'edge');
-        console.log('Edge Clicada: ', event.target);
-
-        this.processEdgeClicked(event.target);
-      }
-    } catch(error) {
-      console.error('Erro: ', error);
-    }
-  }
-
-  private processEdgeClicked(edge: any) {
-    const edgeId = edge.id();
-    const sourceId = edge.source().id();
-    const targerId = edge.target().id();
-
-    console.log('Process Edge: ', edgeId, `${sourceId} -> ${targerId}`);
-  }
+  
 
   private stopWaitingForEdge() {
     this.isWaitingForEdges = false;

@@ -58,7 +58,7 @@ export class ContextMenuConfig {
 
       const subNodeTarefa = {
         id: 'add-node-task',
-        content: 'Nó de Tarefa',
+        content: 'Tarefa',
         tooltipText: 'Adicionar um nó de tarefa',
         onClickFunction: (event: any) => {
           const classes: MenuItemClasses = {
@@ -73,7 +73,7 @@ export class ContextMenuConfig {
 
       const subNodeDecision = {
         id: 'add-note-decisão',
-        content: 'Nó de decisão',
+        content: 'Decisão',
         tooltipText: 'Adcione um nó de decisão no fluxo',
         selector: 'node, edge',
         onClickFunction: (event: any) => {
@@ -90,7 +90,7 @@ export class ContextMenuConfig {
 
       const subNodeSystem = {
         id: 'add-node-ssitema',
-        content: 'Nó de sistema',
+        content: 'Sistema',
         tooltipText: 'Adicionar um nó que representa o sitema com um todo',
         selector: 'node, edge',
         onClickFunction: (event: any) => {
@@ -107,7 +107,7 @@ export class ContextMenuConfig {
 
       const subNodeSeparation = {
         id: 'add-node-separation',
-        content: 'Nó de separacao',
+        content: 'Separacao',
         tooltipText: 'Adicionar um nó que representa separacao no fluxo',
         selector: 'node, edge',
         onClickFunction: (event: any) => {
@@ -123,7 +123,7 @@ export class ContextMenuConfig {
 
       const subNodeJoin = {
         id: 'add-node-join',
-        content: 'Nó de juncao',
+        content: 'Junção',
         tooltipText: 'Adicionar um nó que representa juncao no fluxo',
         selector: 'node, edge',
         onClickFunction: (event: any) => {
@@ -139,7 +139,7 @@ export class ContextMenuConfig {
 
       const subNodeProcess = {
         id: 'add-node-nachr',
-        content: 'Nó de Sub-Processo',
+        content: 'Sub-Processo',
         tooltipText: 'Adicionar um nó que representa um subprocesso',
         selector: 'node, edge',
         onClickFunction: (event: any) => {
@@ -155,7 +155,7 @@ export class ContextMenuConfig {
 
       const subNodeEnd = {
         id: 'end-node',
-        content: 'Adcionar nó de final',
+        content: 'Final',
         tooltipText: 'Adicionar um nó final',
         selector: 'node, edge',
         onClickFunction: (event: any) => {
@@ -174,7 +174,7 @@ export class ContextMenuConfig {
         return [
             {
                 id: 'remove-node',
-                content: 'remove',
+                content: 'Remover',
                 tooltipText: 'remove',
                 image: {
                   src: "assets/icons/remove.svg",
