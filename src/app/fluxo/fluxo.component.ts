@@ -9,6 +9,7 @@ import { FluxoService } from './fluxo-form/fluxo.service';
 import { FluxoFormComponent } from './fluxo-form/fluxo-form.component';
 import { StepperService } from '../cytoscape/stepper/stepper.service';
 import { BuildXmlComponent } from './build-xml/build-xml.component';
+import { FluxoFormTypeEnum } from './fluxo-form-type.enum';
 
 
 @Component({
@@ -44,28 +45,21 @@ export class FluxoComponent {
       console.log('Contexto Fluxo Component: ', fluxo);
 
       switch (fluxo.formNumber) {
-        case 0:
+        case FluxoFormTypeEnum.FLUXO_FORM:
           this.showFluxoForm = true;
           break;
-        case 1:
+        case FluxoFormTypeEnum.NODE_FORM:
+          this.showFluxoForm = !this.showFluxoForm;
           this.showNodeForm = true;
           break;
-        case 2:
+        case FluxoFormTypeEnum.EVENT_FORM:
+          this.showNodeForm = !this.showNodeForm;
           this.showEventForm = true;
           break;
-        case 3:
+        case FluxoFormTypeEnum.BUILD_XML_FORM:
           this.showBuildXml = true;
           break;
       }
-
-      // if (fluxo.formNumber > 0) {
-      //   this.showNodeForm = true;
-      //   this.showFluxoForm = false;
-      //   this.showEventForm = false;
-      //   this.showBuildXml = false;
-      // } else {
-      //   this.showFluxoForm = true;
-      // }
 
       this.nomeAcao = this.stepperService.getCurrentStepLabel();
     })
