@@ -3,8 +3,8 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputTextModule } from 'primeng/inputtext';
 import { Checkbox } from 'primeng/checkbox';
-import { FormsDataService } from '../../services/forms-data.service';
 import { StepperService } from '../../cytoscape/stepper/stepper.service';
+import { FormsDataService } from '../../shared/services/forms-data.service';
 
 @Component({
   selector: 'app-node-form',

@@ -9,7 +9,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { TextareaModule } from 'primeng/textarea';
 import { IftaLabelModule } from 'primeng/iftalabel';
 import { Subscription } from 'rxjs';
-import { FormsDataService } from '../../services/forms-data.service';
+import { FormsDataService } from '../../shared/services/forms-data.service';
 
 export interface FluxoData {
   codigoFluxo: string;
@@ -64,9 +64,13 @@ export class FluxoFormComponent implements OnInit {
       dataCriacao: [''],
     });
 
+    const dadosFormalarioSalvo = localStorage.getItem('step1');
+    console.log('Dados do Form 1: ', dadosFormalarioSalvo);
+
     effect(() => {
       const savedForm = this.formsDataService.getFormByStep('step1');
       if (savedForm) {
+        localStorage.setItem('step1', JSON.stringify(savedForm.value));
         this.fluxoForm.patchValue(savedForm.value, {emitEvent: false});
       }
     })

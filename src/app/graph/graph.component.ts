@@ -5,10 +5,10 @@ import contextMenus from 'cytoscape-context-menus';
 import { CommonModule } from '@angular/common';
 import { ContextMenuConfig } from './contexto-menu-config';
 import { NodeService } from '../fluxo/node-form/node.service';
-import { FormsDataService } from '../services/forms-data.service';
-import { GrafoService } from '../services/grafo.service';
 import { FluxoService } from '../fluxo/fluxo-form/fluxo.service';
 import { cytoscapeStyles } from './cytoscape-styles';
+import { FormsDataService } from '../shared/services/forms-data.service';
+import { GrafoService } from '../shared/services/grafo.service';
 
 
 cytoscape.use(contextMenus);
@@ -65,8 +65,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
           grafo?.node.style('label', formSetupNodeValue.nome);
         }
       }
-
-    }, { allowSignalWrites: true });
+    });
     
   }
 

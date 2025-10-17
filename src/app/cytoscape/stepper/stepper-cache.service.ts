@@ -1,5 +1,4 @@
-import { FormsDataService } from './../../services/forms-data.service';
-import { inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { FluxoData } from '../../fluxo/fluxo-form/fluxo-form.component';
 

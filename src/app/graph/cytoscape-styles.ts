@@ -1,15 +1,18 @@
-import { StylesheetStyle } from "cytoscape"
+import { StylesheetStyle, StylesheetCSS } from "cytoscape";
 
-export const cytoscapeStyles: StylesheetStyle[] = [
+
+type Stylesheet = StylesheetStyle | StylesheetCSS;
+
+export const cytoscapeStyles: Stylesheet[] = [
     {
-        selector: 'task-node',
+        selector: '.task-node',
         style: {
         'text-valign': 'bottom',
         label: 'data(id)'
         }
     },
     {
-        selector: 'end-node',
+        selector: '.end-node',
         style: {
         'text-valign': 'bottom',
         label: 'data(id)'
@@ -135,8 +138,8 @@ export const cytoscapeStyles: StylesheetStyle[] = [
         selector: 'edge.dashed',
         style: {
         'line-style': 'dashed',
-        'line-color': '#ee3f4eff',
-        'target-arrow-color': '#ee3f4eff'
+        'line-color': '#ee3f4e',
+        'target-arrow-color': '#ee3f4e'
         }
     },
     {
