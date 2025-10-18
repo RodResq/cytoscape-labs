@@ -34,6 +34,7 @@ export class NodeFormComponent implements OnInit{
       const savedData = this.formsDataService.getFormByStep('step2');
 
       if (savedData) {
+        localStorage.setItem('step2', JSON.stringify(savedData.value));
         this.nodeForm.patchValue(savedData.value, {emitEvent: false});
       }
     })

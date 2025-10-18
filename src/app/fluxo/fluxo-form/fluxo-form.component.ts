@@ -65,7 +65,16 @@ export class FluxoFormComponent implements OnInit {
     });
 
     const dadosFormalarioSalvo = localStorage.getItem('step1');
-    console.log('Dados do Form 1: ', dadosFormalarioSalvo);
+    console.log('Dados do Form 1 salvo em cache: ', dadosFormalarioSalvo);
+
+    if (dadosFormalarioSalvo) {
+      try {
+        const dadosParseados = JSON.parse(dadosFormalarioSalvo);
+        this.fluxoForm.patchValue(dadosParseados, { emitEvent: false });
+      } catch (error) {
+        console.error('Error ao fazer o parse dos dados do localStorage: ', error);
+      }
+    }
 
     effect(() => {
       const savedForm = this.formsDataService.getFormByStep('step1');

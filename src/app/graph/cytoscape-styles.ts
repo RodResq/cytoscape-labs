@@ -138,8 +138,6 @@ export const cytoscapeStyles: Stylesheet[] = [
         selector: 'edge.dashed',
         style: {
         'line-style': 'dashed',
-        'line-color': '#ee3f4e',
-        'target-arrow-color': '#ee3f4e'
         }
     },
     {
@@ -157,5 +155,5 @@ export const cytoscapeStyles: Stylesheet[] = [
         'width': 4
         }
     }
-    
+
 ]
