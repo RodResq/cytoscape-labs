@@ -3,7 +3,7 @@ import { ButtonModule } from 'primeng/button';
 import { StepperCacheService } from '../../cytoscape/stepper/stepper-cache.service';
 import { ButtonsService } from './buttons.service';
 import { ButtonsCancelPreviousComponent } from "./buttons-cancel-previous/buttons-cancel-previous.component";
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgClass } from '@angular/common';
 import { StepperEnum, StepperLabelEnum } from '../../cytoscape/stepper/steppper.enum';
 import { StepperService } from '../../cytoscape/stepper/stepper.service';
 import { FluxoService } from '../../fluxo/fluxo-form/fluxo.service';
@@ -11,7 +11,12 @@ import { GrafoFormData, GrafoService } from '../services/grafo.service';
 
 @Component({
   selector: 'app-buttons-form',
-  imports: [ButtonModule, ButtonsCancelPreviousComponent, CommonModule],
+  imports: [
+    CommonModule,
+    NgClass,
+    ButtonModule, 
+    ButtonsCancelPreviousComponent
+],
   templateUrl: './buttons-form.component.html',
   styleUrl: './buttons-form.component.css'
 })
