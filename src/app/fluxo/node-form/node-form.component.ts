@@ -15,33 +15,38 @@ import { FormsDataService } from '../../shared/services/forms-data.service';
 export class NodeFormComponent implements OnInit{
   private formsDataService = inject(FormsDataService);
   private stepperService = inject(StepperService);
+  private formBuilder = inject(FormBuilder);
+
   public stepCompleted = output<boolean>();
 
   nomeElemento: string = '';
   nome: string = '';
   ativo: boolean = false;
 
-  public nodeForm: FormGroup;
+  public nodeForm!: FormGroup;
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor() {
+    effect(() => {
+      this.nomeElemento = this.stepperService.getCurrentStepLabel();
+    })
+  }
+
+  ngOnInit(): void {
+    this.setupFormNode();
+    this.setupAutoSave();
+  }
+
+  setupFormNode() {
     this.nodeForm = this.formBuilder.group({
       nome: ['', [Validators.required, Validators.minLength(2)]],
       ativo:['true']
     });
 
-    effect(() => {
-      this.nomeElemento = this.stepperService.getCurrentStepLabel();
-      const savedData = this.formsDataService.getFormByStep('step2');
-
-      if (savedData) {
+    const savedData = this.formsDataService.getFormByStep('step2');
+    if (savedData) {
         localStorage.setItem('step2', JSON.stringify(savedData.value));
         this.nodeForm.patchValue(savedData.value, {emitEvent: false});
       }
-    })
-  }
-
-  ngOnInit(): void {
-    this.setupAutoSave();
   }
 
   setupAutoSave() {

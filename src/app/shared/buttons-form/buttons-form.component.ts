@@ -61,9 +61,7 @@ export class ButtonsFormComponent {
     
     parenteNode?.unselect();
 
-
     console.log('Tentattiva get parente No -> Context Btn:', parenteNode);
-
 
     this.stepperService.setNextStepper(this.currentStep);
     switch(this.currentStep) {

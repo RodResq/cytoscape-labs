@@ -1,7 +1,7 @@
 <div class="flex justify-center">
   <p-drawer [header]="nomeAcao" [(visible)]="drawVisible" styleClass="!w-full md:!w-80 lg:!w-[30rem]">
     <!-- TODO - Substituir conteúdo para receber componente pelo arquivo de rota -->
-        @if (showFluxoForm) {
+        <!-- @if (showFluxoForm) {
           <app-fluxo-form />
         } @else if (showNodeForm) {
           <app-node-form />
@@ -9,7 +9,12 @@
           <app-event-form />
         } @else if (showBuildXml) {
           <app-build-xml />
-        }
-        <app-buttons-form />
+        } -->
+        <nav>
+          <a routerLink="fluxo" routerLinkActive="active"></a>
+          <a routerLink="node" routerLinkActive="active"></a>
+        </nav>
+        <router-outlet></router-outlet>
+        <!-- <app-buttons-form /> -->
     </p-drawer>
 </div>

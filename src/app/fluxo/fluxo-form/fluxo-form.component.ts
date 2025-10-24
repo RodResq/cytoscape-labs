@@ -42,6 +42,7 @@ export interface FluxoData {
 })
 export class FluxoFormComponent implements OnInit {
   private formsDataService = inject(FormsDataService);
+  private formBuilder = inject(FormBuilder);
 
   private formSubscription: Subscription = new Subscription();
 
@@ -49,10 +50,26 @@ export class FluxoFormComponent implements OnInit {
   public stepCompleted = output<boolean>();
   public formCancelled = output();
 
-  public fluxoForm: FormGroup;
+  public fluxoForm!: FormGroup;
   nomeElemento = input<string>();
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor() {
+    effect(() => {
+      const savedForm = this.formsDataService.getFormByStep('step1');
+      if (savedForm) {
+        localStorage.setItem('step1', JSON.stringify(savedForm.value));
+        this.fluxoForm.patchValue(savedForm.value, {emitEvent: false});
+      }
+    })
+  }
+
+  ngOnInit(): void {
+    this.setupFormFluxo();
+    this.setCurrentDate();
+    this.setupAutoSave();
+  }
+
+  setupFormFluxo() {
     this.fluxoForm = this.formBuilder.group({
       codigoFluxo: ['', [Validators.required, Validators.minLength(2)]],
       fluxo: ['', [Validators.required, Validators.minLength(2)]],
@@ -75,19 +92,6 @@ export class FluxoFormComponent implements OnInit {
         console.error('Error ao fazer o parse dos dados do localStorage: ', error);
       }
     }
-
-    effect(() => {
-      const savedForm = this.formsDataService.getFormByStep('step1');
-      if (savedForm) {
-        localStorage.setItem('step1', JSON.stringify(savedForm.value));
-        this.fluxoForm.patchValue(savedForm.value, {emitEvent: false});
-      }
-    })
-  }
-
-  ngOnInit(): void {
-    this.setCurrentDate();
-    this.setupAutoSave();
   }
 
   private setCurrentDate(): void {
