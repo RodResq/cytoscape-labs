@@ -23,7 +23,7 @@ import { ActivatedRoute, Router, RouterLink, RouterModule, RouterOutlet } from "
     // NodeFormComponent,
     // EventFormComponent,
     // BuildXmlComponent,
-    ButtonsFormComponent,
+    // ButtonsFormComponent,
     RouterModule
 ],
   templateUrl: './fluxo.component.html',
