@@ -8,13 +8,14 @@ import { StepperEnum, StepperLabelEnum } from '../../cytoscape/stepper/steppper.
 import { StepperService } from '../../cytoscape/stepper/stepper.service';
 import { FluxoService } from '../../fluxo/fluxo-form/fluxo.service';
 import { GrafoFormData, GrafoService } from '../services/grafo.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-buttons-form',
   imports: [
     CommonModule,
     NgClass,
-    ButtonModule, 
+    ButtonModule,
     ButtonsCancelPreviousComponent
 ],
   templateUrl: './buttons-form.component.html',
@@ -27,6 +28,8 @@ export class ButtonsFormComponent {
   private buttonsService = inject(ButtonsService);
   private grafoService = inject(GrafoService);
   private fluxoService = inject(FluxoService);
+  private router = inject(Router);
+  private activatedRoute = inject(ActivatedRoute);
 
   private currentStep: number = 0;
   private currentGrafoFormData: GrafoFormData | null = null;
@@ -50,7 +53,7 @@ export class ButtonsFormComponent {
     }
   }
 
-  goToNextStep(): void {
+  goToNextStepOld(): void {
     this.currentStep = this.stepperService.getCurrentStep();
     this.labelCancelarOrAnterior = 'Anterior';
 
@@ -58,7 +61,7 @@ export class ButtonsFormComponent {
 
     const idParentNode = this.currentGrafoFormData?.node.data('idParentNode');
     const parenteNode = this.currentGrafoFormData?.collection.getElementById(idParentNode)
-    
+
     parenteNode?.unselect();
 
     console.log('Tentattiva get parente No -> Context Btn:', parenteNode);
@@ -78,6 +81,25 @@ export class ButtonsFormComponent {
         this.stepperService.setStepperLabel(StepperLabelEnum.GERAR_XML);
         break;
       }
+  }
+
+  goToNextStep(): void {
+    const rotaAtual = this.router.url;
+    switch(rotaAtual) {
+      case '/fluxo':
+        this.router.navigate(['node']);
+        break;
+      case '/node':
+        this.router.navigate(['event']);
+        break;
+      case '/event':
+        this.router.navigate(['build-xml']);
+        break
+      default:
+        this.router.navigate(['']);
+        break;
+    }
+
   }
 
   finishStepper(): void {

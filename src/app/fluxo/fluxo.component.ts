@@ -2,28 +2,19 @@ import { Component, effect, inject } from '@angular/core';
 
 import { DrawerModule } from 'primeng/drawer';
 
-import { NodeFormComponent } from './node-form/node-form.component';
-import { EventFormComponent } from './event-form/event-form.component';
-import { ButtonsFormComponent } from '../shared/buttons-form/buttons-form.component';
-import { FluxoService } from './fluxo-form/fluxo.service';
-import { FluxoFormComponent } from './fluxo-form/fluxo-form.component';
-import { StepperService } from '../cytoscape/stepper/stepper.service';
-import { BuildXmlComponent } from './build-xml/build-xml.component';
-import { FluxoFormTypeEnum } from './fluxo-form-type.enum';
 import { ActivatedRoute, Router, RouterLink, RouterModule, RouterOutlet } from "@angular/router";
+import { StepperService } from '../cytoscape/stepper/stepper.service';
+import { ButtonsFormComponent } from '../shared/buttons-form/buttons-form.component';
+import { FluxoFormTypeEnum } from './fluxo-form-type.enum';
+import { FluxoService } from './fluxo-form/fluxo.service';
 
 
 @Component({
   selector: 'app-fluxo',
   imports: [
     RouterOutlet,
-    RouterLink,
     DrawerModule,
-    // FluxoFormComponent,
-    // NodeFormComponent,
-    // EventFormComponent,
-    // BuildXmlComponent,
-    // ButtonsFormComponent,
+    ButtonsFormComponent,
     RouterModule
 ],
   templateUrl: './fluxo.component.html',
@@ -34,7 +25,7 @@ export class FluxoComponent {
   private stepperService = inject(StepperService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
-  
+
   public nomeAcao: string = "";
   public drawVisible: boolean = false;
 
@@ -53,13 +44,11 @@ export class FluxoComponent {
 
       switch (fluxo.formNumber) {
         case FluxoFormTypeEnum.FLUXO_FORM:
-          // this.showFluxoForm = true;
           this.router.navigate(['fluxo'], { relativeTo: this.route});
           break;
         case FluxoFormTypeEnum.NODE_FORM:
-          // this.showFluxoForm = !this.showFluxoForm;
-          this.router.navigate(['node'], { relativeTo: this.route} )
-          // this.showNodeForm = true;
+          this.router.navigate(['node'], { relativeTo: this.route});
+          this.showFluxoForm = false;
           break;
         case FluxoFormTypeEnum.EVENT_FORM:
           this.showNodeForm = !this.showNodeForm;
