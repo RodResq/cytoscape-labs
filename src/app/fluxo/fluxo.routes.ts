@@ -12,9 +12,15 @@ export const FLUXO_ROUTES: Routes = [
         children: [
             { path: '', redirectTo: 'fluxo', pathMatch: 'full' },
             { path: 'fluxo', component: FluxoFormComponent },
-            { path: 'node', component: NodeFormComponent },
-            { path: 'event', component: EventFormComponent },
-            { path: 'build-xml', component: BuildXmlComponent }
+            { path: 'node', loadComponent: () =>  import('./node-form/node-form.component').then(
+                (c) => (c.NodeFormComponent)
+            )},
+            { path: 'event', loadComponent: () => import('./event-form/event-form.component').then(
+                (c) => c.EventFormComponent
+            ) },
+            { path: 'build-xml', loadComponent: () => import('./build-xml/build-xml.component').then(
+                (c) => c.BuildXmlComponent
+            )}
         ]
     }
 ]
