@@ -19,7 +19,7 @@ export class MenuComponent implements OnInit {
   ngOnInit(): void {
     this.items = [
       {
-        label: 'Criar Fluxo',
+        label: 'Criar Fluxograma',
         command: () => {
           this.fluxoService.openForm(0);
         }

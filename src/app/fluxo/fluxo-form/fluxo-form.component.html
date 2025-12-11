@@ -1,12 +1,5 @@
 <form [formGroup]="fluxoForm" (ngSubmit)="onSubmit()">
-  <div class="card grid grid-cols-1 md:grid-cols-2 gap-4">
-
-    <p-inputgroup class="w-full md:!w-[15rem]">
-      <input
-        pInputText
-        formControlName="codigoFluxo"
-        placeholder="Codigo" />
-    </p-inputgroup>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
     <p-inputgroup>
       <input
@@ -14,34 +7,7 @@
         formControlName="fluxo"
         placeholder="Nome" />
     </p-inputgroup>
-
-    <p-inputgroup>
-      <p-inputnumber
-        formControlName="prazo"
-        placeholder="Prazo em dias" />
-    </p-inputgroup>
-
-    <p-inputgroup>
-      <input
-        pInputText
-        formControlName="parametros"
-        placeholder="Parametros" />
-    </p-inputgroup>
-
-    <p-inputgroup>
-      <input
-        pInputText
-        formControlName="identificador"
-        placeholder="Identificador" />
-    </p-inputgroup>
-
-    <p-inputgroup>
-      <input
-        pInputText
-        formControlName="nomeProcesso"
-        placeholder="Nome do Processo" />
-    </p-inputgroup>
-
+    
     <p-inputgroup>
       <div>
         <textarea

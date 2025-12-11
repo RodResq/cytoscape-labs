@@ -1,6 +1,8 @@
 import { Component, effect, inject } from '@angular/core';
 
 import { DrawerModule } from 'primeng/drawer';
+import { CardModule } from 'primeng/card';
+import { ButtonModule } from 'primeng/button';
 
 import { ActivatedRoute, Router, RouterLink, RouterModule, RouterOutlet } from "@angular/router";
 import { StepperService } from '../cytoscape/stepper/stepper.service';
@@ -12,10 +14,10 @@ import { FluxoService } from './fluxo-form/fluxo.service';
 @Component({
   selector: 'app-fluxo',
   imports: [
-    RouterOutlet,
-    DrawerModule,
-    ButtonsFormComponent,
-    RouterModule
+    RouterModule,
+    CardModule,
+    ButtonModule,
+    RouterOutlet
 ],
   templateUrl: './fluxo.component.html',
   styleUrl: './fluxo.component.css'

@@ -10,8 +10,20 @@ export const FLUXO_ROUTES: Routes = [
         path: '',
         component: FluxoComponent,
         children: [
-            { path: '', redirectTo: 'fluxo', pathMatch: 'full' },
-            { path: 'fluxo', component: FluxoFormComponent },
+            { 
+                path: '', 
+                redirectTo: 'cadastrarFluxograma', 
+            },
+            {
+                path: 'cadastrarFluxograma',
+                component: FluxoComponent,
+                children: [
+                {
+                    path: '',
+                    loadComponent: () => import('./fluxo-form/fluxo-form.component').then(c => c.FluxoFormComponent)
+                }
+                ]
+            },
             { path: 'node', loadComponent: () =>  import('./node-form/node-form.component').then(
                 (c) => (c.NodeFormComponent)
             )},
