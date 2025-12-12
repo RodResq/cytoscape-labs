@@ -1,9 +1,15 @@
 import { Routes } from '@angular/router';
+import { FluxoComponent } from './fluxo/fluxo.component';
 
 export const routes: Routes = [
     {
-        path: '', 
-        loadChildren: () => import('./fluxo/fluxo.routes')
-            .then(c => c.FLUXO_ROUTES)
+        path: '',
+        redirectTo: 'fluxoApp',
+        pathMatch: 'full'
+        
     },
+    {
+        path: 'fluxoApp',
+        component: FluxoComponent
+    }
 ];
