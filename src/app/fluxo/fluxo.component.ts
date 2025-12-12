@@ -46,10 +46,10 @@ export class FluxoComponent {
 
       switch (fluxo.formNumber) {
         case FluxoFormTypeEnum.FLUXO_FORM:
-          this.router.navigate(['fluxo'], { relativeTo: this.route});
+          this.router.navigate(['/fluxoApp/fluxo'], { relativeTo: this.route});
           break;
         case FluxoFormTypeEnum.NODE_FORM:
-          this.router.navigate(['node'], { relativeTo: this.route});
+          this.router.navigate(['/fluxoApp/node'], { relativeTo: this.route});
           this.showFluxoForm = false;
           break;
         case FluxoFormTypeEnum.EVENT_FORM:

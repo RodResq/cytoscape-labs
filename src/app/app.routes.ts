@@ -10,6 +10,6 @@ export const routes: Routes = [
     },
     {
         path: 'fluxoApp',
-        component: FluxoComponent
+        loadChildren: () => import('./fluxo/fluxo.routes').then(m => m.FLUXO_ROUTES)
     }
 ];
