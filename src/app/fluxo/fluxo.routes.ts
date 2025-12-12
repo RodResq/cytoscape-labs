@@ -1,20 +1,10 @@
 import { Routes } from '@angular/router';
-import { FluxoComponent } from './fluxo.component';
-import { FluxoFormComponent } from './fluxo-form/fluxo-form.component';
-import { NodeFormComponent } from './node-form/node-form.component';
-import { EventFormComponent } from './event-form/event-form.component';
-import { BuildXmlComponent } from './build-xml/build-xml.component';
 
 export const FLUXO_ROUTES: Routes = [
     {
         path: '',
         loadComponent: () => import('./fluxo.component').then(c => c.FluxoComponent),
         children: [
-            {
-                path: '',
-                redirectTo: 'fluxo',
-                pathMatch: 'full'
-            },
             {
                 path: 'fluxo',
                 loadComponent: () => import('./fluxo-form/fluxo-form.component').then(c => c.FluxoFormComponent)

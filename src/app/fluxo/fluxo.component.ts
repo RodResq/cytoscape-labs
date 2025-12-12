@@ -44,23 +44,6 @@ export class FluxoComponent {
 
       console.log('Contexto Fluxo Component: ', fluxo);
 
-      switch (fluxo.formNumber) {
-        case FluxoFormTypeEnum.FLUXO_FORM:
-          this.router.navigate(['/fluxoApp/fluxo'], { relativeTo: this.route});
-          break;
-        case FluxoFormTypeEnum.NODE_FORM:
-          this.router.navigate(['/fluxoApp/node'], { relativeTo: this.route});
-          this.showFluxoForm = false;
-          break;
-        case FluxoFormTypeEnum.EVENT_FORM:
-          this.showNodeForm = !this.showNodeForm;
-          this.showEventForm = true;
-          break;
-        case FluxoFormTypeEnum.BUILD_XML_FORM:
-          this.showBuildXml = true;
-          break;
-      }
-
       this.nomeAcao = this.stepperService.getCurrentStepLabel();
     })
   }

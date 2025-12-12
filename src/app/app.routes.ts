@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { FluxoComponent } from './fluxo/fluxo.component';
 
 export const routes: Routes = [
     {
