@@ -1,16 +1,15 @@
-import { Component, effect, inject, input, OnInit, output } from '@angular/core';
+import { Component, inject, input, OnInit, output } from '@angular/core';
 
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { IftaLabelModule } from 'primeng/iftalabel';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
-import { InputNumberModule } from 'primeng/inputnumber';
 import { TextareaModule } from 'primeng/textarea';
-import { IftaLabelModule } from 'primeng/iftalabel';
 import { Subscription } from 'rxjs';
 import { FormsDataService } from '../../shared/services/forms-data.service';
-import { FluxoService } from './fluxo.service';
 
 export interface FluxoData {
   codigoFluxo: string;
@@ -44,7 +43,6 @@ export interface FluxoData {
 export class FluxoFormComponent implements OnInit {
   private formsDataService = inject(FormsDataService);
   private formBuilder = inject(FormBuilder);
-  private fluxoService = inject(FluxoService);
 
   private formSubscription: Subscription = new Subscription();
 
@@ -58,7 +56,7 @@ export class FluxoFormComponent implements OnInit {
   constructor() { }
   
   ngOnInit(): void {
-    
+
     const savedForm = this.formsDataService.getFormByStep('step1');
     if (savedForm) {
       localStorage.setItem('step1', JSON.stringify(savedForm.value));
