@@ -1,10 +1,9 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { MenuItem, MessageService } from 'primeng/api';
 
+import { Router } from '@angular/router';
 import { Menubar } from 'primeng/menubar';
 import { ToastModule } from 'primeng/toast';
-import { Router } from '@angular/router';
-import { FluxoService } from '../../fluxo/fluxo-form/fluxo.service';
 
 @Component({
   selector: 'app-menu',
@@ -16,8 +15,6 @@ import { FluxoService } from '../../fluxo/fluxo-form/fluxo.service';
 })
 export class MenuComponent implements OnInit {
   private router = inject(Router);
-  private fluxoService = inject(FluxoService);
-
 
   constructor(private messageService: MessageService) {}
 

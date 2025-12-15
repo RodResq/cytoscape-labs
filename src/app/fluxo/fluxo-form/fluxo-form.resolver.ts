@@ -1,10 +1,10 @@
 import { inject } from "@angular/core";
 import { ResolveFn } from "@angular/router";
-import { FluxoService } from "./fluxo.service";
+import { Acao, FluxoService } from "./fluxo.service";
 
-export const fluxoFormResolver: ResolveFn<boolean> = (route, state) => {
+export const fluxoFormResolver: ResolveFn<Acao> = (route, state) => {
     const fluxoService = inject(FluxoService);
-    fluxoService.openForm(0);
+    fluxoService.openForm(0, 'Cadastro Geral', 'Informações gerais do FluxoGrama');
 
-    return true;
+    return fluxoService.form();
 }

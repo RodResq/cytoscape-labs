@@ -157,10 +157,10 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
         switch (node.id()) {
           case '0':
-            this.fluxoService.openForm(0);
+            this.fluxoService.openForm(0, 'Form Geral', 'Info Geral');
             break;
           default:
-            this.fluxoService.openForm(1);
+            this.fluxoService.openForm(1, 'Node', 'Info Node');
             break;
         }
       } else {
@@ -220,7 +220,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
     const targerId = edge.target().id();
 
     console.log('Process Edge: ', edgeId, `${sourceId} -> ${targerId}`);
-    this.fluxoService.openForm(2);
+    this.fluxoService.openForm(2, 'Node Geral', 'Info Node');
 
   }
 

@@ -1,6 +1,8 @@
 import { computed, Injectable, signal } from '@angular/core';
 
 export interface Acao {
+  title: string,
+  subTitle: string,
   formNumber: number,
   visible: boolean,
   acao: string | undefined
@@ -10,14 +12,16 @@ export interface Acao {
   providedIn: 'root'
 })
 export class FluxoService  {
-  private formSignal = signal<Acao>({formNumber: 0, visible: false, acao: ''});
+  private formSignal = signal<Acao>({formNumber: 0, title: '', subTitle: '', visible: false, acao: ''});
 
   public readonly form = this.formSignal.asReadonly();
 
   
-  openForm(formNumber: number) {
+  openForm(formNumber: number, title: string, subTitle: string) {
     this.formSignal.set({
       formNumber: formNumber,
+      title: title,
+      subTitle: subTitle,
       visible: true,
       acao: ''
     });
