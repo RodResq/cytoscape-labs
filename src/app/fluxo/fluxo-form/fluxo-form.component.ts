@@ -10,6 +10,7 @@ import { TextareaModule } from 'primeng/textarea';
 import { IftaLabelModule } from 'primeng/iftalabel';
 import { Subscription } from 'rxjs';
 import { FormsDataService } from '../../shared/services/forms-data.service';
+import { FluxoService } from './fluxo.service';
 
 export interface FluxoData {
   codigoFluxo: string;
@@ -43,6 +44,7 @@ export interface FluxoData {
 export class FluxoFormComponent implements OnInit {
   private formsDataService = inject(FormsDataService);
   private formBuilder = inject(FormBuilder);
+  private fluxoService = inject(FluxoService);
 
   private formSubscription: Subscription = new Subscription();
 
@@ -53,20 +55,20 @@ export class FluxoFormComponent implements OnInit {
   public fluxoForm!: FormGroup;
   nomeElemento = input<string>();
 
-  constructor() {
-    effect(() => {
-      const savedForm = this.formsDataService.getFormByStep('step1');
-      if (savedForm) {
-        localStorage.setItem('step1', JSON.stringify(savedForm.value));
-        this.fluxoForm.patchValue(savedForm.value, {emitEvent: false});
-      }
-    })
-  }
-
+  constructor() { }
+  
   ngOnInit(): void {
+    this.fluxoService.openForm(0);
+    
     this.setupFormFluxo();
     this.setCurrentDate();
     this.setupAutoSave();
+
+    const savedForm = this.formsDataService.getFormByStep('step1');
+    if (savedForm) {
+      localStorage.setItem('step1', JSON.stringify(savedForm.value));
+      this.fluxoForm.patchValue(savedForm.value, {emitEvent: false});
+    }
   }
 
   setupFormFluxo() {

@@ -69,7 +69,7 @@ export class ButtonsFormComponent {
     this.stepperService.setNextStepper(this.currentStep);
     switch(this.currentStep) {
       case StepperEnum.CRIAR_FLUXO:
-        this.fluxoService.hiddenForm(0);
+        this.fluxoService.closeForm(0);
         this.stepperService.setStepperLabel(StepperLabelEnum.CONFIGURAR_NOS);
         break;
       case StepperEnum.CONFIGURAR_NOS:

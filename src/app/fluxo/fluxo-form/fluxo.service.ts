@@ -11,8 +11,10 @@ export interface Acao {
 })
 export class FluxoService  {
   private formSignal = signal<Acao>({formNumber: 0, visible: false, acao: ''});
-  getFormSignal = computed(() => this.formSignal());
 
+  public readonly form = this.formSignal.asReadonly();
+
+  
   openForm(formNumber: number) {
     this.formSignal.set({
       formNumber: formNumber,
@@ -21,12 +23,11 @@ export class FluxoService  {
     });
   }
 
-  hiddenForm(formNumber: number) {
-    this.formSignal.set({
-      formNumber: formNumber,
-      visible: false,
-      acao: ''
-    });
+  closeForm(formNumber: number) {
+    this.formSignal.update(current => ({
+      ...current,
+      visible: false
+    }));
   }
 
 }

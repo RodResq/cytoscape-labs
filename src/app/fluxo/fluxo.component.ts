@@ -1,13 +1,10 @@
 import { Component, effect, inject } from '@angular/core';
 
-import { DrawerModule } from 'primeng/drawer';
-import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
+import { CardModule } from 'primeng/card';
 
-import { ActivatedRoute, Router, RouterLink, RouterModule, RouterOutlet } from "@angular/router";
-import { StepperService } from '../cytoscape/stepper/stepper.service';
-import { ButtonsFormComponent } from '../shared/buttons-form/buttons-form.component';
-import { FluxoFormTypeEnum } from './fluxo-form-type.enum';
+import { CommonModule } from '@angular/common';
+import { RouterModule, RouterOutlet } from "@angular/router";
 import { FluxoService } from './fluxo-form/fluxo.service';
 
 
@@ -17,35 +14,22 @@ import { FluxoService } from './fluxo-form/fluxo.service';
     RouterModule,
     CardModule,
     ButtonModule,
-    RouterOutlet
+    RouterOutlet,
+    CommonModule
 ],
   templateUrl: './fluxo.component.html',
   styleUrl: './fluxo.component.css'
 })
 export class FluxoComponent {
-  private fluxoService = inject(FluxoService);
-  private stepperService = inject(StepperService);
-  private router = inject(Router);
-  private route = inject(ActivatedRoute);
+  public fluxoService = inject(FluxoService);
 
-  public nomeAcao: string = "";
-  public drawVisible: boolean = false;
-
-  public showFluxoForm: boolean = false;
-  public showNodeForm: boolean = false;
-  public showEventForm: boolean = false;
-  public showBuildXml: boolean = false;
-
+  public fluxoForm = this.fluxoService.form;
 
   constructor() {
     effect(() => {
-      const fluxo = this.fluxoService.getFormSignal();
-      this.drawVisible  = fluxo.visible;
-
-      console.log('Contexto Fluxo Component: ', fluxo);
-
-      this.nomeAcao = this.stepperService.getCurrentStepLabel();
-    })
+      console.log('Valor do fluxoForm: ', this.fluxoForm);
+      console.log('Visibility? ', this.fluxoForm().visible);
+    });
   }
 
 }

@@ -1,9 +1,9 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { MenuItem } from 'primeng/api';
+import { MenuItem, MessageService } from 'primeng/api';
 
-import { FluxoService } from '../../fluxo/fluxo-form/fluxo.service';
 import { Menubar } from 'primeng/menubar';
 import { ToastModule } from 'primeng/toast';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-menu',
@@ -11,24 +11,37 @@ import { ToastModule } from 'primeng/toast';
   styleUrl: './menu.component.css',
   standalone: true,
   imports: [Menubar, ToastModule],
+  providers: [MessageService]
 })
 export class MenuComponent implements OnInit {
-  private fluxoService = inject(FluxoService);
+  private router = inject(Router);
+
+
+  constructor(private messageService: MessageService) {}
+
   items: MenuItem[] | undefined;
 
   ngOnInit(): void {
     this.items = [
       {
+        id: '0',
         label: 'Criar Fluxograma',
         command: () => {
-          this.fluxoService.openForm(0);
+            this.router.navigate(['/fluxoApp/fluxo']);
+            this.messageService.add({ severity: 'success', summary: 'Success', detail: 'File created', life: 3000 });
         }
       },
       {
-        label: 'Importar'
+        id: '1',
+        label: 'Importar',
+        command: () => {
+            this.router.navigate(['fluxoApp/node'])
+            this.messageService.add({ severity: 'error', summary: 'warnning', detail: 'Test', life: 3000 });
+        }
       },
       {
-        label: 'Exportar'
+        id: '2',
+        label: 'Exportar',
       }
     ]
   }
