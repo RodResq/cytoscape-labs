@@ -58,17 +58,17 @@ export class FluxoFormComponent implements OnInit {
   constructor() { }
   
   ngOnInit(): void {
-    this.fluxoService.openForm(0);
     
-    this.setupFormFluxo();
-    this.setCurrentDate();
-    this.setupAutoSave();
-
     const savedForm = this.formsDataService.getFormByStep('step1');
     if (savedForm) {
       localStorage.setItem('step1', JSON.stringify(savedForm.value));
       this.fluxoForm.patchValue(savedForm.value, {emitEvent: false});
     }
+
+    this.setupFormFluxo();
+    this.setCurrentDate();
+    this.setupAutoSave();
+
   }
 
   setupFormFluxo() {

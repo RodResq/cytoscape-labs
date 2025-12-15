@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { fluxoFormResolver } from './fluxo-form/fluxo-form.resolver';
 
 export const FLUXO_ROUTES: Routes = [
     {
@@ -7,7 +8,8 @@ export const FLUXO_ROUTES: Routes = [
         children: [
             {
                 path: 'fluxo',
-                loadComponent: () => import('./fluxo-form/fluxo-form.component').then(c => c.FluxoFormComponent)
+                loadComponent: () => import('./fluxo-form/fluxo-form.component').then(c => c.FluxoFormComponent),
+                resolve: { opened: fluxoFormResolver }
       
             },
             { 
