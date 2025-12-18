@@ -71,12 +71,7 @@ export class FluxoFormComponent implements OnInit {
 
   setupFormFluxo() {
     this.fluxoForm = this.formBuilder.group({
-      codigoFluxo: ['', [Validators.required, Validators.minLength(2)]],
       fluxo: ['', [Validators.required, Validators.minLength(2)]],
-      prazo: [''],
-      parametros: [''],
-      identificador: [''],
-      nomeProcesso: [''],
       descricao: [''],
       dataCriacao: [''],
     });
@@ -107,19 +102,12 @@ export class FluxoFormComponent implements OnInit {
 
   private setupAutoSave() {
     this.formSubscription = this.fluxoForm.valueChanges.subscribe(() => {
+      console.log('Salvando Dados Dinamicamente: ', this.fluxoForm);
+      
       this.formsDataService.setFormData('step1', this.fluxoForm);
 
       this.stepCompleted.emit(this.fluxoForm.valid);
     })
-  }
-
-  onSubmit(): void {
-    console.log('Salvando dados no onSubmit: ', this.fluxoForm);
-  }
-
-  onCancel() {
-    this.formCancelled.emit();
-    this.formsDataService.clearFormData('step1');
   }
 
   ngOnDestroy(): void {

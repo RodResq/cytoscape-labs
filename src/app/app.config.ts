@@ -1,9 +1,7 @@
 import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection } from '@angular/core';
-import { provideRouter } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { provideRouter } from '@angular/router';
 import { providePrimeNG } from 'primeng/config';
-import Aura from '@primeuix/themes/aura';
 
 import { routes } from './app.routes';
 import MyPreset from './mypreset';
@@ -13,7 +11,6 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     importProvidersFrom(ReactiveFormsModule),
-    provideAnimationsAsync(),
     providePrimeNG({
       theme: {
         preset: MyPreset,
@@ -21,16 +18,16 @@ export const appConfig: ApplicationConfig = {
           darkModeSelector: false
         }
       },
-      ripple: true, // Efeito de ondulação nos botões
-      inputVariant: 'outlined', // 'outlined' ou 'filled'
+      ripple: true, 
+      inputVariant: 'outlined', 
       zIndex: {
-        modal: 1100,    // dialog, sidebar
-        overlay: 1000,  // dropdown, overlaypanel
-        menu: 1000,     // overlay menus
-        tooltip: 1100   // tooltip
+        modal: 1100,    
+        overlay: 1000,  
+        menu: 1000,     
+        tooltip: 1100   
       },
       csp: {
-        nonce: undefined // Para Content Security Policy se necessário
+        nonce: undefined 
       }
     }),
   ]
