@@ -6,6 +6,7 @@ import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeuix/themes/aura';
 
 import { routes } from './app.routes';
+import MyPreset from './mypreset';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -15,11 +16,9 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(),
     providePrimeNG({
       theme: {
-        preset: Aura, // Tema padrão (Aura, Material, Lara, Nora)
+        preset: MyPreset,
         options: {
-          prefix: 'p',
-          darkModeSelector: false, // 'system', 'class', false
-          cssLayer: false
+          darkModeSelector: false
         }
       },
       ripple: true, // Efeito de ondulação nos botões

@@ -1,28 +1,12 @@
-body, fieldset {
-  padding: 0;
-}
-
-.navtop, .navtop .navbar-collapse {
-  background: #0078AA;
-  color: #fff;
-}
-
 .navtop {
-  margin-bottom: 0px;
+  background: var(--p-orange-500);
+  color: #ffffff;
 }
 
-.nav-link {
-  color: #fff;
-  padding: 0px 5px;
+.navtop .navbar-nav {
+  color: #ffffff;
 }
 
-.container {
-  max-width: unset;
+.navtop .navbar-toggler-icon {
+  filter: brightness(0) invert(1);
 }
-
-.navbar-nav {
-  display: ruby;
-}
-
-
-
