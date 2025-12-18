@@ -5,7 +5,7 @@ import { CardModule } from 'primeng/card';
 
 import { CommonModule } from '@angular/common';
 import { RouterModule, RouterOutlet } from "@angular/router";
-import { FluxoService } from './fluxo-form/fluxo.service';
+import { Acao, FluxoService } from './fluxo-form/fluxo.service';
 import { FormsDataService } from '../shared/services/forms-data.service';
 
 
@@ -25,7 +25,7 @@ export class FluxoComponent implements OnInit{
   public fluxoService = inject(FluxoService);
   public formsDataService = inject(FormsDataService);
 
-  public fluxoForm = this.fluxoService.form;
+  public fluxoForm: Acao = this.fluxoService.form();
 
   constructor() { }
 
