@@ -235,7 +235,6 @@ export class ContextMenuConfig {
             menuItemClasses: [],
             contextMenuClasses: [],
             submenuIndicador: {
-                src: 'assets/icons/submenu-indicator-default.svg',
                 width: 12,
                 height: 12
             }

@@ -25,12 +25,12 @@ export class FluxoComponent implements OnInit{
   public fluxoService = inject(FluxoService);
   public formsDataService = inject(FormsDataService);
 
-  public fluxoForm: Acao = this.fluxoService.form();
+  public fluxoForm!: Acao;
 
   constructor() { }
 
   ngOnInit(): void {
-    throw new Error('Method not implemented.');
+    this.fluxoForm = this.fluxoService.form();
   }
 
   salvar() {

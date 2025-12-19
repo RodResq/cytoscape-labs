@@ -4,7 +4,7 @@ import { ButtonModule } from 'primeng/button';
 import { StepperModule } from 'primeng/stepper';
 
 import { StepperService } from './stepper.service';
-import { StepperEnum } from './steppper.enum';
+import { StepperLabelEnum } from './steppper.enum';
 
 
 @Component({
@@ -18,7 +18,7 @@ export class StepperComponent implements OnInit{
   private stepperService = inject(StepperService);
 
   currentStep: number = 0;
-  steps = Object.keys(StepperEnum).filter(key => isNaN(Number(key)));
+  steps = Object.values(StepperLabelEnum);
 
   constructor() {
     effect(() => {
@@ -27,6 +27,7 @@ export class StepperComponent implements OnInit{
   }
 
   ngOnInit(): void {
+    this.stepperService.setStepperByIndex(Number(this.steps[0]));
   }
 
 }

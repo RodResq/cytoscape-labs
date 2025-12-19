@@ -5,25 +5,30 @@ import { StepperLabelEnum } from './steppper.enum';
   providedIn: 'root'
 })
 export class StepperService {
+  private steps = Object.values(StepperLabelEnum);
 
   currentStepSignal = signal<number>(0);
-  currentStepLabel = signal<string>(StepperLabelEnum.CRIAR_FLUXO);
+  currentStepLabel = computed(() => this.steps[this.currentStepSignal()])
 
   getCurrentStep = computed(() => this.currentStepSignal());
   getCurrentStepLabel = computed(() => this.currentStepLabel());
 
-  public setNextStepper(actualStepper: number) {
-    // const proximoStep = actualStepper + 1;
-    this.currentStepSignal.update(value => value + 1)
+  public setNextStepper() {
+    if (this.currentStepSignal() < this.steps.length - 1) {
+      this.currentStepSignal.update(value => value + 1)
+    }
   }
 
   public setPreviousStepper() {
-    // this.currentStepSignal.set(this.currentStepSignal() - 1);
-    this.currentStepSignal.update(value => value -1)
+    if (this.currentStepSignal() > 0) {
+      this.currentStepSignal.update(value => value -1)
+    }
   }
 
-  public setStepperLabel(value: string) {
-    this.currentStepLabel.set(value);
+  public setStepperByIndex(index: number) {
+    if (index >= 0 && index < this.steps.length) {
+      this.currentStepSignal.set(index);
+    }
   }
 
 }
