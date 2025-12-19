@@ -18,6 +18,12 @@ const MyPreset = definePreset(Aura, {
         },
         colorScheme: {
             light: {
+                semantic: {
+                    highlight: {
+                        background: '{primary.50}',
+                        color: '{primary.700}',
+                    }
+                },
                 surface: {
                     0: '#ffffff',
                     50: '{slate.50}',
@@ -31,9 +37,25 @@ const MyPreset = definePreset(Aura, {
                     800: '{slate.800}',
                     900: '{slate.900}',
                     950: '{slate.950}'
+                },
+                formField: {
+                    hoverBorderColor: '{primary.color}'
+                },
+                root: {
+                    background: '{surface.0}',
+                    color: '{surface.700}'
+                },
+                subtitle: {
+                    color: '{surface.500}'
                 }
             },
             dark: {
+                semantic: {
+                    highlight: {
+                        background: '{primary.200}',
+                        color: '{primary.900}',
+                    }
+                },
                 surface: {
                     0: '#ffffff',
                     50: '{slate.50}',
@@ -47,6 +69,16 @@ const MyPreset = definePreset(Aura, {
                     800: '{slate.800}',
                     900: '{slate.900}',
                     950: '{slate.950}'
+                },
+                formField: {
+                    hoverBorderColor: '{primary.color}'
+                },
+                root: {
+                    background: '{surface.900}',
+                    color: '{surface.0}'
+                },
+                subtitle: {
+                    color: '{surface.400}'
                 }
             }
         }
