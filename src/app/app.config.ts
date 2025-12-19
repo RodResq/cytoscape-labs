@@ -2,6 +2,7 @@ import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection } fr
 import { ReactiveFormsModule } from '@angular/forms';
 import { provideRouter } from '@angular/router';
 import { providePrimeNG } from 'primeng/config';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 import { routes } from './app.routes';
 import MyPreset from './mypreset';
@@ -11,6 +12,7 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     importProvidersFrom(ReactiveFormsModule),
+    provideAnimationsAsync(),
     providePrimeNG({
       theme: {
         preset: MyPreset,
