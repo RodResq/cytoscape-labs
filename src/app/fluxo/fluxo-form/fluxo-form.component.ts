@@ -10,6 +10,7 @@ import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
 import { Subscription } from 'rxjs';
 import { FormsDataService } from '../../shared/services/forms-data.service';
+import { StepperCacheService } from '../../cytoscape/stepper/stepper-cache.service';
 
 export interface FluxoData {
   codigoFluxo: string;
@@ -43,6 +44,7 @@ export interface FluxoData {
 export class FluxoFormComponent implements OnInit {
   private formsDataService = inject(FormsDataService);
   private formBuilder = inject(FormBuilder);
+  private stepperService = inject(StepperCacheService)
 
   private formSubscription: Subscription = new Subscription();
 
@@ -102,11 +104,17 @@ export class FluxoFormComponent implements OnInit {
 
   private setupAutoSave() {
     this.formSubscription = this.fluxoForm.valueChanges.subscribe(() => {
-      console.log('Salvando Dados Dinamicamente: ', this.fluxoForm);
-      
-      this.formsDataService.setFormData('step1', this.fluxoForm);
+      console.log('Salvando Dados Dinamicamente: ', this.fluxoForm.value);
+      console.log('Current Stepper: ', this.stepperService.getCurrentStep());
 
-      this.stepCompleted.emit(this.fluxoForm.valid);
+      const currentStep = this.stepperService.getCurrentStepObject();
+
+      console.log('Current Step Object: ', currentStep);
+      
+      
+      this.formsDataService.setFormData('step1' , this.fluxoForm);
+
+      // this.stepCompleted.emit(this.fluxoForm.valid);
     })
   }
 

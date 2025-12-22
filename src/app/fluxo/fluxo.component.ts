@@ -33,9 +33,15 @@ export class FluxoComponent implements OnInit{
     this.fluxoForm = this.fluxoService.form();
   }
 
-  salvar() {
-    console.log('Recuperando dados do cache: ', this.formsDataService.getFormByStep('step1').value);
+  back() {
+    console.log('Onclick back');
     
   }
+
+  next() {
+    console.log('OnCLick next: ', localStorage.getItem('step1'));
+    
+  }
+  
 
 }

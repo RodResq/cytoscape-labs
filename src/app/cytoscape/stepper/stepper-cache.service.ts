@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, filter } from 'rxjs';
 import { FluxoData } from '../../fluxo/fluxo-form/fluxo-form.component';
 
 
@@ -70,6 +70,10 @@ export class StepperCacheService {
 
   getCurrentStep(): number {
     return this.currentStepSubject.value;
+  }
+
+  getCurrentStepObject() {
+    return this.currentStepSubject;
   }
 
 }
