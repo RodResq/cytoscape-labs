@@ -4,7 +4,8 @@ import { FluxoData } from '../../fluxo/fluxo-form/fluxo-form.component';
 
 
 export interface StepperData {
-  step1?: FluxoData,
+  step0?: FluxoData,
+  step1?: any;
   step2?: any;
   step3?: any;
 }
@@ -61,7 +62,7 @@ export class StepperCacheService {
 
   areAllStepsValid(): boolean {
     const data = this.stepperDataSubject.value;
-    return !!(data.step1 && data.step2 && data.step3);
+    return !!(data.step0 && data.step1 && data.step2 && data.step3);
   }
 
   setNextStep(currentStep: number) {

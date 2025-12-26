@@ -7,6 +7,9 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, RouterOutlet } from "@angular/router";
 import { Acao, FluxoService } from './fluxo-form/fluxo.service';
 import { FormsDataService } from '../shared/services/forms-data.service';
+import { StepperService } from '../cytoscape/stepper/stepper.service';
+import { StepperCacheService, StepperData } from '../cytoscape/stepper/stepper-cache.service';
+import { StepperLabelEnum } from '../cytoscape/stepper/steppper.enum';
 
 
 @Component({
@@ -24,6 +27,7 @@ import { FormsDataService } from '../shared/services/forms-data.service';
 export class FluxoComponent implements OnInit{
   public fluxoService = inject(FluxoService);
   public formsDataService = inject(FormsDataService);
+  public stepperCacheService = inject(StepperCacheService);
 
   public fluxoForm!: Acao;
 
@@ -39,9 +43,26 @@ export class FluxoComponent implements OnInit{
   }
 
   next() {
-    console.log('OnCLick next: ', localStorage.getItem('step1'));
-    
+    const currentStepIndex = this.stepperCacheService.getCurrentStep();
+    this.salvarDadosFormAtual(currentStepIndex);
+    this.irParaProximoStepper(currentStepIndex);
   }
   
 
+
+  private salvarDadosFormAtual(currentStepIndex: number) {
+    const stepperLabel = <keyof StepperData>'step'.concat(currentStepIndex.toString());
+
+    console.log('Currente Stepper Label: ', stepperLabel);
+
+    const dadosFormulario = JSON.stringify(this.formsDataService.getFormByStep(stepperLabel).value);
+    localStorage.setItem(stepperLabel, dadosFormulario);
+  }
+
+
+  private irParaProximoStepper(currentStepIndex: number) {
+    const proximoStepper = ++currentStepIndex;
+    console.log('Proximo Stepper: ', proximoStepper);
+    
+  }
 }

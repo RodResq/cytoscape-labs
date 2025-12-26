@@ -59,9 +59,9 @@ export class FluxoFormComponent implements OnInit {
   
   ngOnInit(): void {
 
-    const savedForm = this.formsDataService.getFormByStep('step1');
+    const savedForm = this.formsDataService.getFormByStep('step0');
     if (savedForm) {
-      localStorage.setItem('step1', JSON.stringify(savedForm.value));
+      localStorage.setItem('step0', JSON.stringify(savedForm.value));
       this.fluxoForm.patchValue(savedForm.value, {emitEvent: false});
     }
 
@@ -78,7 +78,7 @@ export class FluxoFormComponent implements OnInit {
       dataCriacao: [''],
     });
 
-    const dadosFormalarioSalvo = localStorage.getItem('step1');
+    const dadosFormalarioSalvo = localStorage.getItem('step0');
     console.log('Dados do Form 1 salvo em cache: ', dadosFormalarioSalvo);
 
     if (dadosFormalarioSalvo) {
@@ -112,9 +112,8 @@ export class FluxoFormComponent implements OnInit {
       console.log('Current Step Object: ', currentStep);
       
       
-      this.formsDataService.setFormData('step1' , this.fluxoForm);
+      this.formsDataService.setFormData('step0' , this.fluxoForm);
 
-      // this.stepCompleted.emit(this.fluxoForm.valid);
     })
   }
 

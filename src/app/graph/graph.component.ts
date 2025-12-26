@@ -44,10 +44,10 @@ export class GraphComponent implements OnInit, AfterViewInit {
   constructor() {
     effect(() => {
       const grafo = this.grafoService.getGrafo();
-      const formStep1 = this.formsDataService.getFormByStep('step1');
+      const formStep0 = this.formsDataService.getFormByStep('step0');
 
-      if (formStep1) {
-        const formValue = formStep1.value;
+      if (formStep0) {
+        const formValue = formStep0.value;
         if (formValue && this.cy) {
 
           if (grafo?.collection.length == 1) {
