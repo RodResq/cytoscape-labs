@@ -5,10 +5,11 @@ import { InputTextModule } from 'primeng/inputtext';
 import { Checkbox } from 'primeng/checkbox';
 import { StepperService } from '../../cytoscape/stepper/stepper.service';
 import { FormsDataService } from '../../shared/services/forms-data.service';
+import { Message } from 'primeng/message'
 
 @Component({
   selector: 'app-node-form',
-  imports: [FormsModule, InputGroupModule, InputTextModule, Checkbox, ReactiveFormsModule],
+  imports: [FormsModule, InputGroupModule, InputTextModule, Checkbox, ReactiveFormsModule, Message],
   templateUrl: './node-form.component.html',
   styleUrl: './node-form.component.css'
 })

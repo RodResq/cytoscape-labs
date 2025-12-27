@@ -10,18 +10,19 @@ export const FLUXO_ROUTES: Routes = [
                 path: 'fluxo',
                 loadComponent: () => import('./fluxo-form/fluxo-form.component').then(c => c.FluxoFormComponent),
                 resolve: { form: fluxoFormResolver }
-      
+
             },
-            { 
-                path: 'node', 
-                loadComponent: () =>  import('./node-form/node-form.component').then(c => c.NodeFormComponent)
+            {
+                path: 'node',
+                loadComponent: () =>  import('./node-form/node-form.component').then(c => c.NodeFormComponent),
+                resolve: { form: fluxoFormResolver }
             },
-            { 
-                path: 'event', 
-                loadComponent: () => import('./event-form/event-form.component').then(c => c.EventFormComponent) 
+            {
+                path: 'event',
+                loadComponent: () => import('./event-form/event-form.component').then(c => c.EventFormComponent)
             },
-            { 
-                path: 'build-xml', 
+            {
+                path: 'build-xml',
                 loadComponent: () => import('./build-xml/build-xml.component').then(c => c.BuildXmlComponent)
             }
         ]

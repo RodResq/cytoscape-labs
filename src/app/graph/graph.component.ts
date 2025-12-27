@@ -9,6 +9,7 @@ import { FluxoService } from '../fluxo/fluxo-form/fluxo.service';
 import { cytoscapeStyles } from './cytoscape-styles';
 import { FormsDataService } from '../shared/services/forms-data.service';
 import { GrafoService } from '../shared/services/grafo.service';
+import { Router } from '@angular/router';
 
 
 cytoscape.use(contextMenus);
@@ -30,6 +31,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
   private formsDataService = inject(FormsDataService);
   private grafoService = inject(GrafoService);
   private fluxoService = inject(FluxoService);
+  private router = inject(Router);
 
   private taskFormReceivedData: any;
   private cy!: cytoscape.Core;
@@ -52,7 +54,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
           if (grafo?.collection.length == 1) {
             grafo.node.select();
-            grafo.node.style('label', formValue.codigoFluxo);
+            grafo.node.style('label', formValue.fluxo);
           }
         }
       }
@@ -66,7 +68,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
         }
       }
     });
-    
+
   }
 
   ngOnInit(): void {
@@ -157,10 +159,11 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
         switch (node.id()) {
           case '0':
-            this.fluxoService.openForm(0, 'Form Geral', 'Info Geral');
+            // this.fluxoService.openForm(0, 'Form Geral', 'Info Geral');
+            this.router.navigate(['/fluxoApp/fluxo'])
             break;
           default:
-            this.fluxoService.openForm(1, 'Node', 'Info Node');
+            this.router.navigate(['/fluxoApp/node'])
             break;
         }
       } else {
@@ -175,12 +178,12 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
       console.log('Nó clicado: ', node.id());
       let menuItemRemoveNodeExist = this.menuItemExiste('remove-node');
-      
+
       if (node && node.id() == '0') {
         if (menuItemRemoveNodeExist) {
           this.contexMenuInstance.removeMenuItem('remove-node');
         }
-        
+
         let menuItemTesteExist = this.menuItemExiste('teste-menu-dinamico');
         if (!menuItemTesteExist) {
           this.addMenuItemTest();
@@ -188,10 +191,10 @@ export class GraphComponent implements OnInit, AfterViewInit {
       } else if(node && String(node.id()).includes('end-node')) {
         let menuItemAddNodeExist = this.menuItemExiste('add-node');
         console.log('menuItemAddNodeExist: ', menuItemAddNodeExist);
-        
+
         if (menuItemAddNodeExist) {
           this.contexMenuInstance.removeMenuItem('add-node');
-        } 
+        }
         this.appendMenuItem();
       } else {
         if (!menuItemRemoveNodeExist) {
@@ -294,7 +297,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
     return menuItemRemoveNodeExiste;
   }
 
-  
+
 
   private stopWaitingForEdge() {
     this.isWaitingForEdges = false;

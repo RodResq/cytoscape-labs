@@ -1,4 +1,4 @@
-import { Component, inject, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, effect, inject, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -9,6 +9,7 @@ import { StepperData } from '../cytoscape/stepper/stepper-cache.service';
 import { StepperService } from '../cytoscape/stepper/stepper.service';
 import { FormsDataService } from '../shared/services/forms-data.service';
 import { FluxoService } from './fluxo-form/fluxo.service';
+import { GrafoFormData, GrafoService } from '../shared/services/grafo.service';
 
 
 @Component({
@@ -27,9 +28,14 @@ export class FluxoComponent {
   public fluxoService = inject(FluxoService);
   public formsDataService = inject(FormsDataService);
   public stepperService = inject(StepperService);
+  private grafoService = inject(GrafoService);
   private router = inject(Router);
 
-  constructor() {}
+  private currentGrafoFormData: GrafoFormData | null = null;
+
+  constructor() {
+    effect(() => this.currentGrafoFormData = this.grafoService.getGrafo());
+  }
 
 
   back() {
@@ -50,6 +56,7 @@ export class FluxoComponent {
 
   next() {
     this.salvarDadosFormAtual();
+
     this.irParaProximoStepper();
   }
 
@@ -60,9 +67,17 @@ export class FluxoComponent {
 
     const stepperLabel = <keyof StepperData>'step'.concat(currentStepIndex.toString());
     const dadosFormulario = JSON.stringify(this.formsDataService.getFormByStep(stepperLabel)?.value);
+    // this.atualizarGrafo(dadosFormulario);
     localStorage.setItem(stepperLabel, dadosFormulario);
   }
 
+  private atualizarGrafo(formData: string) {
+    this.currentGrafoFormData?.node.select();
+
+    const idParentNode = this.currentGrafoFormData?.node.data('idParentNode');
+    const parenteNode = this.currentGrafoFormData?.collection.getElementById(idParentNode)
+
+  }
 
   private irParaProximoStepper() {
     const currentStep = this.stepperService.getCurrentStep();
@@ -76,4 +91,5 @@ export class FluxoComponent {
     }
     this.stepperService.setNextStepper();
   }
+
 }
