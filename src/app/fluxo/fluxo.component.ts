@@ -1,3 +1,4 @@
+import { StepperCacheService } from './../cytoscape/stepper/stepper-cache.service';
 import { Component, effect, inject, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 
 import { ButtonModule } from 'primeng/button';
@@ -28,6 +29,7 @@ export class FluxoComponent {
   public fluxoService = inject(FluxoService);
   public formsDataService = inject(FormsDataService);
   public stepperService = inject(StepperService);
+  public stepperCacheService = inject(StepperCacheService);
   private grafoService = inject(GrafoService);
   private router = inject(Router);
 
@@ -67,8 +69,7 @@ export class FluxoComponent {
 
     const stepperLabel = <keyof StepperData>'step'.concat(currentStepIndex.toString());
     const dadosFormulario = JSON.stringify(this.formsDataService.getFormByStep(stepperLabel)?.value);
-    // this.atualizarGrafo(dadosFormulario);
-    localStorage.setItem(stepperLabel, dadosFormulario);
+    this.stepperCacheService.saveStepData(stepperLabel, dadosFormulario);
   }
 
   private atualizarGrafo(formData: string) {

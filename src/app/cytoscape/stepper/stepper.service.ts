@@ -1,3 +1,7 @@
+/**
+ * Servico responsavel por gerenciar o estado do componente Stepper visualmente
+ */
+
 import { computed, Injectable, signal } from '@angular/core';
 import { StepperLabelEnum } from './steppper.enum';
 

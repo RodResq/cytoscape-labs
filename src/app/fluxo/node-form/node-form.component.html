@@ -1,22 +1,25 @@
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-  <div class="card flex flex-wrap gap-4 justify-center">
+  @if (showFormNode) {
+    <form [formGroup]="nodeForm">
+      <p-input-group>
+        <input
+          pInputText
+          formControlName="nome"
+          placeholder="Nome do No"
+        >
+      </p-input-group>
+      <p-input-group>
+        <p-checkbox
+          formControlName="ativo"
+          inputId="inputAtivo"
+          value="true"
+        />
+        <label for="inputAtivo" class="ml-2"> Ativo </label>
+      </p-input-group>
+    </form>
+  } @else {
+    <div class="card flex flex-wrap gap-4 justify-center">
     <p-message severity="info">Cadastre as tarefas diretamente no grafo!</p-message>
   </div>
-  <form [formGroup]="nodeForm">
-    <p-input-group>
-      <input
-        pInputText
-        formControlName="nome"
-        placeholder="Nome do No"
-      >
-    </p-input-group>
-    <p-input-group>
-      <p-checkbox
-        formControlName="ativo"
-        inputId="inputAtivo"
-        value="true"
-      />
-      <label for="inputAtivo" class="ml-2"> Ativo </label>
-    </p-input-group>
-  </form>
+  }
 </div>

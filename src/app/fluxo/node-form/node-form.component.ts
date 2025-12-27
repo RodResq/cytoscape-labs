@@ -1,4 +1,4 @@
-import { Component, effect, inject, OnInit, output } from '@angular/core';
+import { Component, computed, effect, inject, OnInit, output } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputTextModule } from 'primeng/inputtext';
@@ -6,6 +6,7 @@ import { Checkbox } from 'primeng/checkbox';
 import { StepperService } from '../../cytoscape/stepper/stepper.service';
 import { FormsDataService } from '../../shared/services/forms-data.service';
 import { Message } from 'primeng/message'
+import { GrafoService } from '../../shared/services/grafo.service';
 
 @Component({
   selector: 'app-node-form',
@@ -17,8 +18,10 @@ export class NodeFormComponent implements OnInit{
   private formsDataService = inject(FormsDataService);
   private stepperService = inject(StepperService);
   private formBuilder = inject(FormBuilder);
+  private grafoService = inject(GrafoService);
 
   public stepCompleted = output<boolean>();
+  public showFormNode?: boolean = false;
 
   nomeElemento: string = '';
   nome: string = '';
@@ -30,6 +33,7 @@ export class NodeFormComponent implements OnInit{
     this.setupFormNode();
     effect(() => {
       this.nomeElemento = this.stepperService.getCurrentStepLabel();
+      this.showFormNode = this.grafoService.getGrafo()?.visible;
     })
   }
 

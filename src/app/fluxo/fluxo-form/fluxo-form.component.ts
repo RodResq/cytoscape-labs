@@ -10,7 +10,6 @@ import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
 import { Subscription } from 'rxjs';
 import { FormsDataService } from '../../shared/services/forms-data.service';
-import { StepperCacheService } from '../../cytoscape/stepper/stepper-cache.service';
 
 export interface FluxoData {
   codigoFluxo: string;
@@ -44,7 +43,6 @@ export interface FluxoData {
 export class FluxoFormComponent implements OnInit {
   private formsDataService = inject(FormsDataService);
   private formBuilder = inject(FormBuilder);
-  private stepperService = inject(StepperCacheService)
 
   private formSubscription: Subscription = new Subscription();
 

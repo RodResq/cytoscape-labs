@@ -10,6 +10,7 @@ import { GrafoService } from '../shared/services/grafo.service';
 import { StepperService } from './../cytoscape/stepper/stepper.service';
 import { ContextMenuConfig } from './contexto-menu-config';
 import { cytoscapeStyles } from './cytoscape-styles';
+import { StepperData } from '../cytoscape/stepper/stepper-cache.service';
 
 
 cytoscape.use(contextMenus);
@@ -46,10 +47,10 @@ export class GraphComponent implements OnInit, AfterViewInit {
   constructor() {
     effect(() => {
       const grafo = this.grafoService.getGrafo();
-      const formStep0 = this.formsDataService.getFormByStep('step0');
+      const formCadastroFluxo = this.formsDataService.getFormByStep('step0');
 
-      if (formStep0) {
-        const formValue = formStep0.value;
+      if (formCadastroFluxo) {
+        const formValue = formCadastroFluxo.value;
         if (formValue && this.cy) {
 
           if (grafo?.collection.length == 1) {
@@ -59,7 +60,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
         }
       }
 
-      const formSetupNode = this.formsDataService.getFormByStep('step2');
+      const formSetupNode = this.formsDataService.getFormByStep('step1');
       if (formSetupNode) {
         const formSetupNodeValue = formSetupNode.value;
         if (formSetupNodeValue && this.cy) {
@@ -94,7 +95,8 @@ export class GraphComponent implements OnInit, AfterViewInit {
       length: 1,
       node: this.cy.getElementById('0'),
       form: {},
-      collection: this.cy.nodes()
+      collection: this.cy.nodes(),
+      visible: false
     });
   }
 
@@ -145,6 +147,12 @@ export class GraphComponent implements OnInit, AfterViewInit {
   private waitForNodeClick(collection: cytoscape.CollectionReturnValue) {
     this.cy.on('tap', 'node', (event) => {
       const node = event.target;
+      const currentStepper = this.stepperService.getCurrentStepLabel();
+
+      console.log('Current Stepper Label: ', currentStepper);
+
+
+      console.log('Current Stepper Label: ', currentStepper);
 
       if (node.isNode()) {
         collection.union(node);
@@ -155,6 +163,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
           node: node,
           collection: collection,
           form: {},
+          visible: true
         });
 
         switch (node.id()) {
@@ -165,8 +174,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
           default:
             this.stepperService.setStepperByIndex(1);
             this.fluxoService.openForm(1, 'Editar Tarefa', node.id());
-            this.router.navigate(['/fluxoApp/event'])
-            console.log('Form node: ', this.formsDataService.getFormByStep('step1'));
+            this.router.navigate(['/fluxoApp/node'])
             break;
         }
       } else {
@@ -409,7 +417,8 @@ export class GraphComponent implements OnInit, AfterViewInit {
       length: this.cy.nodes().length,
       node: nodeAdicionado,
       form: {},
-      collection: this.cy.nodes()
+      collection: this.cy.nodes(),
+      visible: false
     });
   }
 

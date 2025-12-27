@@ -1,3 +1,6 @@
+/**
+ * Servico responsavel por guarda gerenciar o estado do formulario de acordo com o stepper e salva-los no local storage
+ */
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, filter } from 'rxjs';
 import { FluxoData } from '../../fluxo/fluxo-form/fluxo-form.component';

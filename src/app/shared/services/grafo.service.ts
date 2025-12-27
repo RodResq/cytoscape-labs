@@ -6,8 +6,9 @@ import cytoscape from 'cytoscape';
 export interface GrafoFormData {
   length: number,
   node: cytoscape.NodeSingular,
-  form: Object,
-  collection: cytoscape.NodeCollection
+  form: {},
+  collection: cytoscape.NodeCollection,
+  visible: boolean
 }
 
 @Injectable({
