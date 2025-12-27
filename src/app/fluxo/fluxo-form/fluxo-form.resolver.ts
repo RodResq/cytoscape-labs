@@ -4,7 +4,7 @@ import { Acao, FluxoService } from "./fluxo.service";
 
 export const fluxoFormResolver: ResolveFn<Acao> = (route, state) => {
     const fluxoService = inject(FluxoService);
-    fluxoService.openForm(0, 'Cadastro Geral', 'Informações gerais do FluxoGrama');
+    fluxoService.openForm(0, 'Cadastrar Fluxo de Tarefa', 'Informacoes gerais sobre a que se propoe a terefa e seu objetivo final.');
 
     return fluxoService.form();
 }
