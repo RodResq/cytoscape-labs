@@ -35,8 +35,14 @@ export class FluxoComponent implements OnInit{
 
   back() {
     const currentStepper = this.stepperService.getCurrentStep();
-    console.log('Current Stepper no back: ', currentStepper);
-    if (currentStepper == 1) {
+
+    if (currentStepper == 3) {
+      this.stepperService.setPreviousStepper();
+      this.router.navigate(['/fluxoApp/event'])
+    } else if (currentStepper == 2) {
+      this.stepperService.setPreviousStepper();
+      this.router.navigate(['/fluxoApp/node'])
+    } else if (currentStepper == 1) {
       this.stepperService.setPreviousStepper();
       this.router.navigate(['/fluxoApp/fluxo'])
     }
@@ -52,7 +58,6 @@ export class FluxoComponent implements OnInit{
 
   private salvarDadosFormAtual() {
     const currentStepIndex = this.stepperService.getCurrentStep();
-    console.log('Current Stepper: ', currentStepIndex);
 
     const stepperLabel = <keyof StepperData>'step'.concat(currentStepIndex.toString());
     const dadosFormulario = JSON.stringify(this.formsDataService.getFormByStep(stepperLabel)?.value);
@@ -61,7 +66,15 @@ export class FluxoComponent implements OnInit{
 
 
   private irParaProximoStepper() {
+    const currentStep = this.stepperService.getCurrentStep();
+
+    if (currentStep == 0) {
+      this.router.navigate(['/fluxoApp/node']);
+    } else if (currentStep == 1) {
+      this.router.navigate(['/fluxoApp/event']);
+    } else if (currentStep == 2) {
+      this.router.navigate(['/fluxoApp/build-xml'])
+    }
     this.stepperService.setNextStepper();
-    this.router.navigate(['/fluxoApp/node']);
   }
 }
