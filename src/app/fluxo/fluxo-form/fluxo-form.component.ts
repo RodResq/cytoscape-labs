@@ -55,7 +55,9 @@ export class FluxoFormComponent implements OnInit {
   public fluxoForm!: FormGroup;
   nomeElemento = input<string>();
 
-  constructor() { }
+  constructor() {
+    this.setupFormFluxo();
+  }
 
   ngOnInit(): void {
 
@@ -65,10 +67,8 @@ export class FluxoFormComponent implements OnInit {
       this.fluxoForm.patchValue(savedForm.value, {emitEvent: false});
     }
 
-    this.setupFormFluxo();
     this.setCurrentDate();
     this.setupAutoSave();
-
   }
 
   setupFormFluxo() {

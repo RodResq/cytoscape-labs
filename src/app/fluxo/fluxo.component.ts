@@ -34,7 +34,12 @@ export class FluxoComponent implements OnInit{
   ngOnInit(): void {}
 
   back() {
-    console.log('Onclick back');
+    const currentStepper = this.stepperService.getCurrentStep();
+    console.log('Current Stepper no back: ', currentStepper);
+    if (currentStepper == 1) {
+      this.stepperService.setPreviousStepper();
+      this.router.navigate(['/fluxoApp/fluxo'])
+    }
 
   }
 
