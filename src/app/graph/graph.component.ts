@@ -1,15 +1,15 @@
-import { StepperCacheService } from '../cytoscape/stepper/stepper-cache.service';
+import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, effect, ElementRef, inject, OnInit, viewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import cytoscape from 'cytoscape';
 import contextMenus from 'cytoscape-context-menus';
-import { CommonModule } from '@angular/common';
-import { ContextMenuConfig } from './contexto-menu-config';
-import { NodeService } from '../fluxo/node-form/node.service';
 import { FluxoService } from '../fluxo/fluxo-form/fluxo.service';
-import { cytoscapeStyles } from './cytoscape-styles';
+import { NodeService } from '../fluxo/node-form/node.service';
 import { FormsDataService } from '../shared/services/forms-data.service';
 import { GrafoService } from '../shared/services/grafo.service';
-import { Router } from '@angular/router';
+import { StepperService } from './../cytoscape/stepper/stepper.service';
+import { ContextMenuConfig } from './contexto-menu-config';
+import { cytoscapeStyles } from './cytoscape-styles';
 
 
 cytoscape.use(contextMenus);
@@ -26,7 +26,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
   private cytoscapeContainer = viewChild.required<ElementRef<HTMLDivElement>>('cyContainer');
 
-  private stepperCacheService = inject(StepperCacheService);
+  private stepperService = inject(StepperService);
   private nodeService = inject(NodeService)
   private formsDataService = inject(FormsDataService);
   private grafoService = inject(GrafoService);
@@ -159,11 +159,14 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
         switch (node.id()) {
           case '0':
-            // this.fluxoService.openForm(0, 'Form Geral', 'Info Geral');
+            this.stepperService.setStepperByIndex(0);
             this.router.navigate(['/fluxoApp/fluxo'])
             break;
           default:
-            this.router.navigate(['/fluxoApp/node'])
+            this.stepperService.setStepperByIndex(1);
+            this.fluxoService.openForm(1, 'Editar Tarefa', node.id());
+            this.router.navigate(['/fluxoApp/event'])
+            console.log('Form node: ', this.formsDataService.getFormByStep('step1'));
             break;
         }
       } else {
@@ -352,7 +355,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
   private addNode(event: any, classes: any, position: {x: number, y: number}, style?: {}) {
     console.log('Adiconando elemento: ', event);
-    console.log('Stepper Atual: ', this.stepperCacheService.getCurrentStep());
+    console.log('Stepper Atual: ', this.stepperService.getCurrentStep());
 
     const clickedElement = event.target || event.cyTarget;
     const elementId = clickedElement.id();

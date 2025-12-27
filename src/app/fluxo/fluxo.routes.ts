@@ -17,6 +17,7 @@ export const FLUXO_ROUTES: Routes = [
                 loadComponent: () =>  import('./node-form/node-form.component').then(c => c.NodeFormComponent),
                 resolve: { form: fluxoFormResolver }
             },
+            // CRIAR ROTAS DE EDICAO
             {
                 path: 'event',
                 loadComponent: () => import('./event-form/event-form.component').then(c => c.EventFormComponent)
