@@ -32,6 +32,7 @@ export class NodeFormComponent implements OnInit{
   }
 
   ngOnInit(): void {
+    console.log('Instanciou o nodeForm');
     this.setupFormNode();
     this.setupAutoSave();
   }
@@ -42,22 +43,19 @@ export class NodeFormComponent implements OnInit{
       ativo:['true']
     });
 
-    const savedData = this.formsDataService.getFormByStep('step2');
+    const savedData = this.formsDataService.getFormByStep('step1');
     if (savedData) {
-        localStorage.setItem('step2', JSON.stringify(savedData.value));
+        localStorage.setItem('step1', JSON.stringify(savedData.value));
         this.nodeForm.patchValue(savedData.value, {emitEvent: false});
       }
   }
 
   setupAutoSave() {
     this.nodeForm.valueChanges.subscribe(() => {
-      this.formsDataService.setFormData('step2', this.nodeForm);
+      this.formsDataService.setFormData('step1', this.nodeForm);
 
       this.stepCompleted.emit(this.nodeForm.valid);
     });
-  }
-
-  onSubmit() {
   }
 
 }

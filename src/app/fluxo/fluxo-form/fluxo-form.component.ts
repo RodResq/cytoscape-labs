@@ -56,7 +56,7 @@ export class FluxoFormComponent implements OnInit {
   nomeElemento = input<string>();
 
   constructor() { }
-  
+
   ngOnInit(): void {
 
     const savedForm = this.formsDataService.getFormByStep('step0');
@@ -79,7 +79,6 @@ export class FluxoFormComponent implements OnInit {
     });
 
     const dadosFormalarioSalvo = localStorage.getItem('step0');
-    console.log('Dados do Form 1 salvo em cache: ', dadosFormalarioSalvo);
 
     if (dadosFormalarioSalvo) {
       try {
@@ -104,16 +103,7 @@ export class FluxoFormComponent implements OnInit {
 
   private setupAutoSave() {
     this.formSubscription = this.fluxoForm.valueChanges.subscribe(() => {
-      console.log('Salvando Dados Dinamicamente: ', this.fluxoForm.value);
-      console.log('Current Stepper: ', this.stepperService.getCurrentStep());
-
-      const currentStep = this.stepperService.getCurrentStepObject();
-
-      console.log('Current Step Object: ', currentStep);
-      
-      
       this.formsDataService.setFormData('step0' , this.fluxoForm);
-
     })
   }
 

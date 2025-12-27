@@ -16,7 +16,7 @@ import { ToastModule } from 'primeng/toast';
 export class MenuComponent implements OnInit {
   private router = inject(Router);
 
-  constructor(private messageService: MessageService) {}
+  constructor() {}
 
   items: MenuItem[] | undefined;
 
@@ -27,7 +27,6 @@ export class MenuComponent implements OnInit {
         label: 'Criar Fluxograma',
         command: () => {
             this.router.navigate(['/fluxoApp/fluxo']);
-            this.messageService.add({ severity: 'success', summary: 'Success', detail: 'File created', life: 3000 });
         }
       },
       {
@@ -35,7 +34,6 @@ export class MenuComponent implements OnInit {
         label: 'Importar',
         command: () => {
             this.router.navigate(['fluxoApp/node'])
-            this.messageService.add({ severity: 'error', summary: 'warnning', detail: 'Test', life: 3000 });
         }
       },
       {

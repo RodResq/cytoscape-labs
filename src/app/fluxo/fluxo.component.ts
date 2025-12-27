@@ -1,15 +1,14 @@
-import { Component, effect, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 
 import { CommonModule } from '@angular/common';
-import { RouterModule, RouterOutlet } from "@angular/router";
-import { Acao, FluxoService } from './fluxo-form/fluxo.service';
-import { FormsDataService } from '../shared/services/forms-data.service';
+import { Router, RouterModule, RouterOutlet } from "@angular/router";
+import { StepperData } from '../cytoscape/stepper/stepper-cache.service';
 import { StepperService } from '../cytoscape/stepper/stepper.service';
-import { StepperCacheService, StepperData } from '../cytoscape/stepper/stepper-cache.service';
-import { StepperLabelEnum } from '../cytoscape/stepper/steppper.enum';
+import { FormsDataService } from '../shared/services/forms-data.service';
+import { FluxoService } from './fluxo-form/fluxo.service';
 
 
 @Component({
@@ -27,42 +26,37 @@ import { StepperLabelEnum } from '../cytoscape/stepper/steppper.enum';
 export class FluxoComponent implements OnInit{
   public fluxoService = inject(FluxoService);
   public formsDataService = inject(FormsDataService);
-  public stepperCacheService = inject(StepperCacheService);
+  public stepperService = inject(StepperService);
+  private router = inject(Router);
 
-  public fluxoForm!: Acao;
+  constructor() {}
 
-  constructor() { }
-
-  ngOnInit(): void {
-    this.fluxoForm = this.fluxoService.form();
-  }
+  ngOnInit(): void {}
 
   back() {
     console.log('Onclick back');
-    
+
   }
 
   next() {
-    const currentStepIndex = this.stepperCacheService.getCurrentStep();
-    this.salvarDadosFormAtual(currentStepIndex);
-    this.irParaProximoStepper(currentStepIndex);
+    this.salvarDadosFormAtual();
+    this.irParaProximoStepper();
   }
-  
 
 
-  private salvarDadosFormAtual(currentStepIndex: number) {
+
+  private salvarDadosFormAtual() {
+    const currentStepIndex = this.stepperService.getCurrentStep();
+    console.log('Current Stepper: ', currentStepIndex);
+
     const stepperLabel = <keyof StepperData>'step'.concat(currentStepIndex.toString());
-
-    console.log('Currente Stepper Label: ', stepperLabel);
-
-    const dadosFormulario = JSON.stringify(this.formsDataService.getFormByStep(stepperLabel).value);
+    const dadosFormulario = JSON.stringify(this.formsDataService.getFormByStep(stepperLabel)?.value);
     localStorage.setItem(stepperLabel, dadosFormulario);
   }
 
 
-  private irParaProximoStepper(currentStepIndex: number) {
-    const proximoStepper = ++currentStepIndex;
-    console.log('Proximo Stepper: ', proximoStepper);
-    
+  private irParaProximoStepper() {
+    this.stepperService.setNextStepper();
+    this.router.navigate(['/fluxoApp/node']);
   }
 }
