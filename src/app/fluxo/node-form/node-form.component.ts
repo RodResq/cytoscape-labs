@@ -26,14 +26,18 @@ export class NodeFormComponent implements OnInit{
   public nodeForm!: FormGroup;
 
   constructor() {
+    this.setupFormNode();
     effect(() => {
       this.nomeElemento = this.stepperService.getCurrentStepLabel();
     })
   }
 
   ngOnInit(): void {
-    console.log('Instanciou o nodeForm');
-    this.setupFormNode();
+    const savedForm = this.formsDataService.getFormByStep('step1');
+    if (savedForm) {
+      this.nodeForm.patchValue(savedForm.value, {emitEvent: false});
+    }
+
     this.setupAutoSave();
   }
 

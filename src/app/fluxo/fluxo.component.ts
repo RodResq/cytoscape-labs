@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -23,7 +23,7 @@ import { FluxoService } from './fluxo-form/fluxo.service';
   templateUrl: './fluxo.component.html',
   styleUrl: './fluxo.component.css'
 })
-export class FluxoComponent implements OnInit{
+export class FluxoComponent {
   public fluxoService = inject(FluxoService);
   public formsDataService = inject(FormsDataService);
   public stepperService = inject(StepperService);
@@ -31,7 +31,6 @@ export class FluxoComponent implements OnInit{
 
   constructor() {}
 
-  ngOnInit(): void {}
 
   back() {
     const currentStepper = this.stepperService.getCurrentStep();
