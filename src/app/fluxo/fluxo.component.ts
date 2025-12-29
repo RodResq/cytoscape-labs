@@ -58,7 +58,7 @@ export class FluxoComponent {
 
   next() {
     this.salvarDadosFormAtual();
-
+    this.atualizarDadosDoNode();
     this.irParaProximoStepper();
   }
 
@@ -72,13 +72,14 @@ export class FluxoComponent {
     localStorage.setItem(stepperLabel, dadosFormulario);
   }
 
-  private atualizarGrafo(formData: string) {
-    console.log('Atualizando Mudanças no Grafo');
+  private atualizarDadosDoNode() {
+    console.log('Atualizando Mudanças na property data do Grafo');
     
-    this.currentGrafoFormData?.node.select();
-
-    const idParentNode = this.currentGrafoFormData?.node.data('idParentNode');
-    const parenteNode = this.currentGrafoFormData?.collection.getElementById(idParentNode)
+    const nodeSelected = this.currentGrafoFormData?.node.select();
+    nodeSelected?.data('form', {'nome': 'teste'});
+    console.log('Node Selecionado Atualizado com dados do formulário: ', nodeSelected);
+    // const idParentNode = this.currentGrafoFormData?.node.data('idParentNode');
+    // const parenteNode = this.currentGrafoFormData?.collection.getElementById(idParentNode)
 
   }
 

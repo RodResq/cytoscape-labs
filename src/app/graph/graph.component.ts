@@ -409,7 +409,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
     this.cy.add([
       {
         group: 'nodes',
-        data: { id: newNodeId, idParentNode: elementId,  },
+        data: { id: newNodeId, idParentNode: elementId, form: {} },
         scratch: { _fluxo: newNodeId },
         renderedPosition: { x: nodePos.x - position.x, y: nodePos.y + position.y },
         classes: [classes.nodeClasses],
