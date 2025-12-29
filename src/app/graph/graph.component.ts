@@ -164,26 +164,34 @@ export class GraphComponent implements OnInit, AfterViewInit {
         collection.union(node);
         this.nodeService.getELement(node);
         
+        // TODO Recuperar Stepe dinamicamenta para setar como um propriedade do no.
         console.log('NodeId Clicado: ', node.id());
-        
-        this.grafoService.setGrafo({
-          length: collection.length,
-          node: node,
-          collection: collection,
-          form: {},
-          visible: true
-        });
+        const dadosFormLocalStorage = localStorage.getItem('step0');
 
-        switch (node.id()) {
-          case '0':
-            this.stepperService.setStepperByIndex(0);
-            this.router.navigate(['/fluxoApp/fluxo'])
-            break;
-          default:
-            this.stepperService.setStepperByIndex(1);
-            this.fluxoService.openForm(1, 'Editar Tarefa', node.id());
-            this.router.navigate(['/fluxoApp/node'])
-            break;
+        if (dadosFormLocalStorage) {
+          
+          this.grafoService.setGrafo({
+            length: collection.length,
+            node: node,
+            collection: collection,
+            form: dadosFormLocalStorage, 
+            visible: true
+          });
+  
+          switch (node.id()) {
+            case '0':
+              this.stepperService.setStepperByIndex(0);
+              this.router.navigate(['/fluxoApp/fluxo'])
+              break;
+            default:
+              this.stepperService.setStepperByIndex(1);
+              this.fluxoService.openForm(1, 'Editar Tarefa', node.id());
+              this.router.navigate(['/fluxoApp/node'])
+              break;
+          }
+        } else {
+          console.error('Dados do form no local storage não foi encontrado!');
+          
         }
       } else {
         console.log('Elemento selecionado nao e um no');
