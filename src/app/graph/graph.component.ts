@@ -10,7 +10,7 @@ import { GrafoService } from '../shared/services/grafo.service';
 import { StepperService } from './../cytoscape/stepper/stepper.service';
 import { ContextMenuConfig } from './contexto-menu-config';
 import { cytoscapeStyles } from './cytoscape-styles';
-import { StepperData } from '../cytoscape/stepper/stepper-cache.service';
+import { StepperCacheService, StepperData } from '../cytoscape/stepper/stepper-cache.service';
 
 
 cytoscape.use(contextMenus);
@@ -28,6 +28,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
   private cytoscapeContainer = viewChild.required<ElementRef<HTMLDivElement>>('cyContainer');
 
   private stepperService = inject(StepperService);
+  private stepperCacheService = inject(StepperCacheService);
   private nodeService = inject(NodeService)
   private formsDataService = inject(FormsDataService);
   private grafoService = inject(GrafoService);
@@ -47,9 +48,17 @@ export class GraphComponent implements OnInit, AfterViewInit {
   constructor() {
     effect(() => {
       const grafo = this.grafoService.getGrafo();
+      const currentStepper = this.stepperService.getCurrentStep();
+
+      console.log('Stepper recuperado ao clicar no nó: ', currentStepper);
+      console.log('Node Id Clicado: ', grafo?.node.id());
+      
+
       const formCadastroFluxo = this.formsDataService.getFormByStep('step0');
 
-      if (formCadastroFluxo) {
+      console.log('Dados do formulario 0 referente ao node: ', formCadastroFluxo?.value);
+      
+      if (currentStepper == 0 && formCadastroFluxo && grafo?.node.id() == '0') {
         const formValue = formCadastroFluxo.value;
         if (formValue && this.cy) {
 
@@ -61,7 +70,10 @@ export class GraphComponent implements OnInit, AfterViewInit {
       }
 
       const formSetupNode = this.formsDataService.getFormByStep('step1');
-      if (formSetupNode) {
+
+      console.log('Dados do formulario 1 referente ao node: ', formSetupNode?.value);
+
+      if (currentStepper == 1 && formSetupNode && grafo?.node.id() != '1') {
         const formSetupNodeValue = formSetupNode.value;
         if (formSetupNodeValue && this.cy) {
           grafo?.node.select();
@@ -147,17 +159,13 @@ export class GraphComponent implements OnInit, AfterViewInit {
   private waitForNodeClick(collection: cytoscape.CollectionReturnValue) {
     this.cy.on('tap', 'node', (event) => {
       const node = event.target;
-      const currentStepper = this.stepperService.getCurrentStepLabel();
-
-      console.log('Current Stepper Label: ', currentStepper);
-
-
-      console.log('Current Stepper Label: ', currentStepper);
 
       if (node.isNode()) {
         collection.union(node);
         this.nodeService.getELement(node);
-        console.log('NodeId atual: ', node.id());
+        
+        console.log('NodeId Clicado: ', node.id());
+        
         this.grafoService.setGrafo({
           length: collection.length,
           node: node,

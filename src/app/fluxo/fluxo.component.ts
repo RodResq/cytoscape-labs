@@ -69,10 +69,12 @@ export class FluxoComponent {
 
     const stepperLabel = <keyof StepperData>'step'.concat(currentStepIndex.toString());
     const dadosFormulario = JSON.stringify(this.formsDataService.getFormByStep(stepperLabel)?.value);
-    this.stepperCacheService.saveStepData(stepperLabel, dadosFormulario);
+    localStorage.setItem(stepperLabel, dadosFormulario);
   }
 
   private atualizarGrafo(formData: string) {
+    console.log('Atualizando Mudanças no Grafo');
+    
     this.currentGrafoFormData?.node.select();
 
     const idParentNode = this.currentGrafoFormData?.node.data('idParentNode');
