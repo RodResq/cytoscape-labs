@@ -75,7 +75,6 @@ export class FluxoComponent {
   private salvarDadosNoNode(dadosForm: FormGroup) {
     const nodeSelected = this.currentGrafoFormData?.node.select();
     nodeSelected?.data('form', dadosForm);
-
   }
 
   private irParaProximoStepper() {

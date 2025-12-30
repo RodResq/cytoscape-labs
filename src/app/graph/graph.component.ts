@@ -6,12 +6,19 @@ import contextMenus from 'cytoscape-context-menus';
 import { FluxoService } from '../fluxo/fluxo-form/fluxo.service';
 import { NodeService } from '../fluxo/node-form/node.service';
 import { FormsDataService } from '../shared/services/forms-data.service';
-import { GrafoService } from '../shared/services/grafo.service';
+import { GrafoFormData, GrafoService } from '../shared/services/grafo.service';
 import { StepperService } from './../cytoscape/stepper/stepper.service';
 import { ContextMenuConfig } from './contexto-menu-config';
 import { cytoscapeStyles } from './cytoscape-styles';
 import { StepperCacheService, StepperData } from '../cytoscape/stepper/stepper-cache.service';
+import { FormGroup } from '@angular/forms';
 
+
+interface DadosFluxo {
+  fluxo: string;
+  descricao: string;
+  dataCriacao: string;
+}
 
 cytoscape.use(contextMenus);
 cytoscape.warnings(true);
@@ -44,42 +51,45 @@ export class GraphComponent implements OnInit, AfterViewInit {
   selectedElementId: string = '';
 
   private contexMenuInstance!: contextMenus.ContextMenu;
+  private grafo: GrafoFormData | null = null;
 
   constructor() {
     effect(() => {
-      const grafo = this.grafoService.getGrafo();
+      this.grafo = this.grafoService.getGrafo();
       const currentStepper = this.stepperService.getCurrentStep();
 
-      console.log('Stepper recuperado ao clicar no nó: ', currentStepper);
-      console.log('Node Id Clicado: ', grafo?.node.id());
-      
-
       const formCadastroFluxo = this.formsDataService.getFormByStep('step0');
-
-      console.log('Dados do formulario 0 referente ao node: ', formCadastroFluxo?.value);
+      const dadosStorage = localStorage.getItem('step0');
+      const dadosSalvoStorage: DadosFluxo | null = dadosStorage ? JSON.parse(dadosStorage): null
       
-      if (currentStepper == 0 && formCadastroFluxo && grafo?.node.id() == '0') {
-        const formValue = formCadastroFluxo.value;
-        if (formValue && this.cy) {
-
-          if (grafo?.collection.length == 1) {
-            grafo.node.select();
-            grafo.node.style('label', formValue.fluxo);
+      if (!dadosSalvoStorage) {
+        if (currentStepper == 0 && formCadastroFluxo && this.grafo?.node.id() == '0') {
+          const formValue = formCadastroFluxo.value;
+          if (formValue && this.cy) {
+  
+            if (this.grafo?.collection.length == 1) {
+              this.grafo.node.select();
+              this.grafo.node.style('label', formValue.fluxo);
+            }
           }
         }
-      }
-
-      const formSetupNode = this.formsDataService.getFormByStep('step1');
-
-      console.log('Dados do formulario 1 referente ao node: ', formSetupNode?.value);
-
-      if (currentStepper == 1 && formSetupNode && grafo?.node.id() != '1') {
-        const formSetupNodeValue = formSetupNode.value;
-        if (formSetupNodeValue && this.cy) {
-          grafo?.node.select();
-          grafo?.node.style('label', formSetupNodeValue.nome);
+  
+        const formSetupNode = this.formsDataService.getFormByStep('step1');
+  
+        if (currentStepper == 1 && formSetupNode && this.grafo?.node.id() != '1') {
+          const formSetupNodeValue = formSetupNode.value;
+          if (formSetupNodeValue && this.cy) {
+            this.grafo?.node.select();
+            this.grafo?.node.style('label', formSetupNodeValue.nome);
+          }
         }
+      } else {
+        this.grafo?.node.select();
+        this.grafo?.node.style('label', dadosSalvoStorage.fluxo);
       }
+
+
+
     });
 
   }
