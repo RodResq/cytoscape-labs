@@ -62,8 +62,6 @@ export class FluxoComponent {
     this.irParaProximoStepper();
   }
 
-
-
   private salvarDadosFormAtual() {
     const currentStepIndex = this.stepperService.getCurrentStep();
 
@@ -77,7 +75,6 @@ export class FluxoComponent {
   private salvarDadosNoNode(dadosForm: FormGroup) {
     const nodeSelected = this.currentGrafoFormData?.node.select();
     nodeSelected?.data('form', dadosForm);
-    console.log('>>>>>>>>>>> Node Selecionado Atualizado com dados do formulário: ', nodeSelected);
 
   }
 
