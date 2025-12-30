@@ -52,17 +52,17 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
   private contexMenuInstance!: contextMenus.ContextMenu;
   private grafo: GrafoFormData | null = null;
+  private dadosSalvoStorage: DadosFluxo | null = null;
 
+  // TODO REFATTORA LOGICA STATICA PARA RECUPERAR DADOS DO LOCAL STORAGE
   constructor() {
     effect(() => {
       this.grafo = this.grafoService.getGrafo();
       const currentStepper = this.stepperService.getCurrentStep();
 
       const formCadastroFluxo = this.formsDataService.getFormByStep('step0');
-      const dadosStorage = localStorage.getItem('step0');
-      const dadosSalvoStorage: DadosFluxo | null = dadosStorage ? JSON.parse(dadosStorage): null
-      
-      if (!dadosSalvoStorage) {
+     
+      if (!this.dadosSalvoStorage) {
         if (currentStepper == 0 && formCadastroFluxo && this.grafo?.node.id() == '0') {
           const formValue = formCadastroFluxo.value;
           if (formValue && this.cy) {
@@ -85,17 +85,16 @@ export class GraphComponent implements OnInit, AfterViewInit {
         }
       } else {
         this.grafo?.node.select();
-        this.grafo?.node.style('label', dadosSalvoStorage.fluxo);
+        this.grafo?.node.style('label', this.dadosSalvoStorage.fluxo);
       }
-
-
-
     });
 
   }
 
   ngOnInit(): void {
-    console.log(' Graph works!', this.cytoscapeContainer);
+    const dadosStorage = localStorage.getItem('step0');
+    const dadosSalvoStorage: DadosFluxo | null = dadosStorage ? JSON.parse(dadosStorage): null
+    
   }
 
   ngAfterViewInit(): void {
