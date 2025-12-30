@@ -21,7 +21,6 @@ export class GrafoService {
   getGrafo = computed(() => this.grafoSignal());
 
   setGrafo(grafo: GrafoFormData) {
-    console.log('Setando Grafo no Signal: ', grafo);
     this.grafoSignal.set(grafo);
   }
 

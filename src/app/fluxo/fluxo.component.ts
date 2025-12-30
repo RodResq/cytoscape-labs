@@ -11,6 +11,7 @@ import { StepperService } from '../cytoscape/stepper/stepper.service';
 import { FormsDataService } from '../shared/services/forms-data.service';
 import { FluxoService } from './fluxo-form/fluxo.service';
 import { GrafoFormData, GrafoService } from '../shared/services/grafo.service';
+import { FormGroup } from '@angular/forms';
 
 
 @Component({
@@ -58,7 +59,6 @@ export class FluxoComponent {
 
   next() {
     this.salvarDadosFormAtual();
-    this.atualizarDadosDoNode();
     this.irParaProximoStepper();
   }
 
@@ -68,18 +68,16 @@ export class FluxoComponent {
     const currentStepIndex = this.stepperService.getCurrentStep();
 
     const stepperLabel = <keyof StepperData>'step'.concat(currentStepIndex.toString());
-    const dadosFormulario = JSON.stringify(this.formsDataService.getFormByStep(stepperLabel)?.value);
-    localStorage.setItem(stepperLabel, dadosFormulario);
+    const dadosFormulario = this.formsDataService.getFormByStep(stepperLabel)?.value;
+    localStorage.setItem(stepperLabel, JSON.stringify(dadosFormulario));
+
+    this.salvarDadosNoNode(dadosFormulario);
   }
 
-  private atualizarDadosDoNode() {
-    console.log('Atualizando Mudanças na property data do Grafo');
-    
+  private salvarDadosNoNode(dadosForm: FormGroup) {
     const nodeSelected = this.currentGrafoFormData?.node.select();
-    nodeSelected?.data('form', {'nome': 'teste'});
-    console.log('Node Selecionado Atualizado com dados do formulário: ', nodeSelected);
-    // const idParentNode = this.currentGrafoFormData?.node.data('idParentNode');
-    // const parenteNode = this.currentGrafoFormData?.collection.getElementById(idParentNode)
+    nodeSelected?.data('form', dadosForm);
+    console.log('>>>>>>>>>>> Node Selecionado Atualizado com dados do formulário: ', nodeSelected);
 
   }
 
