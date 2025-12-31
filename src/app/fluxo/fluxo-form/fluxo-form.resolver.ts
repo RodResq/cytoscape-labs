@@ -10,7 +10,7 @@ export const fluxoFormResolver: ResolveFn<Acao> = (route, state) => {
     const currentStep = stepperService.getCurrentStep();
 
     if (currentStep == 0) {
-      fluxoService.openForm(0, 'Cadastrar Fluxo de Tarefa', 'Informacoes gerais sobre a que se propoe a terefa e seu objetivo final.');
+      fluxoService.openForm(0, 'Cadastrar Fluxograma', 'Informacoes gerais sobre a que se propoe a terefa e seu objetivo final.');
     } else {
       fluxoService.openForm(0, 'Cadastrar Tarefas', '');
     }

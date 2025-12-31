@@ -1,4 +1,5 @@
 import { computed, Injectable, signal } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import cytoscape from 'cytoscape';
 
 
@@ -6,7 +7,7 @@ import cytoscape from 'cytoscape';
 export interface GrafoFormData {
   length: number,
   node: cytoscape.NodeSingular,
-  form: {},
+  form: FormGroup | {} | null,
   collection: cytoscape.NodeCollection,
   visible: boolean
 }

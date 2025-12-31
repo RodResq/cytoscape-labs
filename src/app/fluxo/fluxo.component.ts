@@ -66,9 +66,13 @@ export class FluxoComponent {
     const currentStepIndex = this.stepperService.getCurrentStep();
 
     const stepperLabel = <keyof StepperData>'step'.concat(currentStepIndex.toString());
-    const dadosFormulario = this.formsDataService.getFormByStep(stepperLabel)?.value;
-    localStorage.setItem(stepperLabel, JSON.stringify(dadosFormulario));
+    const dadosFormulario = this.formsDataService.getFormByStep(stepperLabel);
 
+    if (dadosFormulario === undefined || dadosFormulario.pristine) {
+      return;
+    }
+
+    localStorage.setItem(stepperLabel, JSON.stringify(dadosFormulario.value));
     this.salvarDadosNoNode(dadosFormulario);
   }
 

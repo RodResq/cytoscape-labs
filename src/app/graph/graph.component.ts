@@ -52,40 +52,42 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
   private contexMenuInstance!: contextMenus.ContextMenu;
   private grafo: GrafoFormData | null = null;
+  private currentStep:number = 0;
   private dadosSalvoStorage: DadosFluxo | null = null;
 
-  // TODO REFATTORA LOGICA STATICA PARA RECUPERAR DADOS DO LOCAL STORAGE
   constructor() {
     effect(() => {
       this.grafo = this.grafoService.getGrafo();
-      const currentStepper = this.stepperService.getCurrentStep();
+      this.currentStep = this.stepperService.getCurrentStep();
+
+      const grafoForm = this.grafo?.node.data().form;
+
+      if (!grafoForm) {
+        if (this.dadosSalvoStorage) {
+          this.grafo?.node.select();
+          this.grafo?.node.style('label', this.dadosSalvoStorage.fluxo);
+          return;
+        }
+      }
 
       const formCadastroFluxo = this.formsDataService.getFormByStep('step0');
-     
-      if (!this.dadosSalvoStorage) {
-        if (currentStepper == 0 && formCadastroFluxo && this.grafo?.node.id() == '0') {
-          const formValue = formCadastroFluxo.value;
-          if (formValue && this.cy) {
-  
-            if (this.grafo?.collection.length == 1) {
-              this.grafo.node.select();
-              this.grafo.node.style('label', formValue.fluxo);
-            }
-          }
+
+      if (this.currentStep == 0 && formCadastroFluxo && this.grafo?.node.id() == '0') {
+        const formValue = formCadastroFluxo.value;
+        if (formValue) {
+            this.grafo.node.select();
+            this.grafo.node.style('label', formValue.fluxo);
         }
-  
-        const formSetupNode = this.formsDataService.getFormByStep('step1');
-  
-        if (currentStepper == 1 && formSetupNode && this.grafo?.node.id() != '1') {
-          const formSetupNodeValue = formSetupNode.value;
-          if (formSetupNodeValue && this.cy) {
-            this.grafo?.node.select();
-            this.grafo?.node.style('label', formSetupNodeValue.nome);
-          }
+      }
+
+      const formSetupNode = this.formsDataService.getFormByStep('step1');
+
+      if (this.currentStep == 1 && formSetupNode && this.grafo?.node.id() != '1') {
+        const formSetupNodeValue = formSetupNode.value;
+        if (formSetupNodeValue) {
+          this.grafo?.node.select();
+          this.grafo?.node.style('label', formSetupNodeValue.nome);
         }
-      } else {
-        this.grafo?.node.select();
-        this.grafo?.node.style('label', this.dadosSalvoStorage.fluxo);
       }
     });
 
@@ -93,8 +95,9 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     const dadosStorage = localStorage.getItem('step0');
-    const dadosSalvoStorage: DadosFluxo | null = dadosStorage ? JSON.parse(dadosStorage): null
-    
+    if (dadosStorage != undefined) {
+      this.dadosSalvoStorage = dadosStorage ? JSON.parse(dadosStorage): null;
+    }
   }
 
   ngAfterViewInit(): void {
@@ -115,7 +118,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
     this.grafoService.setGrafo({
       length: 1,
       node: this.cy.getElementById('0'),
-      form: {},
+      form: null,
       collection: this.cy.nodes(),
       visible: false
     });
@@ -172,21 +175,21 @@ export class GraphComponent implements OnInit, AfterViewInit {
       if (node.isNode()) {
         collection.union(node);
         this.nodeService.getELement(node);
-        
+
         // TODO Recuperar Stepe dinamicamenta para setar como um propriedade do no.
         console.log('NodeId Clicado: ', node.id());
         const dadosFormLocalStorage = localStorage.getItem('step0');
 
         if (dadosFormLocalStorage) {
-          
+
           this.grafoService.setGrafo({
             length: collection.length,
             node: node,
             collection: collection,
-            form: dadosFormLocalStorage, 
+            form: dadosFormLocalStorage,
             visible: true
           });
-  
+
           switch (node.id()) {
             case '0':
               this.stepperService.setStepperByIndex(0);
@@ -200,7 +203,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
           }
         } else {
           console.error('Dados do form no local storage não foi encontrado!');
-          
+
         }
       } else {
         console.log('Elemento selecionado nao e um no');
