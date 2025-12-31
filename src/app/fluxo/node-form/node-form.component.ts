@@ -41,17 +41,11 @@ export class NodeFormComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    const savedForm = this.formsDataService.getFormByStep('step1');
-    if (savedForm) {
-      this.nodeForm.patchValue(savedForm.value, {emitEvent: false});
-    }
-
     this.setupAutoSave();
   }
 
   setupFormNode() {
     this.nodeForm = this.formBuilder.group({
-      id: [],
       nome: ['', [Validators.required, Validators.minLength(2)]],
       ativo:['true']
     });

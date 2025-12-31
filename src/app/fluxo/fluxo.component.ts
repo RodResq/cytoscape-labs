@@ -64,31 +64,36 @@ export class FluxoComponent {
 
   private salvarDadosFormAtual() {
     const currentStepIndex = this.stepperService.getCurrentStep();
-
-    console.log('current step: ', currentStepIndex);
-
     const stepperLabel = <keyof StepperData>'step'.concat(currentStepIndex.toString());
     const dadosFormulario = this.formsDataService.getFormByStep(stepperLabel);
-
     const dadosNodeAtual = this.salvarDadosNoNode(dadosFormulario.value);
 
     if (currentStepIndex == 1) {
       const nodesTarefaArray: Array<{}> = [];
 
       const itemArmazenado = localStorage.getItem('step1');
-      console.log('Item Armazenado: ', itemArmazenado);
 
       if (itemArmazenado) {
-        nodesTarefaArray.push(itemArmazenado);
+        try {
+          const dadosParsed = JSON.parse(itemArmazenado);
+          if (Array.isArray(dadosParsed)) {
+            nodesTarefaArray.push(...dadosParsed);
+          } else {
+            nodesTarefaArray.push(dadosParsed);
+          }
+        } catch (error) {
+          console.error('Erro ao fazer o parse do JSON: ', error);
+
+        }
       }
 
       nodesTarefaArray.push(dadosNodeAtual);
       localStorage.setItem(stepperLabel, JSON.stringify(nodesTarefaArray))
 
-      return
+      return;
     }
-    localStorage.setItem(stepperLabel, JSON.stringify(dadosNodeAtual));
 
+    localStorage.setItem(stepperLabel, JSON.stringify(dadosNodeAtual));
   }
 
   private salvarDadosNoNode(dadosForm: FormGroup) {
