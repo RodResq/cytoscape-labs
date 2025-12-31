@@ -192,8 +192,6 @@ export class GraphComponent implements OnInit, AfterViewInit {
         collection.union(node);
         this.nodeService.getELement(node);
 
-        // TODO Verificar pq esta retirando o id no localStore do stpe1
-        console.log('NodeId Clicado: ', node.id());
         const dadosFormLocalStorage = localStorage.getItem('step0');
 
         if (dadosFormLocalStorage) {

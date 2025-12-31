@@ -74,9 +74,9 @@ export class FluxoFormComponent implements OnInit {
     if (dadosFormalarioSalvo) {
       try {
         const dadosParseados = JSON.parse(dadosFormalarioSalvo);
-        this.fluxoForm.patchValue(dadosParseados, { emitEvent: false });
+        this.fluxoForm.patchValue(dadosParseados.form, { emitEvent: false });
       } catch (error) {
-        console.error('Error ao fazer o parse dos dados do localStorage: ', error);
+        console.error('Error ao fazer o parse dos dados do step0: ', error);
       }
     }
   }

@@ -21,7 +21,6 @@ export class NodeFormComponent implements OnInit{
   private grafoService = inject(GrafoService);
 
   public stepCompleted = output<boolean>();
-  public showFormNode?: boolean = false;
 
   nomeElemento: string = '';
   nome: string = '';
@@ -33,8 +32,7 @@ export class NodeFormComponent implements OnInit{
   constructor() {
     effect(() => {
       this.nomeElemento = this.stepperService.getCurrentStepLabel();
-      this.showFormNode = this.grafoService.getGrafo()?.visible;
-
+      this.grafo = this.grafoService.getGrafo();
     });
     this.setupFormNode();
 

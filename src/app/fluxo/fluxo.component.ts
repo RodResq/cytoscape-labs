@@ -66,7 +66,7 @@ export class FluxoComponent {
     const currentStepIndex = this.stepperService.getCurrentStep();
     const stepperLabel = <keyof StepperData>'step'.concat(currentStepIndex.toString());
     const dadosFormulario = this.formsDataService.getFormByStep(stepperLabel);
-    const dadosNodeAtual = this.salvarDadosNoNode(dadosFormulario.value);
+    const dadosNodeAtual = this.salvarDadosNoNode(dadosFormulario?.value);
 
     if (currentStepIndex == 1) {
       const nodesTarefaArray: Array<{}> = [];
@@ -83,7 +83,6 @@ export class FluxoComponent {
           }
         } catch (error) {
           console.error('Erro ao fazer o parse do JSON: ', error);
-
         }
       }
 
