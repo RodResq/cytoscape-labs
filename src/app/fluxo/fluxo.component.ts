@@ -62,34 +62,43 @@ export class FluxoComponent {
     this.irParaProximoStepper();
   }
 
+  //TODO refator para dexa metodo mais legivel
   private salvarDadosFormAtual() {
-    const currentStepIndex = this.stepperService.getCurrentStep();
-    const stepperLabel = <keyof StepperData>'step'.concat(currentStepIndex.toString());
+    const currentStep = this.stepperService.getCurrentStep();
+    const stepperLabel = <keyof StepperData>'step'.concat(currentStep.toString());
     const dadosFormulario = this.formsDataService.getFormByStep(stepperLabel);
     const dadosNodeAtual = this.salvarDadosNoNode(dadosFormulario?.value);
 
-    if (currentStepIndex == 1) {
-      const nodesTarefaArray: Array<{}> = [];
-
+    if (currentStep == 1) {
+      let nodesTarefaArray: Array<{}> = [];
       const itemArmazenado = localStorage.getItem('step1');
 
       if (itemArmazenado) {
         try {
-          const dadosParsed = JSON.parse(itemArmazenado);
+          const dadosParsed: Array<any> = JSON.parse(itemArmazenado);
+
           if (Array.isArray(dadosParsed)) {
-            //TODO Adicionar logica para atualizar as informacoes do grafo do step1
-            nodesTarefaArray.push(...dadosParsed);
+            const itemExistente = dadosParsed.some(dado => dado.id == this.grafo?.node.id());
+
+            if (itemExistente) {
+              nodesTarefaArray = dadosParsed.map(dado =>
+                dado.id === this.grafo?.node.id() ? dadosNodeAtual: dado
+              )
+            } else {
+              nodesTarefaArray = [...dadosParsed, dadosNodeAtual]
+            }
           } else {
             nodesTarefaArray.push(dadosParsed);
+            nodesTarefaArray.push(dadosNodeAtual);
           }
         } catch (error) {
           console.error('Erro ao fazer o parse do JSON: ', error);
         }
+      } else {
+        nodesTarefaArray.push(dadosNodeAtual);
       }
 
-      nodesTarefaArray.push(dadosNodeAtual);
       localStorage.setItem(stepperLabel, JSON.stringify(nodesTarefaArray))
-
       return;
     }
 
