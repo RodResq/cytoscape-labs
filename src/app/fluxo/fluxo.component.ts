@@ -77,6 +77,7 @@ export class FluxoComponent {
         try {
           const dadosParsed = JSON.parse(itemArmazenado);
           if (Array.isArray(dadosParsed)) {
+            //TODO Adicionar logica para atualizar as informacoes do grafo do step1
             nodesTarefaArray.push(...dadosParsed);
           } else {
             nodesTarefaArray.push(dadosParsed);

@@ -33,6 +33,9 @@ export class NodeFormComponent implements OnInit{
     effect(() => {
       this.nomeElemento = this.stepperService.getCurrentStepLabel();
       this.grafo = this.grafoService.getGrafo();
+
+      this.preencherFormTarefa();
+
     });
     this.setupFormNode();
 
@@ -54,6 +57,22 @@ export class NodeFormComponent implements OnInit{
       this.formsDataService.setFormData('step1', this.nodeForm);
     });
   }
+
+  preencherFormTarefa() {
+    const dadosStorage = localStorage.getItem('step1');
+
+    if (dadosStorage) {
+      const dadosParsed = JSON.parse(dadosStorage);
+      if (Array.isArray(dadosParsed)) {
+        dadosParsed
+          .filter(dado => dado.id == this.grafo?.node.id())
+          .map(dado => {
+            this.nodeForm.patchValue(dado.form, {emitEvent: false})
+            return dado;
+          });
+        };
+      }
+    }
 
 }
 
