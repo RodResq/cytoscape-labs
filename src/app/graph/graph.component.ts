@@ -70,28 +70,44 @@ export class GraphComponent implements OnInit, AfterViewInit {
         }
       }
 
-      const formCadastroFluxo = this.formsDataService.getFormByStep('step0');
+      if (this.currentStep == 0) {
 
-      if (this.currentStep == 0 && formCadastroFluxo && this.grafo?.node.id() == '0') {
-        const formValue = formCadastroFluxo.value;
-        if (formValue) {
-            this.grafo.node.select();
-            this.grafo.node.style('label', formValue.fluxo);
+        const formCadastroFluxo = this.formsDataService.getFormByStep('step0');
+
+        if (formCadastroFluxo && this.grafo?.node.id() == '0') {
+          const formValue = formCadastroFluxo.value;
+          if (formValue) {
+              this.grafo.node.select();
+              this.grafo.node.style('label', formValue.fluxo);
+          }
         }
+
+        return
       }
 
-      const formSetupNode = this.formsDataService.getFormByStep('step1');
-
-      if (this.currentStep == 1 && formSetupNode && this.grafo?.node.id() != '1') {
-        const formSetupNodeValue = formSetupNode.value;
-        if (formSetupNodeValue) {
+      if (this.currentStep == 1) {
+        if (grafoForm) {
           this.grafo?.node.select();
-          this.grafo?.node.style('label', formSetupNodeValue.nome);
+          this.grafo?.node.style('label', grafoForm.nome);
+          return;
         }
+
+        const formSetupNode = this.formsDataService.getFormByStep('step1');
+
+        if (formSetupNode) {
+          const formSetupNodeValue = formSetupNode.value;
+          if (formSetupNodeValue) {
+            this.grafo?.node.select();
+            this.grafo?.node.style('label', formSetupNodeValue.nome);
+          }
+        }
+        return;
       }
+
     });
 
   }
+
 
   ngOnInit(): void {
     const dadosStorage = localStorage.getItem('step0');
@@ -176,7 +192,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
         collection.union(node);
         this.nodeService.getELement(node);
 
-        // TODO Recuperar Stepe dinamicamenta para setar como um propriedade do no.
+        // TODO Verificar pq esta retirando o id no localStore do stpe1
         console.log('NodeId Clicado: ', node.id());
         const dadosFormLocalStorage = localStorage.getItem('step0');
 

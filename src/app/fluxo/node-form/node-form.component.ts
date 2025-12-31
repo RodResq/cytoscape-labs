@@ -6,7 +6,7 @@ import { Checkbox } from 'primeng/checkbox';
 import { StepperService } from '../../cytoscape/stepper/stepper.service';
 import { FormsDataService } from '../../shared/services/forms-data.service';
 import { Message } from 'primeng/message'
-import { GrafoService } from '../../shared/services/grafo.service';
+import { GrafoFormData, GrafoService } from '../../shared/services/grafo.service';
 
 @Component({
   selector: 'app-node-form',
@@ -28,13 +28,16 @@ export class NodeFormComponent implements OnInit{
   ativo: boolean = false;
 
   public nodeForm!: FormGroup;
+  public grafo: GrafoFormData | null = null;
 
   constructor() {
-    this.setupFormNode();
     effect(() => {
       this.nomeElemento = this.stepperService.getCurrentStepLabel();
       this.showFormNode = this.grafoService.getGrafo()?.visible;
-    })
+
+    });
+    this.setupFormNode();
+
   }
 
   ngOnInit(): void {
@@ -48,22 +51,15 @@ export class NodeFormComponent implements OnInit{
 
   setupFormNode() {
     this.nodeForm = this.formBuilder.group({
+      id: [],
       nome: ['', [Validators.required, Validators.minLength(2)]],
       ativo:['true']
     });
-
-    const savedData = this.formsDataService.getFormByStep('step1');
-    if (savedData) {
-        localStorage.setItem('step1', JSON.stringify(savedData.value));
-        this.nodeForm.patchValue(savedData.value, {emitEvent: false});
-      }
   }
 
   setupAutoSave() {
-    this.nodeForm.valueChanges.subscribe(() => {
+    this.nodeForm?.valueChanges.subscribe(() => {
       this.formsDataService.setFormData('step1', this.nodeForm);
-
-      this.stepCompleted.emit(this.nodeForm.valid);
     });
   }
 

@@ -34,10 +34,10 @@ export class FluxoComponent {
   private grafoService = inject(GrafoService);
   private router = inject(Router);
 
-  private currentGrafoFormData: GrafoFormData | null = null;
+  private grafo: GrafoFormData | null = null;
 
   constructor() {
-    effect(() => this.currentGrafoFormData = this.grafoService.getGrafo());
+    effect(() => this.grafo = this.grafoService.getGrafo());
   }
 
 
@@ -65,20 +65,40 @@ export class FluxoComponent {
   private salvarDadosFormAtual() {
     const currentStepIndex = this.stepperService.getCurrentStep();
 
+    console.log('current step: ', currentStepIndex);
+
     const stepperLabel = <keyof StepperData>'step'.concat(currentStepIndex.toString());
     const dadosFormulario = this.formsDataService.getFormByStep(stepperLabel);
 
-    if (dadosFormulario === undefined || dadosFormulario.pristine) {
-      return;
-    }
+    const dadosNodeAtual = this.salvarDadosNoNode(dadosFormulario.value);
 
-    localStorage.setItem(stepperLabel, JSON.stringify(dadosFormulario.value));
-    this.salvarDadosNoNode(dadosFormulario);
+    if (currentStepIndex == 1) {
+      const nodesTarefaArray: Array<{}> = [];
+
+      const itemArmazenado = localStorage.getItem('step1');
+      console.log('Item Armazenado: ', itemArmazenado);
+
+      if (itemArmazenado) {
+        nodesTarefaArray.push(itemArmazenado);
+      }
+
+      nodesTarefaArray.push(dadosNodeAtual);
+      localStorage.setItem(stepperLabel, JSON.stringify(nodesTarefaArray))
+
+      return
+    }
+    localStorage.setItem(stepperLabel, JSON.stringify(dadosNodeAtual));
+
   }
 
   private salvarDadosNoNode(dadosForm: FormGroup) {
-    const nodeSelected = this.currentGrafoFormData?.node.select();
+    const nodeSelected = this.grafo?.node.select();
     nodeSelected?.data('form', dadosForm);
+
+    return {
+      'id': nodeSelected?.id(),
+      'form': nodeSelected?.data().form
+    };
   }
 
   private irParaProximoStepper() {
