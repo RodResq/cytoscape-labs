@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { FluxoService } from './fluxo.service';
+import { FormService } from '../../shared/services/form.service';
 
 describe('FluxoService', () => {
-  let service: FluxoService;
+  let service: FormService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(FluxoService);
+    service = TestBed.inject(FormService);
   });
 
   it('should be created', () => {

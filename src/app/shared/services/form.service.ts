@@ -11,7 +11,7 @@ export interface Acao {
 @Injectable({
   providedIn: 'root'
 })
-export class FluxoService  {
+export class FormService  {
   private formSignal = signal<Acao>({formNumber: 0, title: '', subTitle: '', visible: false, acao: ''});
 
   public readonly form = this.formSignal.asReadonly();

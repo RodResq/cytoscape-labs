@@ -6,7 +6,7 @@ import { ButtonsCancelPreviousComponent } from "./buttons-cancel-previous/button
 import { CommonModule, NgClass } from '@angular/common';
 import { StepperEnum, StepperLabelEnum } from '../../cytoscape/stepper/steppper.enum';
 import { StepperService } from '../../cytoscape/stepper/stepper.service';
-import { FluxoService } from '../../fluxo/fluxo-form/fluxo.service';
+import { FormService } from '../services/form.service';
 import { GrafoFormData, GrafoService } from '../services/grafo.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -27,7 +27,7 @@ export class ButtonsFormComponent {
   private stepperService = inject(StepperService);
   private buttonsService = inject(ButtonsService);
   private grafoService = inject(GrafoService);
-  private fluxoService = inject(FluxoService);
+  private fluxoService = inject(FormService);
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
 

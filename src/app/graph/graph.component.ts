@@ -3,7 +3,7 @@ import { AfterViewInit, Component, effect, ElementRef, inject, OnInit, viewChild
 import { Router } from '@angular/router';
 import cytoscape from 'cytoscape';
 import contextMenus from 'cytoscape-context-menus';
-import { FluxoService } from '../fluxo/fluxo-form/fluxo.service';
+import { FormService } from '../shared/services/form.service';
 import { NodeService } from '../fluxo/node-form/node.service';
 import { FormsDataService } from '../shared/services/forms-data.service';
 import { GrafoFormData, GrafoService } from '../shared/services/grafo.service';
@@ -39,7 +39,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
   private nodeService = inject(NodeService)
   private formsDataService = inject(FormsDataService);
   private grafoService = inject(GrafoService);
-  private fluxoService = inject(FluxoService);
+  private fluxoService = inject(FormService);
   private router = inject(Router);
 
   private taskFormReceivedData: any;
@@ -206,13 +206,10 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
           switch (node.id()) {
             case '0':
-              this.stepperService.setStepperByIndex(0);
-              this.router.navigate(['/fluxoApp/fluxo'])
+              this.router.navigate(['/fluxoApp/fluxo'], {queryParams: {id:node.id()}})
               break;
             default:
-              this.stepperService.setStepperByIndex(1);
-              this.fluxoService.openForm(1, 'Editar Tarefa', node.id());
-              this.router.navigate(['/fluxoApp/node'])
+              this.router.navigate(['/fluxoApp/node'], {queryParams: {id: node.id()}})
               break;
           }
         } else {
@@ -276,7 +273,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
     const targerId = edge.target().id();
 
     console.log('Process Edge: ', edgeId, `${sourceId} -> ${targerId}`);
-    this.fluxoService.openForm(2, 'Node Geral', 'Info Node');
+    // this.fluxoService.openForm(2, 'Node Geral', 'Info Node');
 
   }
 
