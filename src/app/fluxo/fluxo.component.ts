@@ -9,7 +9,7 @@ import { Router, RouterModule, RouterOutlet } from "@angular/router";
 import { StepperData } from '../cytoscape/stepper/stepper-cache.service';
 import { StepperService } from '../cytoscape/stepper/stepper.service';
 import { FormsDataService } from '../shared/services/forms-data.service';
-import { FormService } from '../shared/services/form.service';
+import { Acao, FormService } from '../shared/services/form.service';
 import { GrafoFormData, GrafoService } from '../shared/services/grafo.service';
 import { FormGroup } from '@angular/forms';
 
@@ -27,7 +27,7 @@ import { FormGroup } from '@angular/forms';
   styleUrl: './fluxo.component.css'
 })
 export class FluxoComponent {
-  public fluxoService = inject(FormService);
+  public formService = inject(FormService);
   public formsDataService = inject(FormsDataService);
   public stepperService = inject(StepperService);
   public stepperCacheService = inject(StepperCacheService);
@@ -35,9 +35,15 @@ export class FluxoComponent {
   private router = inject(Router);
 
   public grafo: GrafoFormData | null = null;
+  public form: Acao | null = null;
 
   constructor() {
-    effect(() => this.grafo = this.grafoService.getGrafo());
+    effect(
+      () => {
+        this.grafo = this.grafoService.getGrafo();
+        this.form = this.formService.getForm();
+      }
+    );
   }
 
 

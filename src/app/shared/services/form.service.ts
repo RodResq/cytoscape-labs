@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { computed, Injectable, signal } from '@angular/core';
 
 export interface Acao {
   title: string,
@@ -14,8 +14,7 @@ export interface Acao {
 export class FormService  {
   private formSignal = signal<Acao>({formNumber: 0, title: '', subTitle: '', visible: false, acao: ''});
 
-  public readonly form = this.formSignal.asReadonly();
-
+  getForm = computed(() => this.formSignal());
 
   openForm(formNumber: number, title: string, subTitle: string) {
     this.formSignal.set({

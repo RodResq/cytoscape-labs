@@ -21,5 +21,5 @@ export const fluxoFormResolver: ResolveFn<Acao> = (route, state) => {
     }
 
 
-    return fluxoService.form();
+    return fluxoService.getForm();
 }

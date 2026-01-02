@@ -206,9 +206,11 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
           switch (node.id()) {
             case '0':
+              this.stepperService.setStepperByIndex(0);
               this.router.navigate(['/fluxoApp/fluxo'], {queryParams: {id:node.id()}})
               break;
             default:
+              this.stepperService.setStepperByIndex(1);
               this.router.navigate(['/fluxoApp/node'], {queryParams: {id: node.id()}})
               break;
           }
