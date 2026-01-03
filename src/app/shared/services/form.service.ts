@@ -2,7 +2,7 @@ import { computed, Injectable, signal } from '@angular/core';
 
 export interface Acao {
   title: string,
-  subTitle: string,
+  subTitle: string | null,
   formNumber: number,
   visible: boolean,
   acao: string | undefined
@@ -16,7 +16,7 @@ export class FormService  {
 
   getForm = computed(() => this.formSignal());
 
-  openForm(formNumber: number, title: string, subTitle: string) {
+  openForm(formNumber: number, title: string, subTitle: string | null) {
     this.formSignal.set({
       formNumber: formNumber,
       title: title,

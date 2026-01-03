@@ -17,7 +17,7 @@ export const fluxoFormResolver: ResolveFn<Acao> = (route, state) => {
     } else {
       fluxoService.openForm(1, hasId ?
         'Editar Tarefa':
-        'Cadastrar Tarefas', '');
+        'Cadastrar Tarefas', route.queryParamMap.get('id'));
     }
 
 
