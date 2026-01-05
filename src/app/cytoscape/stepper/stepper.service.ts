@@ -2,7 +2,7 @@
  * Servico responsavel por gerenciar o estado do componente Stepper visualmente
  */
 
-import { computed, Injectable, signal } from '@angular/core';
+import { computed, Injectable, Signal, signal, WritableSignal } from '@angular/core';
 import { StepperLabelEnum } from './steppper.enum';
 
 @Injectable({
@@ -11,8 +11,8 @@ import { StepperLabelEnum } from './steppper.enum';
 export class StepperService {
   private steps = Object.values(StepperLabelEnum);
 
-  currentStepSignal = signal<number>(0);
-  currentStepLabel = computed(() => this.steps[this.currentStepSignal()])
+  currentStepSignal: WritableSignal<number> = signal(0);
+  currentStepLabel: Signal<string> = computed(() => this.steps[this.currentStepSignal()])
 
   getCurrentStep = computed(() => this.currentStepSignal());
   getCurrentStepLabel = computed(() => this.currentStepLabel());
