@@ -34,7 +34,9 @@ export class NodeFormComponent implements OnInit{
       this.nomeElemento = this.stepperService.getCurrentStepLabel();
       this.grafo = this.grafoService.getGrafo();
 
-      this.preencherFormTarefa();
+      if (this.grafo) {
+        this.preencherFormTarefa();
+      }
 
     });
     this.setupFormNode();
