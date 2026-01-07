@@ -10,8 +10,7 @@ import { GrafoFormData, GrafoService } from '../shared/services/grafo.service';
 import { StepperService } from './../cytoscape/stepper/stepper.service';
 import { ContextMenuConfig } from './contexto-menu-config';
 import { cytoscapeStyles } from './cytoscape-styles';
-import { StepperCacheService, StepperData } from '../cytoscape/stepper/stepper-cache.service';
-import { FormGroup } from '@angular/forms';
+import { StepperCacheService } from '../cytoscape/stepper/stepper-cache.service';
 
 
 interface DadosFluxo {
@@ -60,9 +59,9 @@ export class GraphComponent implements OnInit, AfterViewInit {
       this.grafo = this.grafoService.getGrafo();
       this.currentStep = this.stepperService.getCurrentStep();
 
-      const grafoForm = this.grafo?.node.data().form;
+      const grafoNodeData = this.grafo?.node.data();
 
-      if (!grafoForm) {
+      if (!grafoNodeData) {
         if (this.dadosSalvoStorage) {
           this.grafo?.node.select();
           this.grafo?.node.style('label', this.dadosSalvoStorage.fluxo);
@@ -86,12 +85,6 @@ export class GraphComponent implements OnInit, AfterViewInit {
       }
 
       if (this.currentStep == 1) {
-        if (grafoForm) {
-          this.grafo?.node.select();
-          this.grafo?.node.style('label', grafoForm.nome);
-          return;
-        }
-
         const formSetupNode = this.formsDataService.getFormByStep('step1');
 
         if (formSetupNode) {

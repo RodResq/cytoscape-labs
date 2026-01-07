@@ -14,6 +14,11 @@ import { GrafoFormData, GrafoService } from '../shared/services/grafo.service';
 import { FormGroup } from '@angular/forms';
 
 
+export interface nodeData {
+  id: string | undefined;
+  form: string | null;
+}
+
 @Component({
   selector: 'app-fluxo',
   imports: [
@@ -111,13 +116,13 @@ export class FluxoComponent {
     localStorage.setItem(stepperLabel, JSON.stringify(dadosNodeAtual));
   }
 
-  private salvarDadosNoNode(dadosForm: FormGroup) {
+  private salvarDadosNoNode(dadosForm: FormGroup): nodeData {
     const nodeSelected = this.grafo?.node.select();
     nodeSelected?.data('form', dadosForm);
 
     return {
-      'id': nodeSelected?.id(),
-      'form': nodeSelected?.data().form
+      id: nodeSelected?.id(),
+      form: nodeSelected?.data().form
     };
   }
 

@@ -1,9 +1,8 @@
-import { Component, computed, effect, inject, OnInit, output } from '@angular/core';
+import { Component, effect, inject, OnInit, output } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputTextModule } from 'primeng/inputtext';
 import { Checkbox } from 'primeng/checkbox';
-import { StepperService } from '../../cytoscape/stepper/stepper.service';
 import { FormsDataService } from '../../shared/services/forms-data.service';
 import { Message } from 'primeng/message'
 import { GrafoFormData, GrafoService } from '../../shared/services/grafo.service';
@@ -16,13 +15,11 @@ import { GrafoFormData, GrafoService } from '../../shared/services/grafo.service
 })
 export class NodeFormComponent implements OnInit{
   private formsDataService = inject(FormsDataService);
-  private stepperService = inject(StepperService);
   private formBuilder = inject(FormBuilder);
   private grafoService = inject(GrafoService);
 
   public stepCompleted = output<boolean>();
 
-  nomeElemento: string = '';
   nome: string = '';
   ativo: boolean = false;
 
@@ -31,7 +28,6 @@ export class NodeFormComponent implements OnInit{
 
   constructor() {
     effect(() => {
-      this.nomeElemento = this.stepperService.getCurrentStepLabel();
       this.grafo = this.grafoService.getGrafo();
 
       if (this.grafo) {
