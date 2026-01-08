@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, effect, ElementRef, inject, OnInit, viewChild } from '@angular/core';
+import { AfterViewInit, Component, effect, ElementRef, inject, OnInit, untracked, viewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import cytoscape from 'cytoscape';
 import contextMenus from 'cytoscape-context-menus';
@@ -101,6 +101,8 @@ export class GraphComponent implements OnInit, AfterViewInit {
     effect(() => this.grafo = this.grafoService.getGrafo());
     effect(() => {
       const auteracoesForm = this.formsDataService.getFormByStep('step0');
+      //TODO Testar o untracked()
+      untracked(() => this.currentStep = this.stepperService.getCurrentStep());
       
       if (auteracoesForm) {
         const formValue = auteracoesForm.value;
