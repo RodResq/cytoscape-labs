@@ -43,12 +43,8 @@ export class FluxoComponent {
   public form: Acao | null = null;
 
   constructor() {
-    effect(
-      () => {
-        this.grafo = this.grafoService.getGrafo();
-        this.form = this.formService.getForm();
-      }
-    );
+    effect(() => this.grafo = this.grafoService.getGrafo());
+    effect(() => this.form = this.formService.getForm())
   }
 
 

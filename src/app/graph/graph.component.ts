@@ -55,53 +55,66 @@ export class GraphComponent implements OnInit, AfterViewInit {
   private dadosSalvoStorage: DadosFluxo | null = null;
 
   constructor() {
+    // effect(() => {
+    //   this.grafo = this.grafoService.getGrafo();
+    //   this.currentStep = this.stepperService.getCurrentStep();
+
+    //   const grafoNodeData = this.grafo?.node.data();
+
+    //   if (!grafoNodeData) {
+    //     if (this.dadosSalvoStorage) {
+    //       this.grafo?.node.select();
+    //       this.grafo?.node.style('label', this.dadosSalvoStorage.fluxo);
+    //       return;
+    //     }
+    //   }
+
+    //   if (this.currentStep == 0) {
+
+    //     const formCadastroFluxo = this.formsDataService.getFormByStep('step0');
+
+    //     if (formCadastroFluxo && this.grafo?.node.id() == '0') {
+    //       const formValue = formCadastroFluxo.value;
+    //       if (formValue) {
+    //           this.grafo.node.select();
+    //           this.grafo.node.style('label', formValue.fluxo);
+    //       }
+    //     }
+
+    //     return
+    //   }
+
+    //   if (this.currentStep == 1) {
+    //     const formSetupNode = this.formsDataService.getFormByStep('step1');
+
+    //     if (formSetupNode) {
+    //       const formSetupNodeValue = formSetupNode.value;
+    //       if (formSetupNodeValue) {
+    //         this.grafo?.node.select();
+    //         this.grafo?.node.style('label', formSetupNodeValue.nome);
+    //       }
+    //     }
+    //     return;
+    //   }
+
+    // });
+    effect(() => this.grafo = this.grafoService.getGrafo());
     effect(() => {
-      this.grafo = this.grafoService.getGrafo();
-      this.currentStep = this.stepperService.getCurrentStep();
-
-      const grafoNodeData = this.grafo?.node.data();
-
-      if (!grafoNodeData) {
-        if (this.dadosSalvoStorage) {
-          this.grafo?.node.select();
-          this.grafo?.node.style('label', this.dadosSalvoStorage.fluxo);
-          return;
-        }
-      }
-
-      if (this.currentStep == 0) {
-
-        const formCadastroFluxo = this.formsDataService.getFormByStep('step0');
-
-        if (formCadastroFluxo && this.grafo?.node.id() == '0') {
-          const formValue = formCadastroFluxo.value;
-          if (formValue) {
-              this.grafo.node.select();
-              this.grafo.node.style('label', formValue.fluxo);
-          }
-        }
-
-        return
-      }
-
-      if (this.currentStep == 1) {
-        const formSetupNode = this.formsDataService.getFormByStep('step1');
-
-        if (formSetupNode) {
-          const formSetupNodeValue = formSetupNode.value;
-          if (formSetupNodeValue) {
+      const auteracoesForm = this.formsDataService.getFormByStep('step0');
+      
+      if (auteracoesForm) {
+        const formValue = auteracoesForm.value;
+        if (formValue) {
             this.grafo?.node.select();
-            this.grafo?.node.style('label', formSetupNodeValue.nome);
-          }
+            this.grafo?.node.style('label', formValue.fluxo);
         }
-        return;
       }
-
+      return;
+      
     });
-
   }
-
-
+  
+  
   ngOnInit(): void {
     const dadosStorage = localStorage.getItem('step0');
     if (dadosStorage != undefined) {
