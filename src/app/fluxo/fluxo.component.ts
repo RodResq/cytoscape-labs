@@ -77,7 +77,7 @@ export class FluxoComponent {
     this.salvarDadosFormAtual();
     this.irParaProximoStepper();
   }
-
+  // TODO Deixar o metodo mais legivel.
   private salvarDadosFormAtual() {
     const currentStep = this.stepperService.getCurrentStep();
     const stepperLabel = <keyof StepperData>'step'.concat(currentStep.toString());
@@ -113,11 +113,13 @@ export class FluxoComponent {
         nodesTarefaArray.push(dadosNodeAtual);
       }
 
-      localStorage.setItem(stepperLabel, JSON.stringify(nodesTarefaArray))
+      localStorage.setItem(stepperLabel, JSON.stringify(nodesTarefaArray));
+      this.grafo?.node.unselect();
       return;
     }
 
     localStorage.setItem(stepperLabel, JSON.stringify(dadosNodeAtual));
+    this.grafo?.node.unselect();
   }
 
   private salvarDadosNoNode(dadosForm: FormGroup): nodeData {

@@ -122,23 +122,22 @@ export class GraphComponent implements OnInit, AfterViewInit {
     const taskArray: TaskNode[] = dadosStorage ? JSON.parse(dadosStorage): [];
     const formSetupNode = this.formsDataService.getFormByStep('step1');
     const formTaskValue = formSetupNode ? formSetupNode.value: undefined
+
     if (!formTaskValue) return
+
+    this.grafo?.node.select();
+
     if (taskArray.length > 0) {
       const nodeSalvoNoStorage = taskArray.find(dd => dd.id == this.grafo?.node.id());
       if (!nodeSalvoNoStorage) {
-        this.grafo?.node.select();
         this.grafo?.node.style('label', formTaskValue.nome);
-        return;
       } else {
-        this.grafo?.node.select();
         this.grafo?.node.style('label', nodeSalvoNoStorage.form.nome);
-        return;
       }
     } else {
-        this.grafo?.node.select();
         this.grafo?.node.style('label', formTaskValue.nome);
-      return;
     }
+    return;
   }
 
   private initCytoscape() {
