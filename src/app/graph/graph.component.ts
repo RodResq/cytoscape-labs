@@ -13,6 +13,16 @@ import { cytoscapeStyles } from './cytoscape-styles';
 import { StepperCacheService } from '../cytoscape/stepper/stepper-cache.service';
 
 
+interface FormData {
+  nome: string;
+  ativo: string;
+}
+
+interface TaskNode {
+  id: string;
+  form: FormData;
+}
+
 interface DadosFluxo {
   fluxo: string;
   descricao: string;
@@ -55,64 +65,27 @@ export class GraphComponent implements OnInit, AfterViewInit {
   private dadosSalvoStorage: DadosFluxo | null = null;
 
   constructor() {
-    // effect(() => {
-    //   this.grafo = this.grafoService.getGrafo();
-    //   this.currentStep = this.stepperService.getCurrentStep();
-
-    //   const grafoNodeData = this.grafo?.node.data();
-
-    //   if (!grafoNodeData) {
-    //     if (this.dadosSalvoStorage) {
-    //       this.grafo?.node.select();
-    //       this.grafo?.node.style('label', this.dadosSalvoStorage.fluxo);
-    //       return;
-    //     }
-    //   }
-
-    //   if (this.currentStep == 0) {
-
-    //     const formCadastroFluxo = this.formsDataService.getFormByStep('step0');
-
-    //     if (formCadastroFluxo && this.grafo?.node.id() == '0') {
-    //       const formValue = formCadastroFluxo.value;
-    //       if (formValue) {
-    //           this.grafo.node.select();
-    //           this.grafo.node.style('label', formValue.fluxo);
-    //       }
-    //     }
-
-    //     return
-    //   }
-
-    //   if (this.currentStep == 1) {
-    //     const formSetupNode = this.formsDataService.getFormByStep('step1');
-
-    //     if (formSetupNode) {
-    //       const formSetupNodeValue = formSetupNode.value;
-    //       if (formSetupNodeValue) {
-    //         this.grafo?.node.select();
-    //         this.grafo?.node.style('label', formSetupNodeValue.nome);
-    //       }
-    //     }
-    //     return;
-    //   }
-
-    // });
-    effect(() => this.grafo = this.grafoService.getGrafo());
     effect(() => {
-      const auteracoesForm = this.formsDataService.getFormByStep('step0');
-      //TODO Testar o untracked()
-      untracked(() => this.currentStep = this.stepperService.getCurrentStep());
-      
-      if (auteracoesForm) {
-        const formValue = auteracoesForm.value;
-        if (formValue) {
-            this.grafo?.node.select();
-            this.grafo?.node.style('label', formValue.fluxo);
+      this.grafo = this.grafoService.getGrafo();
+      this.currentStep = untracked(() => this.stepperService.getCurrentStep());
+
+      const grafoNodeData = this.grafo?.node.data();
+
+      if (!grafoNodeData) {
+        if (this.dadosSalvoStorage) {
+          this.grafo?.node.select();
+          this.grafo?.node.style('label', this.dadosSalvoStorage.fluxo);
+          return;
         }
       }
-      return;
-      
+
+      if (this.currentStep == 0) {
+        this.graphoFluxFormIteraction();
+      }
+
+      if (this.currentStep == 1) {
+        this.grafoTaskFormIteraction();
+      }
     });
   }
   
@@ -128,6 +101,42 @@ export class GraphComponent implements OnInit, AfterViewInit {
     this.initCytoscape();
     this.waitForEdgeClick();
     this.waitForRightClick();
+  }
+
+  private graphoFluxFormIteraction() {
+    const formCadastroFluxo = this.formsDataService.getFormByStep('step0');
+
+        if (formCadastroFluxo && this.grafo?.node.id() == '0') {
+          const formValue = formCadastroFluxo.value;
+          if (formValue) {
+              this.grafo.node.select();
+              this.grafo.node.style('label', formValue.fluxo);
+          }
+        }
+        return;
+  }
+
+
+  private grafoTaskFormIteraction() {
+    const dadosStorage = localStorage.getItem('step1');
+    const taskArray: TaskNode[] = dadosStorage ? JSON.parse(dadosStorage): [];
+    const formSetupNode = this.formsDataService.getFormByStep('step1');
+    const formTaskValue = formSetupNode ? formSetupNode.value: undefined
+    if (!formTaskValue) return
+    if (taskArray.length > 0) {
+      const nodeSalvoNoStorage = taskArray.find(dd => dd.id == this.grafo?.node.id());
+      if (!nodeSalvoNoStorage) {
+        this.grafo?.node.select();
+        this.grafo?.node.style('label', formTaskValue.nome);
+        return;
+      } else {
+        return;
+      }
+    } else {
+        this.grafo?.node.select();
+        this.grafo?.node.style('label', formTaskValue.nome);
+      return;
+    }
   }
 
   private initCytoscape() {

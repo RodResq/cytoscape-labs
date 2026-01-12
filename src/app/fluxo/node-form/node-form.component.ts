@@ -63,7 +63,10 @@ export class NodeFormComponent implements OnInit{
       const dadosParsed = JSON.parse(dadosStorage);
       if (Array.isArray(dadosParsed)) {
         dadosParsed
-          .filter(dado => dado.id == this.grafo?.node.id())
+          .filter(dado => {
+            const idsIguais = dado.id == this.grafo?.node.id();
+            return idsIguais;
+          })
           .map(dado => {
             this.nodeForm.patchValue(dado.form, {emitEvent: false})
             return dado;
