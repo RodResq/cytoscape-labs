@@ -1,11 +1,11 @@
 import { StepperCacheService } from './../cytoscape/stepper/stepper-cache.service';
-import { Component, effect, inject, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, effect, inject, OnChanges, OnInit, SimpleChanges, untracked } from '@angular/core';
 
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 
 import { CommonModule } from '@angular/common';
-import { Router, RouterModule, RouterOutlet } from "@angular/router";
+import { ActivatedRoute, Router, RouterModule, RouterOutlet } from "@angular/router";
 import { StepperData } from '../cytoscape/stepper/stepper-cache.service';
 import { StepperService } from '../cytoscape/stepper/stepper.service';
 import { FormsDataService } from '../shared/services/forms-data.service';
@@ -38,13 +38,22 @@ export class FluxoComponent {
   public stepperCacheService = inject(StepperCacheService);
   private grafoService = inject(GrafoService);
   private router = inject(Router);
+  private activatedRoute = inject(ActivatedRoute);
 
   public grafo: GrafoFormData | null = null;
   public form: Acao | null = null;
+  public idTaskNodeAtual: string = '';
 
   constructor() {
-    effect(() => this.grafo = this.grafoService.getGrafo());
-    effect(() => this.form = this.formService.getForm())
+    effect(() => {
+      this.grafo = this.grafoService.getGrafo()
+      this.idTaskNodeAtual =  this.activatedRoute.snapshot.queryParams['id'];
+
+      this.form = this.formService.getForm();
+      if (this.idTaskNodeAtual) {
+        this.form.subTitle = this.idTaskNodeAtual;
+      }
+    });
   }
 
 
@@ -69,7 +78,6 @@ export class FluxoComponent {
     this.irParaProximoStepper();
   }
 
-  //TODO refator para dexa metodo mais legivel
   private salvarDadosFormAtual() {
     const currentStep = this.stepperService.getCurrentStep();
     const stepperLabel = <keyof StepperData>'step'.concat(currentStep.toString());

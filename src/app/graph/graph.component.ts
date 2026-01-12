@@ -88,8 +88,8 @@ export class GraphComponent implements OnInit, AfterViewInit {
       }
     });
   }
-  
-  
+
+
   ngOnInit(): void {
     const dadosStorage = localStorage.getItem('step0');
     if (dadosStorage != undefined) {
@@ -130,6 +130,8 @@ export class GraphComponent implements OnInit, AfterViewInit {
         this.grafo?.node.style('label', formTaskValue.nome);
         return;
       } else {
+        this.grafo?.node.select();
+        this.grafo?.node.style('label', nodeSalvoNoStorage.form.nome);
         return;
       }
     } else {

@@ -1,10 +1,11 @@
 import { Component, effect, inject, OnInit, output } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { Checkbox } from 'primeng/checkbox';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputTextModule } from 'primeng/inputtext';
-import { Checkbox } from 'primeng/checkbox';
+import { Message } from 'primeng/message';
 import { FormsDataService } from '../../shared/services/forms-data.service';
-import { Message } from 'primeng/message'
 import { GrafoFormData, GrafoService } from '../../shared/services/grafo.service';
 
 @Component({
@@ -17,6 +18,7 @@ export class NodeFormComponent implements OnInit{
   private formsDataService = inject(FormsDataService);
   private formBuilder = inject(FormBuilder);
   private grafoService = inject(GrafoService);
+  private activatedRoute = inject(ActivatedRoute);
 
   public stepCompleted = output<boolean>();
 
@@ -33,6 +35,9 @@ export class NodeFormComponent implements OnInit{
       if (this.grafo) {
         this.preencherFormTarefa();
       }
+
+
+
 
     });
     this.setupFormNode();
