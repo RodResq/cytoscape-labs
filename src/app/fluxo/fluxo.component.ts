@@ -1,17 +1,17 @@
+import { Component, effect, inject } from '@angular/core';
 import { StepperCacheService } from './../cytoscape/stepper/stepper-cache.service';
-import { Component, effect, inject, OnChanges, OnInit, SimpleChanges, untracked } from '@angular/core';
 
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 
 import { CommonModule } from '@angular/common';
+import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule, RouterOutlet } from "@angular/router";
 import { StepperData } from '../cytoscape/stepper/stepper-cache.service';
 import { StepperService } from '../cytoscape/stepper/stepper.service';
-import { FormsDataService } from '../shared/services/forms-data.service';
 import { Acao, FormService } from '../shared/services/form.service';
+import { FormsDataService } from '../shared/services/forms-data.service';
 import { GrafoFormData, GrafoService } from '../shared/services/grafo.service';
-import { FormGroup } from '@angular/forms';
 
 
 export interface nodeData {
@@ -55,7 +55,6 @@ export class FluxoComponent {
       }
     });
   }
-
 
   back() {
     const currentStepper = this.stepperService.getCurrentStep();

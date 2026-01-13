@@ -36,12 +36,8 @@ export class NodeFormComponent implements OnInit{
         this.preencherFormTarefa();
       }
 
-
-
-
     });
     this.setupFormNode();
-
   }
 
   ngOnInit(): void {

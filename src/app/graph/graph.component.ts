@@ -42,27 +42,22 @@ cytoscape.warnings(true);
 export class GraphComponent implements OnInit, AfterViewInit {
 
   private cytoscapeContainer = viewChild.required<ElementRef<HTMLDivElement>>('cyContainer');
-
   private stepperService = inject(StepperService);
-  private stepperCacheService = inject(StepperCacheService);
   private nodeService = inject(NodeService)
   private formsDataService = inject(FormsDataService);
   private grafoService = inject(GrafoService);
-  private fluxoService = inject(FormService);
   private router = inject(Router);
-
   private taskFormReceivedData: any;
   private cy!: cytoscape.Core;
   private options = ContextMenuConfig.getContextMenuOptions(this);
   private isWaitingForEdges = true;
-
-  showNodeForm: boolean = true;
-  selectedElementId: string = '';
-
   private contexMenuInstance!: contextMenus.ContextMenu;
   private grafo: GrafoFormData | null = null;
   private currentStep:number = 0;
   private dadosSalvoStorage: DadosFluxo | null = null;
+  
+  showNodeForm: boolean = true;
+  selectedElementId: string = '';
 
   constructor() {
     effect(() => {
@@ -89,7 +84,6 @@ export class GraphComponent implements OnInit, AfterViewInit {
     });
   }
 
-
   ngOnInit(): void {
     const dadosStorage = localStorage.getItem('step0');
     if (dadosStorage != undefined) {
@@ -106,16 +100,15 @@ export class GraphComponent implements OnInit, AfterViewInit {
   private graphoFluxFormIteraction() {
     const formCadastroFluxo = this.formsDataService.getFormByStep('step0');
 
-        if (formCadastroFluxo && this.grafo?.node.id() == '0') {
-          const formValue = formCadastroFluxo.value;
-          if (formValue) {
-              this.grafo.node.select();
-              this.grafo.node.style('label', formValue.fluxo);
-          }
-        }
-        return;
+    if (formCadastroFluxo && this.grafo?.node.id() == '0') {
+      const formValue = formCadastroFluxo.value;
+      if (formValue) {
+          this.grafo.node.select();
+          this.grafo.node.style('label', formValue.fluxo);
+      }
+    }
+    return;
   }
-
 
   private grafoTaskFormIteraction() {
     const dadosStorage = localStorage.getItem('step1');
@@ -367,8 +360,6 @@ export class GraphComponent implements OnInit, AfterViewInit {
     return menuItemRemoveNodeExiste;
   }
 
-
-
   private stopWaitingForEdge() {
     this.isWaitingForEdges = false;
   }
@@ -418,7 +409,6 @@ export class GraphComponent implements OnInit, AfterViewInit {
   recuperarDadosForm(event: any) {
     console.log('Dados do formulário: ', this.taskFormReceivedData);
   }
-
 
   private addNode(event: any, classes: any, position: {x: number, y: number}, style?: {}) {
     console.log('Adiconando elemento: ', event);
@@ -480,7 +470,6 @@ export class GraphComponent implements OnInit, AfterViewInit {
       visible: false
     });
   }
-
 
   private getNodeLabel(nodeClass: string): string {
     const labels: { [key: string]: string } = {
