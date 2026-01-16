@@ -76,13 +76,13 @@ export const cytoscapeStyles: Stylesheet[] = [
     {
         "selector": ".join-node",
         style: {
-        'shape': 'polygon',
-        'shape-polygon-points': '-0.33 -1 0.33 -1 0.33 -0.33 1 -0.33 1 0.33 0.33 0.33 0.33 1 -0.33 1 -0.33 0.33 -1 0.33 -1 -0.33 -0.33 -0.33',
-        label: 'data(id)',
+        'shape': 'octagon',
+        'label': 'data(id)',
         'width': 40,
         'height': 40,
         'text-valign': 'bottom',
-        'text-halign': 'center'
+        'text-halign': 'center',
+        'background-color': '#4A90E2'
         }
     },
     {

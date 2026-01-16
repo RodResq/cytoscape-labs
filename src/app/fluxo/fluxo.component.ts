@@ -40,9 +40,9 @@ export class FluxoComponent {
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
 
-  public grafo: GrafoFormData | null = null;
-  public form: Acao | null = null;
-  public idTaskNodeAtual: string = '';
+  public grafo!: GrafoFormData | null;
+  public form!: Acao | null;
+  public idTaskNodeAtual!: string;
 
   constructor() {
     effect(() => {
@@ -76,6 +76,7 @@ export class FluxoComponent {
     this.salvarDadosFormAtual();
     this.irParaProximoStepper();
   }
+  
   // TODO Deixar o metodo mais legivel.
   private salvarDadosFormAtual() {
     const currentStep = this.stepperService.getCurrentStep();

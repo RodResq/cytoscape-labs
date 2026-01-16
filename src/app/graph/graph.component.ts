@@ -52,9 +52,9 @@ export class GraphComponent implements OnInit, AfterViewInit {
   private options = ContextMenuConfig.getContextMenuOptions(this);
   private isWaitingForEdges = true;
   private contexMenuInstance!: contextMenus.ContextMenu;
-  private grafo: GrafoFormData | null = null;
+  private grafo!: GrafoFormData | null;
   private currentStep:number = 0;
-  private dadosSalvoStorage: DadosFluxo | null = null;
+  private dadosSalvoStorage!: DadosFluxo | null;
   
   showNodeForm: boolean = true;
   selectedElementId: string = '';
@@ -198,7 +198,8 @@ export class GraphComponent implements OnInit, AfterViewInit {
   private waitForNodeClick(collection: cytoscape.CollectionReturnValue) {
     this.cy.on('tap', 'node', (event) => {
       const node = event.target;
-
+      this.cy.nodes().unselect();
+      
       if (node.isNode()) {
         collection.union(node);
         this.nodeService.getELement(node);

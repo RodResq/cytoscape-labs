@@ -1,6 +1,5 @@
 import { Component, effect, inject, OnInit, output } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
 import { Checkbox } from 'primeng/checkbox';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputTextModule } from 'primeng/inputtext';
@@ -18,7 +17,6 @@ export class NodeFormComponent implements OnInit{
   private formsDataService = inject(FormsDataService);
   private formBuilder = inject(FormBuilder);
   private grafoService = inject(GrafoService);
-  private activatedRoute = inject(ActivatedRoute);
 
   public stepCompleted = output<boolean>();
 
@@ -77,5 +75,3 @@ export class NodeFormComponent implements OnInit{
     }
 
 }
-
-
