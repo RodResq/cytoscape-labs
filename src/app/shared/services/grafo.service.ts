@@ -1,16 +1,6 @@
 import { computed, Injectable, signal } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import cytoscape from 'cytoscape';
+import { GrafoFormData } from '@shared/types/graph.types';
 
-
-
-export interface GrafoFormData {
-  length: number,
-  node: cytoscape.NodeSingular,
-  form: FormGroup | {} | null,
-  collection: cytoscape.NodeCollection,
-  visible: boolean
-}
 
 @Injectable({
   providedIn: 'root'

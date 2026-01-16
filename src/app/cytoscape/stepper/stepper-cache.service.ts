@@ -2,16 +2,9 @@
  * Servico responsavel por guarda gerenciar o estado do formulario de acordo com o stepper e salva-los no local storage
  */
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, filter } from 'rxjs';
-import { FluxoData } from '../../fluxo/fluxo-form/fluxo-form.component';
+import { StepperData } from '@shared/types/stepper.types';
+import { BehaviorSubject } from 'rxjs';
 
-
-export interface StepperData {
-  step0?: FluxoData,
-  step1?: any;
-  step2?: any;
-  step3?: any;
-}
 
 @Injectable({
   providedIn: 'root'
@@ -55,12 +48,6 @@ export class StepperCacheService {
 
   sendToServer(data: StepperData) {
      console.log('Enviando para servidor:', data);
-  }
-
-  isStepValid(step: keyof StepperData): boolean {
-    const stepData = this.getStepData(step);
-
-    return stepData && Object.keys(stepData).length > 0;
   }
 
   areAllStepsValid(): boolean {

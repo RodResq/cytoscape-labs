@@ -1,9 +1,10 @@
 import { inject } from "@angular/core";
 import { ResolveFn } from "@angular/router";
-import { Acao, FormService } from "../../shared/services/form.service";
 import { StepperService } from "../../cytoscape/stepper/stepper.service";
+import { FormAction } from "@shared/types/form.types";
+import { FormService } from "@shared/services/form.service";
 
-export const fluxoFormResolver: ResolveFn<Acao> = (route, state) => {
+export const fluxoFormResolver: ResolveFn<FormAction> = (route, state) => {
     const fluxoService = inject(FormService);
     const stepperService = inject(StepperService);
 

@@ -1,3 +1,4 @@
+import { MenuItemClasses } from "@shared/types/graph.types";
 
 export const NODE_TYPES = {
     TASK: 'task-node',
@@ -28,30 +29,6 @@ export const NODE_STYLES = {
     }
 } as const;
 
-
-export interface MenuItemClasses {
-    nodeClasses: string;
-    edgeClasses: string;
-}
-
-export interface MenuInteConfig {
-    id: string;
-    content: string;
-    tooltipText: string;
-    image?: {
-        src: string;
-        width: number;
-        height: number;
-        x: number;
-        y: number;
-    };
-    selector: string;
-    disabled?: false;
-    show?: boolean;
-    hasTrailingDivider?: boolean;
-    coreAsWell?: boolean;
-    onClickFunction: (event: any) => void;
-}
 
 export class ContextMenuConfig {
     static createMenuItems(component: any): any[] {

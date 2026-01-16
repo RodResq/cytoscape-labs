@@ -3,31 +3,15 @@ import { AfterViewInit, Component, effect, ElementRef, inject, OnInit, untracked
 import { Router } from '@angular/router';
 import cytoscape from 'cytoscape';
 import contextMenus from 'cytoscape-context-menus';
-import { FormService } from '../shared/services/form.service';
 import { NodeService } from '../fluxo/node-form/node.service';
-import { FormsDataService } from '../shared/services/forms-data.service';
-import { GrafoFormData, GrafoService } from '../shared/services/grafo.service';
 import { StepperService } from './../cytoscape/stepper/stepper.service';
 import { ContextMenuConfig } from './contexto-menu-config';
 import { cytoscapeStyles } from './cytoscape-styles';
-import { StepperCacheService } from '../cytoscape/stepper/stepper-cache.service';
+import { GrafoFormData, TaskNode } from '@shared/types/graph.types';
+import { FormsDataService } from '@shared/services/forms-data.service';
+import { GrafoService } from '@shared/services/grafo.service';
+import { FluxoFormData } from '@shared/types/form.types';
 
-
-interface FormData {
-  nome: string;
-  ativo: string;
-}
-
-interface TaskNode {
-  id: string;
-  form: FormData;
-}
-
-interface DadosFluxo {
-  fluxo: string;
-  descricao: string;
-  dataCriacao: string;
-}
 
 cytoscape.use(contextMenus);
 cytoscape.warnings(true);
@@ -54,7 +38,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
   private contexMenuInstance!: contextMenus.ContextMenu;
   private grafo!: GrafoFormData | null;
   private currentStep:number = 0;
-  private dadosSalvoStorage!: DadosFluxo | null;
+  private dadosSalvoStorage!: FluxoFormData | null;
   
   showNodeForm: boolean = true;
   selectedElementId: string = '';

@@ -1,6 +1,8 @@
 import { Component, inject, input, OnInit, output } from '@angular/core';
 
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormsDataService } from '@shared/services/forms-data.service';
+import { FluxoFormData } from '@shared/types/form.types';
 import { IftaLabelModule } from 'primeng/iftalabel';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
@@ -9,18 +11,6 @@ import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
 import { Subscription } from 'rxjs';
-import { FormsDataService } from '../../shared/services/forms-data.service';
-
-export interface FluxoData {
-  codigoFluxo: string;
-  fluxo: string;
-  prazo?: string;
-  parametros?: string;
-  identificador?: string;
-  nomeProcesso?: string;
-  descricao?: string;
-  dataCriacao?: string;
-}
 
 
 @Component({
@@ -46,7 +36,7 @@ export class FluxoFormComponent implements OnInit {
 
   private formSubscription: Subscription = new Subscription();
 
-  public fluxoCreated = output<FluxoData>();
+  public fluxoCreated = output<FluxoFormData>();
   public stepCompleted = output<boolean>();
   public formCancelled = output();
 

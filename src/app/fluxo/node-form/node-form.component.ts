@@ -1,11 +1,12 @@
 import { Component, effect, inject, OnInit, output } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormsDataService } from '@shared/services/forms-data.service';
+import { GrafoService } from '@shared/services/grafo.service';
+import { GrafoFormData } from '@shared/types/graph.types';
 import { Checkbox } from 'primeng/checkbox';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputTextModule } from 'primeng/inputtext';
 import { Message } from 'primeng/message';
-import { FormsDataService } from '../../shared/services/forms-data.service';
-import { GrafoFormData, GrafoService } from '../../shared/services/grafo.service';
 
 @Component({
   selector: 'app-node-form',

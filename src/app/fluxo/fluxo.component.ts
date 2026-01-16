@@ -7,17 +7,15 @@ import { CardModule } from 'primeng/card';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule, RouterOutlet } from "@angular/router";
-import { StepperData } from '../cytoscape/stepper/stepper-cache.service';
 import { StepperService } from '../cytoscape/stepper/stepper.service';
-import { Acao, FormService } from '../shared/services/form.service';
-import { FormsDataService } from '../shared/services/forms-data.service';
-import { GrafoFormData, GrafoService } from '../shared/services/grafo.service';
+import { GrafoService } from '@shared/services/grafo.service';
+import { GrafoFormData } from '@shared/types/graph.types';
+import { FormService } from '@shared/services/form.service';
+import { FormsDataService } from '@shared/services/forms-data.service';
+import { FormAction, NodeData } from '@shared/types/form.types';
+import { StepperData } from '@shared/types/stepper.types';
 
 
-export interface nodeData {
-  id: string | undefined;
-  form: string | null;
-}
 
 @Component({
   selector: 'app-fluxo',
@@ -41,7 +39,7 @@ export class FluxoComponent {
   private activatedRoute = inject(ActivatedRoute);
 
   public grafo!: GrafoFormData | null;
-  public form!: Acao | null;
+  public form!: FormAction | null;
   public idTaskNodeAtual!: string;
 
   constructor() {
@@ -122,7 +120,7 @@ export class FluxoComponent {
     this.grafo?.node.unselect();
   }
 
-  private salvarDadosNoNode(dadosForm: FormGroup): nodeData {
+  private salvarDadosNoNode(dadosForm: FormGroup): NodeData {
     const nodeSelected = this.grafo?.node.select();
     nodeSelected?.data('form', dadosForm);
 

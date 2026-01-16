@@ -1,18 +1,12 @@
 import { computed, Injectable, signal } from '@angular/core';
+import { FormAction } from '@shared/types/form.types';
 
-export interface Acao {
-  title: string,
-  subTitle: string | null,
-  formNumber: number,
-  visible: boolean,
-  acao: string | undefined
-}
 
 @Injectable({
   providedIn: 'root'
 })
 export class FormService  {
-  private formSignal = signal<Acao>({formNumber: 0, title: '', subTitle: '', visible: false, acao: ''});
+  private formSignal = signal<FormAction>({formNumber: 0, title: '', subTitle: '', visible: false, acao: ''});
 
   getForm = computed(() => this.formSignal());
 
