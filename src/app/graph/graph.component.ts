@@ -122,9 +122,9 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
     this.contexMenuInstance = this.cy.contextMenus(this.options);
 
-    let collection = this.cy.collection();
+    // let collection = this.cy.collection();
 
-    this.waitForNodeClick(collection);
+    // this.waitForNodeClick(collection);
 
     this.grafoService.setGrafo({
       length: 1,
@@ -358,9 +358,10 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
   private editNode(event: any) {
     const node = event.target || event.cyTarget;
-    console.log('No para ser editar: ', node);
+    this.cy.nodes().unselect();
 
     if (node.isNode()) {
+      node.select();
       this.nodeService.getELement(node);
 
       const dadosFormLocalStorage = localStorage.getItem('step0');
