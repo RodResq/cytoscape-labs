@@ -150,6 +150,26 @@ export class ContextMenuConfig {
 
         return [
             {
+                id: 'edit-node',
+                content: 'Editar',
+                tooltipText: 'editar',
+                image: {
+                  src: "assets/icons/edit.svg",
+                  width: 12,
+                  height: 12,
+                  x: 6,
+                  y: 4
+                },
+                selector: 'node, edge',
+                onClickFunction: (event: any) => {
+                  component.editNode(event);
+                },
+                disabled: false,
+                show: true,
+                hasTrailingDivider: true,
+                coreAsWell: false
+            },
+            {
                 id: 'remove-node',
                 content: 'Remover',
                 tooltipText: 'remove',

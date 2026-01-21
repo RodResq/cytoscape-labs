@@ -180,44 +180,44 @@ export class GraphComponent implements OnInit, AfterViewInit {
   }
 
   private waitForNodeClick(collection: cytoscape.CollectionReturnValue) {
-    this.cy.on('tap', 'node', (event) => {
-      const node = event.target;
-      this.cy.nodes().unselect();
+    // this.cy.on('tap', 'node', (event) => {
+    //   const node = event.target;
+    //   this.cy.nodes().unselect();
       
-      if (node.isNode()) {
-        collection.union(node);
-        this.nodeService.getELement(node);
+    //   if (node.isNode()) {
+    //     collection.union(node);
+    //     this.nodeService.getELement(node);
 
-        const dadosFormLocalStorage = localStorage.getItem('step0');
+    //     const dadosFormLocalStorage = localStorage.getItem('step0');
 
-        if (dadosFormLocalStorage) {
+    //     if (dadosFormLocalStorage) {
 
-          this.grafoService.setGrafo({
-            length: collection.length,
-            node: node,
-            collection: collection,
-            form: dadosFormLocalStorage,
-            visible: true
-          });
+    //       this.grafoService.setGrafo({
+    //         length: collection.length,
+    //         node: node,
+    //         collection: collection,
+    //         form: dadosFormLocalStorage,
+    //         visible: true
+    //       });
 
-          switch (node.id()) {
-            case '0':
-              this.stepperService.setStepperByIndex(0);
-              this.router.navigate(['/fluxoApp/fluxo'], {queryParams: {id:node.id()}})
-              break;
-            default:
-              this.stepperService.setStepperByIndex(1);
-              this.router.navigate(['/fluxoApp/node'], {queryParams: {id: node.id()}})
-              break;
-          }
-        } else {
-          console.error('Dados do form no local storage não foi encontrado!');
+    //       switch (node.id()) {
+    //         case '0':
+    //           this.stepperService.setStepperByIndex(0);
+    //           this.router.navigate(['/fluxoApp/fluxo'], {queryParams: {id:node.id()}})
+    //           break;
+    //         default:
+    //           this.stepperService.setStepperByIndex(1);
+    //           this.router.navigate(['/fluxoApp/node'], {queryParams: {id: node.id()}})
+    //           break;
+    //       }
+    //     } else {
+    //       console.error('Dados do form no local storage não foi encontrado!');
 
-        }
-      } else {
-        console.log('Elemento selecionado nao e um no');
-      }
-    });
+    //     }
+    //   } else {
+    //     console.log('Elemento selecionado nao e um no');
+    //   }
+    // });
   }
 
   private waitForRightClick() {
@@ -353,6 +353,36 @@ export class GraphComponent implements OnInit, AfterViewInit {
     if (!this.isWaitingForEdges) {
       this.isWaitingForEdges = true;
       this.waitForEdgeClick();
+    }
+  }
+
+  private editNode(event: any) {
+    const node = event.target || event.cyTarget;
+    console.log('No para ser editar: ', node);
+
+    if (node.isNode()) {
+      this.nodeService.getELement(node);
+
+      const dadosFormLocalStorage = localStorage.getItem('step0');
+
+      this.grafoService.setGrafo({
+        length: this.cy.collection().length,
+        node: node,
+        collection: this.cy.collection(),
+        form: dadosFormLocalStorage ? dadosFormLocalStorage: {},
+        visible: true
+      });
+
+      switch (node.id()) {
+        case '0':
+          this.stepperService.setStepperByIndex(0);
+          this.router.navigate(['/fluxoApp/fluxo'], {queryParams: {id:node.id()}})
+          break;
+        default:
+          this.stepperService.setStepperByIndex(1);
+          this.router.navigate(['/fluxoApp/node'], {queryParams: {id: node.id()}})
+          break;
+      }
     }
   }
 
