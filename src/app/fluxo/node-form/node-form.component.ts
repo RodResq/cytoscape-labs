@@ -1,5 +1,5 @@
 import { Component, effect, inject, OnInit, output } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FormsDataService } from '@shared/services/forms-data.service';
 import { GrafoService } from '@shared/services/grafo.service';
 import { GrafoFormData } from '@shared/types/graph.types';
@@ -45,8 +45,8 @@ export class NodeFormComponent implements OnInit{
 
   setupFormNode() {
     this.nodeForm = this.formBuilder.group({
-      nome: ['', [Validators.required, Validators.minLength(2)]],
-      ativo:['true']
+      nome: new FormControl('', Validators.maxLength(200)),
+      ativo: new FormControl('')
     });
   }
 
