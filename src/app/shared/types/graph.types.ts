@@ -7,7 +7,7 @@ import * as cytoscape from 'cytoscape';
 export interface GrafoFormData {
   length: number,
   node: cytoscape.NodeSingular,
-  form: FormGroup | {} | null,
+  form: FormGroup,
   collection: cytoscape.NodeCollection,
   visible: boolean
 }

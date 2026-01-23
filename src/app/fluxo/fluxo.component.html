@@ -12,7 +12,7 @@
         <ng-template #footer>
           <div class="flex gap-3 mt-1">
               <p-button label="Back" severity="secondary" icon="pi pi-arrow-left" (onClick)="back()" />
-              <p-button label="Next" icon="pi pi-arrow-right" iconPos="right" (onClick)="next()" />
+              <p-button [disabled]="grafo?.form?.invalid" label="Next" icon="pi pi-arrow-right" iconPos="right" (onClick)="next()" />
           </div>
         </ng-template>
       </p-card>

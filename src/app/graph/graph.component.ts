@@ -11,6 +11,7 @@ import { GrafoFormData, TaskNode } from '@shared/types/graph.types';
 import { FormsDataService } from '@shared/services/forms-data.service';
 import { GrafoService } from '@shared/services/grafo.service';
 import { FluxoFormData } from '@shared/types/form.types';
+import { FormGroup } from '@angular/forms';
 
 
 cytoscape.use(contextMenus);
@@ -129,7 +130,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
     this.grafoService.setGrafo({
       length: 1,
       node: this.cy.getElementById('0'),
-      form: null,
+      form: new FormGroup({}),
       collection: this.cy.nodes(),
       visible: false
     });
@@ -364,13 +365,11 @@ export class GraphComponent implements OnInit, AfterViewInit {
       node.select();
       this.nodeService.getELement(node);
 
-      const dadosFormLocalStorage = localStorage.getItem('step0');
-
       this.grafoService.setGrafo({
         length: this.cy.collection().length,
         node: node,
         collection: this.cy.collection(),
-        form: dadosFormLocalStorage ? dadosFormLocalStorage: {},
+        form: new FormGroup({}),
         visible: true
       });
 
@@ -481,7 +480,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
     this.grafoService.setGrafo({
       length: this.cy.nodes().length,
       node: nodeAdicionado,
-      form: {},
+      form: new FormGroup({}),
       collection: this.cy.nodes(),
       visible: false
     });
