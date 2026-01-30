@@ -9,13 +9,13 @@ export const FLUXO_ROUTES: Routes = [
             {
                 path: 'fluxo',
                 loadComponent: () => import('./fluxo-form/fluxo-form.component').then(c => c.FluxoFormComponent),
-                resolve: { form: fluxoFormResolver }
+                // resolve: { form: fluxoFormResolver }
 
             },
             {
                 path: 'node',
                 loadComponent: () =>  import('./node-form/node-form.component').then(c => c.NodeFormComponent),
-                resolve: { form: fluxoFormResolver }
+                // resolve: { form: fluxoFormResolver }
             },
             // CRIAR ROTAS DE EDICAO
             {
