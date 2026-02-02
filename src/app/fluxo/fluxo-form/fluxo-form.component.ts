@@ -43,32 +43,30 @@ export class FluxoFormComponent implements OnInit {
   public fluxoForm!: FormGroup;
   nomeElemento = input<string>();
 
-  constructor() {
-    this.setupFormFluxo();
-  }
-
   ngOnInit(): void {
+    this.setupFormFluxo();
     this.setCurrentDate();
     this.setupAutoSave();
   }
 
   setupFormFluxo() {
+    const fluxoFormStorageString = localStorage.getItem('step0');
+    const fluxoFormStorage = fluxoFormStorageString ?
+      JSON.parse(fluxoFormStorageString): null;
+
     this.fluxoForm = this.formBuilder.group({
       fluxo: ['', [Validators.required, Validators.minLength(2)]],
       descricao: [''],
       dataCriacao: [''],
     });
 
-    const dadosFormalarioSalvo = localStorage.getItem('step0');
-
-    if (dadosFormalarioSalvo) {
-      try {
-        const dadosParseados = JSON.parse(dadosFormalarioSalvo);
-        this.fluxoForm.patchValue(dadosParseados.form, { emitEvent: false });
-      } catch (error) {
-        console.error('Error ao fazer o parse dos dados do step0: ', error);
-      }
+    if (!fluxoFormStorage) {
+      console.error('Error ao fazer o parse dos dados do step0');
+      return;
     }
+    
+    this.fluxoForm.patchValue(fluxoFormStorage.form, { emitEvent: false });
+
   }
 
   private setCurrentDate(): void {

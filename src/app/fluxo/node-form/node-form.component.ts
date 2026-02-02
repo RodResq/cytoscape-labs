@@ -36,10 +36,10 @@ export class NodeFormComponent implements OnInit{
       }
 
     });
-    this.setupFormNode();
   }
-
+  
   ngOnInit(): void {
+    this.setupFormNode();
     this.setupAutoSave();
   }
 
