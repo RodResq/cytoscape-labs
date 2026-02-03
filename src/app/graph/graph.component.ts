@@ -52,20 +52,16 @@ export class GraphComponent implements OnInit, AfterViewInit {
       const grafoNodeData = this.grafo?.node.data();
 
       if (!grafoNodeData) {
-        if (this.dadosSalvoStorage) {
-          this.grafo?.node.select();
-          this.grafo?.node.style('label', this.dadosSalvoStorage.fluxo);
           return;
-        }
       }
 
-      if (this.currentStep == 0) {
-        this.graphoFluxFormIteraction();
-      }
+      // if (this.currentStep == 0) {
+      //   this.graphoFluxFormIteraction();
+      // }
 
-      if (this.currentStep == 1) {
-        this.grafoTaskFormIteraction();
-      }
+      // if (this.currentStep == 1) {
+      //   this.grafoTaskFormIteraction();
+      // }
     });
   }
 
@@ -73,6 +69,12 @@ export class GraphComponent implements OnInit, AfterViewInit {
     const dadosStorage = localStorage.getItem('step0');
     if (dadosStorage != undefined) {
       this.dadosSalvoStorage = dadosStorage ? JSON.parse(dadosStorage): null;
+
+      if (this.dadosSalvoStorage) {
+        this.grafo?.node.select();
+        this.grafo?.node.style('label', this.dadosSalvoStorage.fluxo);
+        return;
+      }
     }
   }
 
