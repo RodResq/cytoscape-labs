@@ -55,13 +55,13 @@ export class GraphComponent implements OnInit, AfterViewInit {
           return;
       }
 
-      // if (this.currentStep == 0) {
-      //   this.graphoFluxFormIteraction();
-      // }
-
-      // if (this.currentStep == 1) {
-      //   this.grafoTaskFormIteraction();
-      // }
+      if (this.currentStep == 0) {
+        this.graphoFluxFormIteraction();
+      } else if (this.currentStep == 1) {
+        this.grafoTaskFormIteraction();
+      } else  {
+        return;
+      }
     });
   }
 
