@@ -88,7 +88,7 @@ export class XMLImporterService {
         Array.from(taskNodesDecision).forEach((taskNode, index) => {
             const name = taskNode.getAttribute('name') || `Decision ${index + 1}`;
             const endTasks = taskNode.getAttribute('end-tasks') === 'true';
-            const nodeId = `task-${index}`;
+            const nodeId = `Decision Node-${index}`;
 
             nodeMapping.set(name, {
                 id: nodeId,
@@ -115,7 +115,7 @@ export class XMLImporterService {
         Array.from(node).forEach((node, index) => {
             const name = node.getAttribute('name') || `Node ${index + 1}`;
             const nodeId = `node-${index}`;
-            
+
             nodeMapping.set(name, {
                 id: nodeId,
                 name: name,
@@ -137,27 +137,27 @@ export class XMLImporterService {
         });
 
         nodeMapping.forEach((sourceNode) => {
-            if (sourceNode.transitions) {
-                sourceNode.transitions.forEach((transition, index) => {
-                    const targetNode = nodeMapping.get(transition.to);
+          if (sourceNode.transitions) {
+            sourceNode.transitions.forEach((transition, index) => {
+              const targetNode = nodeMapping.get(transition.to);
 
-                    if (targetNode) {
-                      edges.push({
-                          group: 'edges',
-                          data: {
-                              id: `edge-${sourceNode.id}-${targetNode.id}-${index}`,
-                              source: sourceNode.id,
-                              target: targetNode.id,
-                              label: transition.name || ''
-                          }
-                      });
-                      console.log(`Edge criada: ${sourceNode.name} → ${targetNode.name}`);
-                    } else {
-                      console.warn(`Target node não encontrado: "${transition.to}"`);
-                      console.warn(`Nós disponíveis no mapeamento:`, Array.from(nodeMapping.keys()));
+              if (targetNode) {
+                edges.push({
+                    group: 'edges',
+                    data: {
+                        id: `edge-${sourceNode.id}-${targetNode.id}-${index}`,
+                        source: sourceNode.id,
+                        target: targetNode.id,
+                        label: transition.name || ''
                     }
                 });
-            }
+                console.log(`Edge criada: ${sourceNode.name} → ${targetNode.name}`);
+              } else {
+                console.warn(`Target node não encontrado: "${transition.to}"`);
+                console.warn(`Nós disponíveis no mapeamento:`, Array.from(nodeMapping.keys()));
+              }
+            });
+          }
         });
 
         console.log('Nodes criados:', nodes);
