@@ -138,7 +138,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
           name: 'breadthfirst',
           directed: true,
           padding: 50,
-          spacingFactor: 1.5,
+          spacingFactor: 1,
           animate: true,
           animationDuration: 500
         });

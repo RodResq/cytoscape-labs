@@ -55,7 +55,7 @@ export class XMLImporterService {
                     label: name,
                     type: NodeType.START
                 },
-                position: { x: 100, y: 100 + (index * 150)},
+                position: { x: 50, y: 50 + (index * 50)},
                 classes: 'start'
             })
         });
@@ -107,7 +107,7 @@ export class XMLImporterService {
                     endTasks: endTasks
                 },
                 position: { x: 400, y: 100 + (index * 150) },
-                classes: 'task-node'
+                classes: 'decision-node'
             })
         });
 
