@@ -13,8 +13,6 @@ import { GrafoService } from '@shared/services/grafo.service';
 import { FluxoFormData } from '@shared/types/form.types';
 import { FormGroup } from '@angular/forms';
 
-import { XMLImporterService } from '@shared/services/xml-importer.service';
-
 cytoscape.use(contextMenus);
 cytoscape.warnings(true);
 
@@ -33,7 +31,6 @@ export class GraphComponent implements OnInit, AfterViewInit {
   private formsDataService = inject(FormsDataService);
   private grafoService = inject(GrafoService);
   private router = inject(Router);
-  private xmlImporterService = inject(XMLImporterService)
 
   private taskFormReceivedData: any;
   private cy!: cytoscape.Core;
@@ -526,44 +523,6 @@ export class GraphComponent implements OnInit, AfterViewInit {
       node.removeClass('active blocked');
     }
   }
-
-
-  importXmlAndCreateGraph(xmlString: string): void {
-    try {
-      const { nodes, edges } = this.xmlImporterService.importFromXml(xmlString);
-
-      this.cy.elements().remove();
-
-      this.cy.add([...nodes, ...edges]);
-
-      this.cy.layout({
-        name: 'dagre',
-      }).run();
-
-      console.log('Grafo importado com sucesso');
-      
-    } catch (error) {
-      console.error('Erro ao importar XML: ', error);
-      alert('Erro ao processar o arquivo XML. Verifique o formato.');
-    }
-  }
-
-  onXmlFileUpload(event: Event): void {
-    const input = event.target as HTMLInputElement;
-
-    if (input.files && input.files.length > 0) {
-      const file = input.files[0];
-      const reader = new FileReader();
-
-      reader.onload = (e) => {
-        const xmlContent = e.target?.result as string;
-        this.importXmlAndCreateGraph(xmlContent);
-      };
-
-      reader.readAsText(file);
-    }
-  }
-
 
   ngOnDestroy(): void {
     this.stopWaitingForEdge();

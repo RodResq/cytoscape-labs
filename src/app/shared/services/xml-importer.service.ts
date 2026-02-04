@@ -22,6 +22,9 @@ export interface XmlTask {
     priority?: number;
 }
 
+@Injectable({
+  providedIn: 'root'
+})
 export class XMLImporterService {
 
     importFromXml(xmlString: string) {
@@ -42,7 +45,7 @@ export class XMLImporterService {
                 name: name,
                 type: NodeType.START,
                 label: name,
-                transitions: this.extractTransitions(startState);
+                transitions: this.extractTransitions(startState)
             });
 
             nodes.push({
