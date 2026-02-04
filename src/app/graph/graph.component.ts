@@ -82,6 +82,36 @@ export class GraphComponent implements OnInit, AfterViewInit {
     this.initCytoscape();
     this.waitForEdgeClick();
     this.waitForRightClick();
+    this.loadImportedGraph();
+  }
+
+  private loadImportedGraph() {
+    const importedData = localStorage.getItem('importedGraph');
+
+    if (importedData) {
+      try {
+        const { nodes, edges } = JSON.parse(importedData);
+
+        const startNode = this.cy.getElementById('0');
+        if (startNode.length > 0) {
+          startNode.remove();
+        }
+
+        this.cy.add([...nodes, ...edges]);
+
+        this.cy.layout({
+          name: 'dagre',
+        }).run();
+
+        this.cy.fit(undefined, 50);
+
+        localStorage.removeItem('importedGraph');
+
+        console.log('Grafo importado com sucesso');
+      } catch(error) {
+        console.error('Erro ao carregar grafo importado:', error)
+      }
+    }
   }
 
   private graphoFluxFormIteraction() {

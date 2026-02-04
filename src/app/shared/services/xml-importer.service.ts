@@ -137,8 +137,6 @@ export class XMLImporterService {
         const transitions: XmlTransition[] = []
         const transitionElements = element.getElementsByTagName('transition');
 
-        return transitions;
-
         Array.from(transitionElements).forEach((transtion) => {
             const to = transtion.getAttribute('to');
             const name = transtion.getAttribute('name');

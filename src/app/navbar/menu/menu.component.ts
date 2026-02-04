@@ -1,15 +1,11 @@
-import { AfterViewInit, Component, ElementRef, inject, OnInit, viewChild } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { MenuItem, MessageService } from 'primeng/api';
 
 import { Router } from '@angular/router';
 import { Menubar } from 'primeng/menubar';
 import { ToastModule } from 'primeng/toast';
 
-
 import { XMLImporterService } from '@shared/services/xml-importer.service';
-import { cytoscapeStyles } from '../../graph/cytoscape-styles';
-
-import cytoscape from 'cytoscape';
 
 @Component({
   selector: 'app-menu',
@@ -19,12 +15,10 @@ import cytoscape from 'cytoscape';
   imports: [Menubar, ToastModule],
   providers: [MessageService]
 })
-export class MenuComponent implements OnInit, AfterViewInit {
+export class MenuComponent implements OnInit {
   private router = inject(Router);
   private xmlImporterService = inject(XMLImporterService);
-  private cytoscapeContainer = viewChild.required<ElementRef<HTMLDivElement>>('cyContainer');
-
-  private cy!: cytoscape.Core;
+  private messageService = inject(MessageService);
 
   constructor() {}
 
@@ -41,9 +35,12 @@ export class MenuComponent implements OnInit, AfterViewInit {
       },
       {
         id: '1',
-        label: 'Importar',
+        label: 'Importar XML',
         command: () => {
-            this.router.navigate(['fluxoApp/node'])
+          const fileInput = document.getElementById('xmlFileInput') as HTMLInputElement;
+          if (fileInput) {
+            fileInput.click();
+          }
         }
       },
       {
@@ -53,71 +50,27 @@ export class MenuComponent implements OnInit, AfterViewInit {
     ]
   }
 
-  ngAfterViewInit(): void {
-    this.initCytoscape()
-  }
-
-  private initCytoscape() {
-    this.cy = cytoscape({
-          container: this.cytoscapeContainer().nativeElement,
-          elements: {
-            nodes: [
-              {
-                group: 'nodes',
-                data: { id: '0' },
-                scratch: {
-                  _fluxo: 'initial_fluxo' // contexto de excucao de app fields
-                },
-                position: { x: 900, y: 100 },
-                selected: false,
-                selectable: true,
-                locked: true,
-                grabbable: true,
-                classes: ['fluxo', 'start'],
-                style: {
-                  'text-valign': 'top',
-                  'shape': 'ellipse',
-                  // 'background-color': '#f8fafc',
-                  'border-width': 5,
-                  'border-color': 'silver',
-                  'border-style': 'solid',
-                  label: 'Initial Node'
-                }
-              },
-            ],
-            edges: []
-          },
-          style: cytoscapeStyles,
-          layout: {
-            name: 'grid',
-            rows: 1
-          },
-          zoom: 1,
-          pan: { x: 0, y: 0 },
-          minZoom: 1e-50,
-          maxZoom: 1e50,
-          zoomingEnabled: false,
-          userZoomingEnabled: true,
-        });
-  }
-
   importXmlAndCreateGraph(xmlString: string): void {
     try {
       const { nodes, edges } = this.xmlImporterService.importFromXml(xmlString);
 
-      this.cy.elements().remove();
+      localStorage.setItem('importedGraph', JSON.stringify({ nodes, edges }));
+      
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Sucesso',
+        detail: 'XML importado com sucesso!'
+      });
 
-      this.cy.add([...nodes, ...edges]);
-
-      this.cy.layout({
-        name: 'dagre',
-      }).run();
-
-      console.log('Grafo importado com sucesso');
+      this.router.navigate(['/fluxoApp/graph']);
       
     } catch (error) {
       console.error('Erro ao importar XML: ', error);
-      alert('Erro ao processar o arquivo XML. Verifique o formato.');
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Erro',
+        detail: 'Erro ao processar o arquivo XML. Verifique o formato.'
+      });
     }
   }
 
@@ -133,9 +86,16 @@ export class MenuComponent implements OnInit, AfterViewInit {
         this.importXmlAndCreateGraph(xmlContent);
       };
 
+      reader.onerror = () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erro',
+          detail: 'Erro ao ler arquivo'
+        });
+      };
+
       reader.readAsText(file);
     }
   }
 
 }
-
