@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, ElementRef, inject, OnInit, viewChild } from '@angular/core';
 import { MenuItem, MessageService } from 'primeng/api';
 
 import { Router } from '@angular/router';
@@ -19,6 +19,7 @@ export class MenuComponent implements OnInit {
   private router = inject(Router);
   private xmlImporterService = inject(XMLImporterService);
   private messageService = inject(MessageService);
+  private fileInput = viewChild<ElementRef<HTMLInputElement>>('xmlFileInput');
 
   constructor() {}
 
@@ -36,18 +37,27 @@ export class MenuComponent implements OnInit {
       {
         id: '1',
         label: 'Importar XML',
-        command: () => {
-          const fileInput = document.getElementById('xmlFileInput') as HTMLInputElement;
-          if (fileInput) {
-            fileInput.click();
-          }
-        }
+        command: () => this.triggerFileInput()
       },
       {
         id: '2',
         label: 'Exportar',
       }
     ]
+  }
+
+  triggerFileInput(): void {
+    const input = this.fileInput();
+    if (input) {
+      input.nativeElement.click();
+    } else {
+      console.error('File input não encontrado');
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Erro',
+        detail: 'Não foi possivel abrir o seletor de arquivos'
+      });
+    }
   }
 
   importXmlAndCreateGraph(xmlString: string): void {
@@ -62,7 +72,7 @@ export class MenuComponent implements OnInit {
         detail: 'XML importado com sucesso!'
       });
 
-      this.router.navigate(['/fluxoApp/graph']);
+      this.router.navigate(['/fluxoApp']);
       
     } catch (error) {
       console.error('Erro ao importar XML: ', error);
