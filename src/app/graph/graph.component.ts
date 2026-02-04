@@ -79,7 +79,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    // this.initCytoscape();
+    this.initCytoscape();
     this.loadImportedGraph();
     this.waitForEdgeClick();
     this.waitForRightClick();
