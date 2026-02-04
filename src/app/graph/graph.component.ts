@@ -80,9 +80,11 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.initCytoscape();
+    setTimeout(() => {
+      this.loadImportedGraph();
+    }, 0);
     this.loadImportedGraph();
     this.waitForEdgeClick();
-    this.waitForRightClick();
   }
 
   private loadImportedGraph() {
@@ -94,16 +96,48 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
         const startNode = this.cy.getElementById('0');
         if (startNode.length > 0) {
+          console.log('Removendo nó inicial padrão');
           startNode.remove();
         }
 
+        // Adiciona PRIMEIRO todos os nós
+        console.log('Adicionando nós...');
+        this.cy.add(nodes);
+        
+        // Verifica se os nós foram adicionados
+        console.log('Nós no grafo após adicionar:', this.cy.nodes().length);
+        this.cy.nodes().forEach(node => {
+          console.log(`Nó: ${node.id()} - classes: ${node.classes()}`);
+        });
+
+        // Depois adiciona as arestas
+        console.log('Adicionando arestas...');
+        this.cy.add(edges);
+        
+        // Verifica se as arestas foram adicionadas
+        console.log('Arestas no grafo após adicionar:', this.cy.edges().length);
+        this.cy.edges().forEach(edge => {
+          console.log(`Edge: ${edge.id()} - ${edge.source().id()} -> ${edge.target().id()}`);
+        });
+
         this.cy.add([...nodes, ...edges]);
 
-        this.cy.layout({
-          name: 'dagre',
-        }).run();
-
-        this.cy.fit(undefined, 50);
+        setTimeout(() => {
+          const layout = this.cy.layout({
+            name: 'breadthfirst',
+            directed: true,
+            padding: 50,
+            spacingFactor: 1.5,
+            animate: true,
+            animationDuration: 500
+          });
+          
+          layout.run();
+          layout.one('layoutstop', () => {
+            this.cy.fit(undefined, 50);
+            console.log('Layout aplicado a zoom ajustado');
+          })
+        }, 200);
 
         localStorage.removeItem('importedGraph');
 

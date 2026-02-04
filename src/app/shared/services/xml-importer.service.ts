@@ -55,7 +55,7 @@ export class XMLImporterService {
                     label: name,
                     type: NodeType.START
                 },
-                position: { x: 100, y: 100 + (index + 150)},
+                position: { x: 100, y: 100 + (index * 150)},
                 classes: 'start'
             })
         });
@@ -130,6 +130,10 @@ export class XMLImporterService {
             }
         });
 
+        console.log('Nodes criados:', nodes);
+        console.log('Edges criados:', edges);
+        console.log('Node Mapping:', nodeMapping);
+        
         return { nodes, edges }
     }
     

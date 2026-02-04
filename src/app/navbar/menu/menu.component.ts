@@ -60,9 +60,13 @@ export class MenuComponent implements OnInit {
     }
   }
 
-  importXmlAndCreateGraph(xmlString: string): void {
+  async importXmlAndCreateGraph(xmlString: string): Promise<void> {
     try {
       const { nodes, edges } = this.xmlImporterService.importFromXml(xmlString);
+
+      if (nodes.length === 0) {
+        throw new Error('Nenhum nó foi encontrado no XML');
+      }
 
       localStorage.setItem('importedGraph', JSON.stringify({ nodes, edges }));
       
@@ -72,7 +76,9 @@ export class MenuComponent implements OnInit {
         detail: 'XML importado com sucesso!'
       });
 
-      this.router.navigate(['/fluxoApp']);
+      await new Promise(resolve => setTimeout(resolve, 300));
+
+      await this.router.navigate(['/fluxoApp']);
       
     } catch (error) {
       console.error('Erro ao importar XML: ', error);
@@ -105,6 +111,8 @@ export class MenuComponent implements OnInit {
       };
 
       reader.readAsText(file);
+
+      input.value = '';
     }
   }
 
