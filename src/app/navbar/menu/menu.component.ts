@@ -6,6 +6,7 @@ import { Menubar } from 'primeng/menubar';
 import { ToastModule } from 'primeng/toast';
 
 import { XMLImporterService } from '@shared/services/xml-importer.service';
+import { GraphReloadService } from '@shared/services/graph-reload.service';
 
 @Component({
   selector: 'app-menu',
@@ -19,6 +20,7 @@ export class MenuComponent implements OnInit {
   private router = inject(Router);
   private xmlImporterService = inject(XMLImporterService);
   private messageService = inject(MessageService);
+  private graphReloadService = inject(GraphReloadService);
   private fileInput = viewChild<ElementRef<HTMLInputElement>>('xmlFileInput');
 
   constructor() {}
@@ -68,18 +70,18 @@ export class MenuComponent implements OnInit {
         throw new Error('Nenhum nó foi encontrado no XML');
       }
 
+      console.log('Salvando no localStorage:', { nodes: nodes.length, edges: edges.length });
+
       localStorage.setItem('importedGraph', JSON.stringify({ nodes, edges }));
-      
+
       this.messageService.add({
         severity: 'success',
         summary: 'Sucesso',
         detail: 'XML importado com sucesso!'
       });
 
-      await new Promise(resolve => setTimeout(resolve, 300));
+      this.graphReloadService.triggerReload();
 
-      await this.router.navigate(['/fluxoApp']);
-      
     } catch (error) {
       console.error('Erro ao importar XML: ', error);
       this.messageService.add({

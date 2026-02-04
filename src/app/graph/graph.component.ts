@@ -12,6 +12,7 @@ import { FormsDataService } from '@shared/services/forms-data.service';
 import { GrafoService } from '@shared/services/grafo.service';
 import { FluxoFormData } from '@shared/types/form.types';
 import { FormGroup } from '@angular/forms';
+import { GraphReloadService } from '@shared/services/graph-reload.service';
 
 cytoscape.use(contextMenus);
 cytoscape.warnings(true);
@@ -40,6 +41,8 @@ export class GraphComponent implements OnInit, AfterViewInit {
   private grafo!: GrafoFormData | null;
   private currentStep:number = 0;
   private dadosSalvoStorage!: FluxoFormData | null;
+  private graphReloadService = inject(GraphReloadService);
+  private reloadSubscription?: any;
 
   showNodeForm: boolean = true;
   selectedElementId: string = '';
@@ -76,6 +79,11 @@ export class GraphComponent implements OnInit, AfterViewInit {
         return;
       }
     }
+
+    this.reloadSubscription = this.graphReloadService.reload$.subscribe(() => {
+      console.log('📡 Recebeu sinal de reload!');
+      this.loadImportedGraph();
+    });
   }
 
   ngAfterViewInit(): void {
@@ -84,66 +92,69 @@ export class GraphComponent implements OnInit, AfterViewInit {
       this.loadImportedGraph();
     }, 0);
     this.waitForEdgeClick();
+    this.waitForRightClick();
   }
 
   private loadImportedGraph() {
     const importedData = localStorage.getItem('importedGraph');
 
-    if (importedData) {
-      try {
-        const { nodes, edges } = JSON.parse(importedData);
+    if (!importedData) {
+      console.log('Nenhum grafo para importar');
+      return;
+    }
 
-        const startNode = this.cy.getElementById('0');
-        if (startNode.length > 0) {
-          console.log('Removendo nó inicial padrão');
-          startNode.remove();
-        }
+    try {
+      const { nodes, edges } = JSON.parse(importedData);
 
-        // Adiciona PRIMEIRO todos os nós
-        console.log('Adicionando nós...');
-        this.cy.add(nodes);
+      console.log('=== IMPORTANDO GRAFO ===');
+      console.log('Nodes a importar:', nodes.length);
+      console.log('Edges a importar:', edges.length);
 
-        // Verifica se os nós foram adicionados
-        console.log('Nós no grafo após adicionar:', this.cy.nodes().length);
-        this.cy.nodes().forEach(node => {
-          console.log(`Nó: ${node.id()} - classes: ${node.classes()}`);
-        });
-
-        // Depois adiciona as arestas
-        console.log('Adicionando arestas...');
-        this.cy.add(edges);
-
-        // Verifica se as arestas foram adicionadas
-        console.log('Arestas no grafo após adicionar:', this.cy.edges().length);
-        this.cy.edges().forEach(edge => {
-          console.log(`Edge: ${edge.id()} - ${edge.source().id()} -> ${edge.target().id()}`);
-        });
-
-        this.cy.add([...nodes, ...edges]);
-
-        setTimeout(() => {
-          const layout = this.cy.layout({
-            name: 'breadthfirst',
-            directed: true,
-            padding: 50,
-            spacingFactor: 1.5,
-            animate: true,
-            animationDuration: 500
-          });
-
-          layout.run();
-          layout.one('layoutstop', () => {
-            this.cy.fit(undefined, 50);
-            console.log('Layout aplicado a zoom ajustado');
-          })
-        }, 200);
-
-        localStorage.removeItem('importedGraph');
-
-        console.log('Grafo importado com sucesso');
-      } catch(error) {
-        console.error('Erro ao carregar grafo importado:', error)
+      const startNode = this.cy.getElementById('0');
+      if (startNode.length > 0) {
+        console.log('Removendo nó inicial padrão');
+        startNode.remove();
       }
+
+      const elementsToAdd = [...nodes, ...edges];
+      this.cy.add(elementsToAdd);
+      // Verifica se os nós foram adicionados
+      console.log('Nós no grafo após adicionar:', this.cy.nodes().length);
+      console.log('Arestas no grafo:', this.cy.edges().length);
+
+      this.cy.nodes().forEach(node => {
+        console.log(`Nó: ${node.id()} - classes: ${node.classes()}`);
+      });
+
+      this.cy.edges().forEach(edge => {
+        console.log(`Edge: ${edge.id()} - ${edge.source().id()} -> ${edge.target().id()}`);
+      });
+
+
+      setTimeout(() => {
+        console.log('Aplicando layout breadthfirst...');
+
+        const layout = this.cy.layout({
+          name: 'breadthfirst',
+          directed: true,
+          padding: 50,
+          spacingFactor: 1.5,
+          animate: true,
+          animationDuration: 500
+        });
+
+        layout.run();
+        layout.one('layoutstop', () => {
+          this.cy.fit(undefined, 50);
+          console.log('Layout aplicado a zoom ajustado');
+          console.log('=== IMPORTAÇÃO CONCLUÍDA ===');
+        })
+      }, 100);
+
+      localStorage.removeItem('importedGraph');
+
+    } catch(error) {
+      console.error('Erro ao carregar grafo importado:', error)
     }
   }
 
@@ -589,8 +600,11 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
   ngOnDestroy(): void {
     this.stopWaitingForEdge();
-    console.log('Nao escutando mais por edges');
 
+    if (this.reloadSubscription) {
+      this.reloadSubscription.unsubscribe()
+    }
+    console.log('Componente destruído');
   }
 
 }

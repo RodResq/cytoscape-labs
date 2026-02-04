@@ -138,10 +138,10 @@ export class XMLImporterService {
         console.log('Nodes criados:', nodes);
         console.log('Edges criados:', edges);
         console.log('Node Mapping:', nodeMapping);
-        
+
         return { nodes, edges }
     }
-    
+
     private extractTransitions(element: Element): XmlTransition[] {
         const transitions: XmlTransition[] = []
         const transitionElements = element.getElementsByTagName('transition');
