@@ -94,7 +94,8 @@ export class XMLImporterService {
                 id: nodeId,
                 name: name,
                 type: NodeType.TASK,
-                label: name
+                label: name,
+                transitions: this.extractTransitions(taskNode)
             });
 
             nodes.push({
@@ -116,15 +117,19 @@ export class XMLImporterService {
                     const targetNode = nodeMapping.get(transition.to);
 
                     if (targetNode) {
-                        edges.push({
-                            group: 'edges',
-                            data: {
-                                id: `edge-${sourceNode.id}-${targetNode.id}-${index}`,
-                                source: sourceNode.id,
-                                target: targetNode.id,
-                                label: transition.name || ''
-                            }
-                        });
+                      edges.push({
+                          group: 'edges',
+                          data: {
+                              id: `edge-${sourceNode.id}-${targetNode.id}-${index}`,
+                              source: sourceNode.id,
+                              target: targetNode.id,
+                              label: transition.name || ''
+                          }
+                      });
+                      console.log(`Edge criada: ${sourceNode.name} → ${targetNode.name}`);
+                    } else {
+                      console.warn(`Target node não encontrado: "${transition.to}"`);
+                      console.warn(`Nós disponíveis no mapeamento:`, Array.from(nodeMapping.keys()));
                     }
                 });
             }

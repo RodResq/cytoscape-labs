@@ -3,9 +3,10 @@
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="Desbloquear Processo">
     <start-state name="Início">
         <task name="Tarefa inicial" swimlane="solicitante" priority="3"/>
-        <transition to="Desbloquear processo" name="Desbloquear processo"/>
+        <transition to="Desbloquear Processo" name="Ir para tarefa"/>
     </start-state>
-    <end-state name="Término"/>
-    <task-node end-tasks="true" name="Nó de Desvio - Desbloquear Processo">
+    <task-node end-tasks="true" name="Desbloquear Processo">
+      <transition to="Término" name="Finalizar"/>
     </task-node>
+    <end-state name="Término"/>
 </process-definition>

@@ -40,7 +40,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
   private grafo!: GrafoFormData | null;
   private currentStep:number = 0;
   private dadosSalvoStorage!: FluxoFormData | null;
-  
+
   showNodeForm: boolean = true;
   selectedElementId: string = '';
 
@@ -83,7 +83,6 @@ export class GraphComponent implements OnInit, AfterViewInit {
     setTimeout(() => {
       this.loadImportedGraph();
     }, 0);
-    this.loadImportedGraph();
     this.waitForEdgeClick();
   }
 
@@ -103,7 +102,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
         // Adiciona PRIMEIRO todos os nós
         console.log('Adicionando nós...');
         this.cy.add(nodes);
-        
+
         // Verifica se os nós foram adicionados
         console.log('Nós no grafo após adicionar:', this.cy.nodes().length);
         this.cy.nodes().forEach(node => {
@@ -113,7 +112,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
         // Depois adiciona as arestas
         console.log('Adicionando arestas...');
         this.cy.add(edges);
-        
+
         // Verifica se as arestas foram adicionadas
         console.log('Arestas no grafo após adicionar:', this.cy.edges().length);
         this.cy.edges().forEach(edge => {
@@ -131,7 +130,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
             animate: true,
             animationDuration: 500
           });
-          
+
           layout.run();
           layout.one('layoutstop', () => {
             this.cy.fit(undefined, 50);
@@ -250,7 +249,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
     // this.cy.on('tap', 'node', (event) => {
     //   const node = event.target;
     //   this.cy.nodes().unselect();
-      
+
     //   if (node.isNode()) {
     //     collection.union(node);
     //     this.nodeService.getELement(node);
