@@ -1,12 +1,23 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="Desbloquear Processo">
+    <!-- START-STATE -->
     <start-state name="Início">
         <task name="Tarefa inicial" swimlane="solicitante" priority="3"/>
-        <transition to="Desbloquear Processo" name="Ir para tarefa"/>
+        <transition to="Nó de Desvio - Desbloquear Processo" name="Nó de Desvio - Desbloquear Processo"/>
     </start-state>
-    <task-node end-tasks="true" name="Desbloquear Processo">
-      <transition to="Término" name="Finalizar"/>
+    <!-- NODES -->
+    <task-node end-tasks="true" name="Nó de Desvio - Desbloquear Processo">
+        <task name="Nó de Desvio - Desbloquear Processo" swimlane="Nó de Desvio - Desbloquear Processo" priority="3"/>
+        <transition to="Desbloquear processo" name="Desbloquear processo"/>
     </task-node>
+    <node name="Desbloquear processo">
+        <transition to="Término" name="Término"/>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.recuperaProcesso(4529108).setInOutraInstancia(false)}"/>
+        </event>
+    </node>
+
     <end-state name="Término"/>
+    
 </process-definition>

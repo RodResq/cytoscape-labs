@@ -84,16 +84,16 @@ export class XMLImporterService {
             })
         });
 
-        const taskNodes = xmlDoc.getElementsByTagName('task-node');
-        Array.from(taskNodes).forEach((taskNode, index) => {
-            const name = taskNode.getAttribute('name') || `Tarefa ${index + 1}`;
+        const taskNodesDecision = xmlDoc.getElementsByTagName('task-node');
+        Array.from(taskNodesDecision).forEach((taskNode, index) => {
+            const name = taskNode.getAttribute('name') || `Decision ${index + 1}`;
             const endTasks = taskNode.getAttribute('end-tasks') === 'true';
             const nodeId = `task-${index}`;
 
             nodeMapping.set(name, {
                 id: nodeId,
                 name: name,
-                type: NodeType.TASK,
+                type: NodeType.DECISION,
                 label: name,
                 transitions: this.extractTransitions(taskNode)
             });
@@ -103,10 +103,35 @@ export class XMLImporterService {
                 data: {
                     id: nodeId,
                     label: name,
-                    type: NodeType.TASK,
+                    type: NodeType.DECISION,
                     endTasks: endTasks
                 },
                 position: { x: 400, y: 100 + (index * 150) },
+                classes: 'task-node'
+            })
+        });
+
+        const node = xmlDoc.getElementsByTagName('node');
+        Array.from(node).forEach((node, index) => {
+            const name = node.getAttribute('name') || `Node ${index + 1}`;
+            const nodeId = `node-${index}`;
+            
+            nodeMapping.set(name, {
+                id: nodeId,
+                name: name,
+                type: NodeType.TASK,
+                label: name,
+                transitions: this.extractTransitions(node)
+            });
+
+            nodes.push({
+                group: 'nodes',
+                data: {
+                    id: nodeId,
+                    label: name,
+                    type: NodeType.TASK,
+                },
+                position: { x: 500, y: 100 + (index * 150) },
                 classes: 'task-node'
             })
         });
