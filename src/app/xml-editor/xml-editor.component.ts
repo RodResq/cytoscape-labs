@@ -1,15 +1,13 @@
-import { Component, ElementRef, inject, Input, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { ButtonModule } from 'primeng/button';
-import { TextareaModule } from 'primeng/textarea';
-import { CardModule } from 'primeng/card';
-import { ToastModule } from 'primeng/toast';
-import { FileUploadModule } from 'primeng/fileupload';
+import { Component, ElementRef, inject, Input, ViewChild } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { MessageService } from 'primeng/api';
-import { XMLImporterService } from '@shared/services/xml-importer.service';
-import { GraphReloadService } from '@shared/services/graph-reload.service';
+import { ButtonModule } from 'primeng/button';
+import { CardModule } from 'primeng/card';
+import { FileUploadModule } from 'primeng/fileupload';
+import { TextareaModule } from 'primeng/textarea';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-xml-editor',
@@ -33,8 +31,6 @@ export class XmlEditorComponent {
   @ViewChild('codeTextArea') codeTextArea!: ElementRef;
   @ViewChild('fileInput') fileInput!: ElementRef;
   private messageService = inject(MessageService);
-  private xmlImporterService = inject(XMLImporterService);
-  private graphReloadService = inject(GraphReloadService);
 
   @Input() xmlCode: string = '';
   highlightedCode: string = '';
