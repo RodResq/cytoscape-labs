@@ -49,17 +49,18 @@ export class MenuComponent implements OnInit {
   }
 
   triggerFileInput(): void {
-    const input = this.fileInput();
-    if (input) {
-      input.nativeElement.click();
-    } else {
-      console.error('File input não encontrado');
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Erro',
-        detail: 'Não foi possivel abrir o seletor de arquivos'
-      });
-    }
+    this.router.navigate(['/fluxoApp/importar-xml'])
+    // const input = this.fileInput();
+    // if (input) {
+    //   input.nativeElement.click();
+    // } else {
+    //   console.error('File input não encontrado');
+    //   this.messageService.add({
+    //     severity: 'error',
+    //     summary: 'Erro',
+    //     detail: 'Não foi possivel abrir o seletor de arquivos'
+    //   });
+    // }
   }
 
   async importXmlAndCreateGraph(xmlString: string): Promise<void> {
@@ -93,29 +94,31 @@ export class MenuComponent implements OnInit {
   }
 
   onXmlFileUpload(event: Event): void {
-    const input = event.target as HTMLInputElement;
 
-    if (input.files && input.files.length > 0) {
-      const file = input.files[0];
-      const reader = new FileReader();
+    this.router.navigate(['/fluxoApp/importar-xml'])
+    // const input = event.target as HTMLInputElement;
 
-      reader.onload = (e) => {
-        const xmlContent = e.target?.result as string;
-        this.importXmlAndCreateGraph(xmlContent);
-      };
+    // if (input.files && input.files.length > 0) {
+    //   const file = input.files[0];
+    //   const reader = new FileReader();
 
-      reader.onerror = () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Erro',
-          detail: 'Erro ao ler arquivo'
-        });
-      };
+    //   reader.onload = (e) => {
+    //     const xmlContent = e.target?.result as string;
+    //     this.importXmlAndCreateGraph(xmlContent);
+    //   };
 
-      reader.readAsText(file);
+    //   reader.onerror = () => {
+    //     this.messageService.add({
+    //       severity: 'error',
+    //       summary: 'Erro',
+    //       detail: 'Erro ao ler arquivo'
+    //     });
+    //   };
 
-      input.value = '';
-    }
+    //   reader.readAsText(file);
+
+    //   input.value = '';
+    // }
   }
 
 }

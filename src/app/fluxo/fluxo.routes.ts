@@ -25,6 +25,10 @@ export const FLUXO_ROUTES: Routes = [
             {
                 path: 'build-xml',
                 loadComponent: () => import('./build-xml/build-xml.component').then(c => c.BuildXmlComponent)
+            },
+            {
+              path: 'importar-xml',
+              loadComponent: () => import('../xml-viewer/xml-viewer.component').then(c => c.XmlViewerComponent)
             }
         ]
     }

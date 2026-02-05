@@ -12,7 +12,6 @@ import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
 import { Subscription } from 'rxjs';
 
-
 @Component({
   selector: 'app-fluxo-form',
   imports: [
@@ -24,7 +23,7 @@ import { Subscription } from 'rxjs';
     SelectModule,
     InputNumberModule,
     TextareaModule,
-    IftaLabelModule
+    IftaLabelModule,
   ],
   standalone: true,
   templateUrl: './fluxo-form.component.html',
@@ -64,7 +63,7 @@ export class FluxoFormComponent implements OnInit {
       console.error('Error ao fazer o parse dos dados do step0');
       return;
     }
-    
+
     this.fluxoForm.patchValue(fluxoFormStorage.form, { emitEvent: false });
 
   }
