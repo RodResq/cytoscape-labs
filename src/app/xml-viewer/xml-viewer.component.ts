@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { AfterViewInit, Component, ElementRef, inject, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, inject, input, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { GraphReloadService } from '@shared/services/graph-reload.service';
+import { XMLImporterService } from '@shared/services/xml-importer.service';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -32,10 +34,12 @@ interface UploadEvent {
   standalone: true,
   providers: [MessageService]
 })
-export class XmlViewerComponent implements AfterViewInit {
+export class XmlViewerComponent {
   @ViewChild('codeTextArea') codeTextArea!: ElementRef;
   @ViewChild('fileInput') fileInput!: ElementRef;
   private messageService = inject(MessageService);
+  private xmlImporterService = inject(XMLImporterService);
+  private graphReloadService = inject(GraphReloadService);
 
   xmlCode: string = '';
   highlightedCode: string = '';
@@ -45,6 +49,36 @@ export class XmlViewerComponent implements AfterViewInit {
 
   constructor() {
 
+  }
+
+  async importXmlAndCreateGraph(xmlString: string): Promise<void> {
+    try {
+      const { nodes, edges } = this.xmlImporterService.importFromXml(xmlString);
+
+      if (nodes.length === 0) {
+        throw new Error('Nenhum nó foi encontrado no XML');
+      }
+
+      console.log('Salvando no localStorage:', { nodes: nodes.length, edges: edges.length });
+
+      localStorage.setItem('importedGraph', JSON.stringify({ nodes, edges }));
+
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Sucesso',
+        detail: 'XML importado com sucesso!'
+      });
+
+      this.graphReloadService.triggerReload();
+
+    } catch (error) {
+      console.error('Erro ao importar XML: ', error);
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Erro',
+        detail: 'Erro ao processar o arquivo XML. Verifique o formato.'
+      });
+    }
   }
 
   onFileSelected(event: FileSelectEvent) {
@@ -77,28 +111,21 @@ export class XmlViewerComponent implements AfterViewInit {
 
       reader.onload = (e: ProgressEvent<FileReader>) => {
         if (e.target?.result) {
-          const content = e.target.result as string;
-          this.xmlCode = this.formatXml(content);
-          this.updateHighlight();
-          this.validationMessage = null;
-
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Sucesso',
-            detail: 'Arquivo carregado com sucesso.'
-          });
+          const xmlContent = e.target.result as string;
+          this.importXmlAndCreateGraph(xmlContent);
         }
+      };
+      reader.onerror = () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erro',
+          detail: 'Erro ao ler arquivo'
+        });
       };
 
       reader.readAsText(file);
 
-    } else {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Atencao',
-        detail: 'Arquivo xml nao foi adicionado.'
-      })
-    }
+    } 
   }
 
   formatXml(xmlString: string) {
@@ -147,10 +174,6 @@ export class XmlViewerComponent implements AfterViewInit {
 
   countTags() {
 
-  }
-
-  ngAfterViewInit(): void {
-    throw new Error('Method not implemented.');
   }
 
   copyToClipboard() {

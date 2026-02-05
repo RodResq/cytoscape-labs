@@ -32,93 +32,18 @@ export class MenuComponent implements OnInit {
       {
         id: '0',
         label: 'Criar Fluxograma',
-        command: () => {
-            this.router.navigate(['/fluxoApp/fluxo']);
-        }
+        command: () => this.router.navigate(['/fluxoApp/fluxo'])
       },
       {
         id: '1',
         label: 'Importar XML',
-        command: () => this.triggerFileInput()
+        command: () => this.router.navigate(['/fluxoApp/importar-xml'])
       },
       {
         id: '2',
         label: 'Exportar',
       }
     ]
-  }
-
-  triggerFileInput(): void {
-    this.router.navigate(['/fluxoApp/importar-xml'])
-    // const input = this.fileInput();
-    // if (input) {
-    //   input.nativeElement.click();
-    // } else {
-    //   console.error('File input não encontrado');
-    //   this.messageService.add({
-    //     severity: 'error',
-    //     summary: 'Erro',
-    //     detail: 'Não foi possivel abrir o seletor de arquivos'
-    //   });
-    // }
-  }
-
-  async importXmlAndCreateGraph(xmlString: string): Promise<void> {
-    try {
-      const { nodes, edges } = this.xmlImporterService.importFromXml(xmlString);
-
-      if (nodes.length === 0) {
-        throw new Error('Nenhum nó foi encontrado no XML');
-      }
-
-      console.log('Salvando no localStorage:', { nodes: nodes.length, edges: edges.length });
-
-      localStorage.setItem('importedGraph', JSON.stringify({ nodes, edges }));
-
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Sucesso',
-        detail: 'XML importado com sucesso!'
-      });
-
-      this.graphReloadService.triggerReload();
-
-    } catch (error) {
-      console.error('Erro ao importar XML: ', error);
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Erro',
-        detail: 'Erro ao processar o arquivo XML. Verifique o formato.'
-      });
-    }
-  }
-
-  onXmlFileUpload(event: Event): void {
-
-    this.router.navigate(['/fluxoApp/importar-xml'])
-    // const input = event.target as HTMLInputElement;
-
-    // if (input.files && input.files.length > 0) {
-    //   const file = input.files[0];
-    //   const reader = new FileReader();
-
-    //   reader.onload = (e) => {
-    //     const xmlContent = e.target?.result as string;
-    //     this.importXmlAndCreateGraph(xmlContent);
-    //   };
-
-    //   reader.onerror = () => {
-    //     this.messageService.add({
-    //       severity: 'error',
-    //       summary: 'Erro',
-    //       detail: 'Erro ao ler arquivo'
-    //     });
-    //   };
-
-    //   reader.readAsText(file);
-
-    //   input.value = '';
-    // }
   }
 
 }
