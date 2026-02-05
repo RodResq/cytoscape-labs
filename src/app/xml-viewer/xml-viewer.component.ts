@@ -1,15 +1,16 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { AfterViewInit, Component, ElementRef, inject, input, ViewChild } from '@angular/core';
+import { Component, ElementRef, inject, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { GraphReloadService } from '@shared/services/graph-reload.service';
 import { XMLImporterService } from '@shared/services/xml-importer.service';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
-import { FileSelectEvent, FileUploadEvent, FileUploadModule } from 'primeng/fileupload';
-import { InputTextModule } from 'primeng/inputtext';
+import { FileSelectEvent, FileUploadModule } from 'primeng/fileupload';
+import { TextareaModule } from 'primeng/textarea';
 import { ToastModule } from 'primeng/toast';
+import { XmlEditorComponent } from '../xml-editor/xml-editor.component';
 
 interface UploadEvent {
     originalEvent: Event;
@@ -23,11 +24,12 @@ interface UploadEvent {
     FormsModule,
     HttpClientModule,
     ButtonModule,
-    InputTextModule,
+    TextareaModule,
     CardModule,
     ToastModule,
     FileUploadModule,
-    ButtonModule
+    ButtonModule,
+    XmlEditorComponent
   ],
   templateUrl: './xml-viewer.component.html',
   styleUrl: './xml-viewer.component.css',
@@ -35,17 +37,13 @@ interface UploadEvent {
   providers: [MessageService]
 })
 export class XmlViewerComponent {
-  @ViewChild('codeTextArea') codeTextArea!: ElementRef;
-  @ViewChild('fileInput') fileInput!: ElementRef;
   private messageService = inject(MessageService);
   private xmlImporterService = inject(XMLImporterService);
   private graphReloadService = inject(GraphReloadService);
 
   xmlCode: string = '';
-  highlightedCode: string = '';
   selectedFileName: string = '';
   lineNumbers: number[] = [];
-  validationMessage: { isValid: boolean; text: string } | null = null;
 
   constructor() {
 
@@ -112,6 +110,7 @@ export class XmlViewerComponent {
       reader.onload = (e: ProgressEvent<FileReader>) => {
         if (e.target?.result) {
           const xmlContent = e.target.result as string;
+          this.xmlCode = xmlContent;
           this.importXmlAndCreateGraph(xmlContent);
         }
       };
@@ -126,69 +125,6 @@ export class XmlViewerComponent {
       reader.readAsText(file);
 
     } 
-  }
-
-  formatXml(xmlString: string) {
-    const formattedXml: string[] = [];
-    let indent = 0;
-    const tab = ' ';
-
-    xmlString.split(/>\s*</g).forEach((node, index) => {
-      if (node.match(/^\/\w/)) {
-        indent--;
-      }
-
-      const isClossing = node.match(/^\/\w/) !== null;
-      const prefix = tab.repeat(Math.max(0, indent));
-      const opennig = isClossing ? '</': '<';
-
-      formattedXml.push(`${prefix}${opennig}${node}`);
-
-      if (node.match(/^<?\w[^>]*[^\/]$/) && !node.startsWith('?')) {
-        indent++;
-      }
-    });
-
-    return formattedXml.join('\n').substring(1);
-  }
-
-  formatXmlManual() {
-    if (this.xmlCode) {
-      this.xmlCode = this.formatXml(this.xmlCode);
-      this.messageService.add({
-        severity: 'info',
-        summary: 'Sucesso',
-        detail: 'XML formatado com sucesso.'
-      })
-    }
-  }
-
-  updateHighlight() {
-
-  }
-
-  validateXml() {
-
-  }
-
-  countTags() {
-
-  }
-
-  copyToClipboard() {
-
-  }
-
-  downloadXml() {
-
-  }
-
-  clearCode() {
-    this.xmlCode = '';
-    this.highlightedCode = '';
-    this.selectedFileName = '';
-    this.lineNumbers = [];
-    this.validationMessage = null;
   }
 
 }
