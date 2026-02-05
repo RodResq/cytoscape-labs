@@ -155,7 +155,6 @@ export class XmlViewerComponent {
   formatXmlManual() {
     if (this.xmlCode) {
       this.xmlCode = this.formatXml(this.xmlCode);
-      // this.updateHighlight();
       this.messageService.add({
         severity: 'info',
         summary: 'Sucesso',
