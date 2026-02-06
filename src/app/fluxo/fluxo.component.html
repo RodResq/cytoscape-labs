@@ -1,21 +1,29 @@
-
-  @if (form?.visible) {
-    <div class="mb-4 p-8 flex items-center justify-center">
-      <p-card [style]="{ width: '25rem', position: 'absolute'}">
-        <ng-template #header>
-        </ng-template>
-        <ng-template #title> {{ form?.title }} </ng-template>
-        <ng-template #subtitle> {{ form?.subTitle }} </ng-template>
-        <ng-template #content>
-          <router-outlet></router-outlet>
-        </ng-template>
-        <ng-template #footer>
-          <div class="flex gap-3 mt-1">
-              <p-button label="Back" severity="secondary" icon="pi pi-arrow-left" (onClick)="back()" />
-              <p-button [disabled]="grafo?.form?.invalid" label="Next" icon="pi pi-arrow-right" iconPos="right" (onClick)="next()" />
-          </div>
-        </ng-template>
-      </p-card>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-8">
+      @if (form?.visible) {
+        <div class="mb-4 p-4 align-items-center justify-content-center">
+          <p-card [style]="{ width: '25rem' }">
+            <ng-template #header></ng-template>
+            <ng-template #title> {{ form?.title }} </ng-template>
+            <ng-template #subtitle> {{ form?.subTitle }} </ng-template>
+            <ng-template #content>
+              <router-outlet></router-outlet>
+            </ng-template>
+            <ng-template #footer>
+              <div class="d-flex gap-3 mt-1">
+                <p-button label="Back" severity="secondary" icon="pi pi-arrow-left" (onClick)="back()" />
+                <p-button [disabled]="grafo?.form?.invalid" label="Next" icon="pi pi-arrow-right" iconPos="right" (onClick)="next()" />
+              </div>
+            </ng-template>
+          </p-card>
+        </div>
+      }
     </div>
-  }
-
+    <div class="col-md-4">
+      <div class="mb-4 p-4">
+        <app-xml-editor [xmlCode]="'true'"/>
+      </div>
+    </div>
+  </div>
+</div>

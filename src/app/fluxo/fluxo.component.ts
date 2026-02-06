@@ -14,6 +14,7 @@ import { FormService } from '@shared/services/form.service';
 import { FormsDataService } from '@shared/services/forms-data.service';
 import { FormAction, NodeData } from '@shared/types/form.types';
 import { StepperData } from '@shared/types/stepper.types';
+import { XmlEditorComponent } from '../xml-editor/xml-editor.component';
 
 
 
@@ -24,7 +25,8 @@ import { StepperData } from '@shared/types/stepper.types';
     CardModule,
     ButtonModule,
     RouterOutlet,
-    CommonModule
+    CommonModule,
+    XmlEditorComponent
 ],
   templateUrl: './fluxo.component.html',
   styleUrl: './fluxo.component.css'
@@ -74,7 +76,7 @@ export class FluxoComponent {
     this.salvarDadosFormAtual();
     this.irParaProximoStepper();
   }
-  
+
   // TODO Deixar o metodo mais legivel.
   private salvarDadosFormAtual() {
     const currentStep = this.stepperService.getCurrentStep();
