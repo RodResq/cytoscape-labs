@@ -13,7 +13,7 @@ export const fluxoFormResolver: ResolveFn<FormAction> = (route, state) => {
 
     if (currentStep == 0) {
       fluxoService.openForm(0, hasId ?
-        'Editar Fluxograma': 'Cadastrar Fluxograma',
+        'Editar Fluxo': 'Cadastrar Fluxo',
         'Informacoes gerais sobre a que se propoe a terefa e seu objetivo final.');
     } else {
       fluxoService.openForm(1, hasId ?

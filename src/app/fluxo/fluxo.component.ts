@@ -1,4 +1,4 @@
-import { Component, effect, inject, OnInit } from '@angular/core';
+import { Component, effect, inject, OnDestroy, OnInit } from '@angular/core';
 import { StepperCacheService } from './../cytoscape/stepper/stepper-cache.service';
 
 import { ButtonModule } from 'primeng/button';
@@ -6,7 +6,7 @@ import { CardModule } from 'primeng/card';
 
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
-import { ActivatedRoute, Router, RouterModule, RouterOutlet } from "@angular/router";
+import { ActivatedRoute, NavigationEnd, Router, RouterModule, RouterOutlet } from "@angular/router";
 import { StepperService } from '../cytoscape/stepper/stepper.service';
 import { GrafoService } from '@shared/services/grafo.service';
 import { GrafoFormData } from '@shared/types/graph.types';
@@ -17,6 +17,7 @@ import { StepperData } from '@shared/types/stepper.types';
 import { XmlEditorComponent } from '../xml-editor/xml-editor.component';
 import { CytoscapeComponent } from '../cytoscape/cytoscape.component';
 import { GraphReloadService } from '@shared/services/graph-reload.service';
+import { filter, Subject, takeUntil } from 'rxjs';
 
 
 
@@ -34,7 +35,7 @@ import { GraphReloadService } from '@shared/services/graph-reload.service';
   templateUrl: './fluxo.component.html',
   styleUrl: './fluxo.component.css'
 })
-export class FluxoComponent implements OnInit{
+export class FluxoComponent implements OnInit, OnDestroy{
   public formService = inject(FormService);
   public formsDataService = inject(FormsDataService);
   public stepperService = inject(StepperService);
@@ -43,11 +44,13 @@ export class FluxoComponent implements OnInit{
   private xmlSubject = inject(GraphReloadService);
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
+  private destroy$ = new Subject<void>();
 
   public grafo!: GrafoFormData | null;
   public form!: FormAction | null;
   public idTaskNodeAtual!: string;
   public xmlCode: string = '';
+  public changeUrl: boolean = false;
 
   constructor() {
     effect(() => {
@@ -60,10 +63,19 @@ export class FluxoComponent implements OnInit{
       }
     });
   }
+ 
+
   ngOnInit(): void {
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd),
+      takeUntil(this.destroy$)
+    ).subscribe((event: NavigationEnd) => {
+      this.changeUrl = true;
+    })
+
     this.xmlSubject.xmlLoad$.subscribe(xml => {
       this.xmlCode = xml;
-    })
+    });
   }
 
   back() {
@@ -153,6 +165,11 @@ export class FluxoComponent implements OnInit{
       this.router.navigate(['/fluxoApp/build-xml'])
     }
     this.stepperService.setNextStepper();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
 }

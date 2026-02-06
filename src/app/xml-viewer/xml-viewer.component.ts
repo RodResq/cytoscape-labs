@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { Component, ElementRef, inject, ViewChild } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { GraphReloadService } from '@shared/services/graph-reload.service';
 import { XMLImporterService } from '@shared/services/xml-importer.service';
@@ -44,7 +44,6 @@ export class XmlViewerComponent {
   lineNumbers: number[] = [];
 
   constructor() {
-
   }
 
   async importXmlAndCreateGraph(xmlString: string): Promise<void> {
@@ -122,7 +121,6 @@ export class XmlViewerComponent {
       };
 
       reader.readAsText(file);
-
     }
   }
 
