@@ -57,7 +57,7 @@ export class XmlEditorComponent {
             let formattedNode = '';
 
             if (index === 0) {
-                formattedNode = `${prefixo}<${node}>`;
+                formattedNode = `${prefixo}${node}>`;
             } else if (index === nodes.length - 1) {
                 formattedNode = `${prefixo}<${node}`;
             } else {

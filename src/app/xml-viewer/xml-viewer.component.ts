@@ -7,7 +7,7 @@ import { XMLImporterService } from '@shared/services/xml-importer.service';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
-import { FileSelectEvent, FileUploadModule } from 'primeng/fileupload';
+import { FileSelectEvent, FileUploadEvent, FileUploadModule } from 'primeng/fileupload';
 import { TextareaModule } from 'primeng/textarea';
 import { ToastModule } from 'primeng/toast';
 
@@ -38,6 +38,7 @@ export class XmlViewerComponent {
   private messageService = inject(MessageService);
   private xmlImporterService = inject(XMLImporterService);
   private graphReloadService = inject(GraphReloadService);
+  uploadedFiles: any[] = [];
 
   xmlCode: string = '';
   selectedFileName: string = '';
@@ -76,9 +77,59 @@ export class XmlViewerComponent {
     }
   }
 
-  onFileSelected(event: FileSelectEvent) {
+  onFileSelected(event: FileUploadEvent) {
     const files = event.files;
+    console.log('File:', files[0]);
+    
+    if (files && files.length > 0) {
+      const file = files[0];
 
+      if (!file.name.toLowerCase().endsWith('.xml')) {
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Atencao',
+          detail: 'Por favor, selecione um arquivo XML valido.'
+        });
+        return;
+      }
+
+      const maxSize = 10 * 1024 * 1024;
+      if (file.size > maxSize) {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erro',
+          detail: 'O arquivo nao deve ultrapassar 10MB.'
+        });
+        return;
+      }
+
+      this.selectedFileName = file.name;
+      const reader = new FileReader();
+
+      reader.onload = (e: ProgressEvent<FileReader>) => {
+        if (e.target?.result) {
+          const xmlContent = e.target.result as string;
+          this.xmlCode = xmlContent;
+          this.graphReloadService.triggerXmlLoad(this.xmlCode);
+          this.importXmlAndCreateGraph(xmlContent);
+        }
+      };
+      reader.onerror = () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erro',
+          detail: 'Erro ao ler arquivo'
+        });
+      };
+
+      reader.readAsText(file);
+    }
+  }
+
+  onUpload(event: FileUploadEvent) {
+    const files = event.files;
+    console.log('File:', files[0]);
+    
     if (files && files.length > 0) {
       const file = files[0];
 

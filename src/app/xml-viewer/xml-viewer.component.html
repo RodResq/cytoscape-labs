@@ -1,18 +1,16 @@
 <div>
-  <!-- <p-card [style]="{ width: '100%' }"> -->
-    <p-fileupload
-      #fileUpload
-      name="xmlFile[]"
-      [multiple]="false"
-      accept=".xml"
-      maxFileSize="10485760"
-      [auto]="false"
-      [showUploadButton]="false"
-      [showCancelButton]="false"
-      (onSelect)="onFileSelected($event)"
-      chooseIcon="pi pi-cloud-upload"
-      chooseLabel="Selecionar XML"
-      [customUpload]="true">
+    <p-toast />
+      <p-fileupload 
+        #fileUpload 
+        name="xmlFile[]" 
+        url="https://www.primefaces.org/cdn/api/upload.php" 
+        (onUpload)="onUpload($event)" 
+        [multiple]="true" 
+        accept=".xml" 
+        maxFileSize="1000000" 
+        mode="advanced">
+      <ng-template #empty>
+          <div>Drag and drop files to here to upload.</div>
+      </ng-template>
     </p-fileupload>
-  <!-- </p-card> -->
 </div>

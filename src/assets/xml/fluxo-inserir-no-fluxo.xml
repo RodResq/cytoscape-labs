@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="Inserir no Fluxo">  
+    <!-- START-STATE -->
+    <start-state name="Início">
+        <task name="Tarefa inicial" swimlane="solicitante" priority="3"/>
+        <transition to="Inserir no Fluxo" name="Inserir no Fluxo"/>
+    </start-state>  
+    <!-- NODES -->
+    <node name="Inserir no Fluxo">
+        <transition to="Término" name="T&amp;#65533;rmino"/>
+        <event type="node-enter">
+            <action expression="#{processoJudicialService.reiniciarFluxo(tramitacaoProcessualService.recuperaProcesso(6590074),'JEC-Conhecimento')}"/>
+        </event>
+    </node>
+    <end-state name="Término"/>
+    <task-node end-tasks="true" name="Nó de Desvio - Inserir no Fluxo">
+        <task name="Nó de Desvio - Inserir no Fluxo" swimlane="Nó de Desvio - Inserir no Fluxo" priority="3"/>
+        <transition to="Término" name="Término"/>
+    </task-node>  
+</process-definition>
