@@ -5,16 +5,64 @@ type Stylesheet = StylesheetStyle | StylesheetCSS;
 
 export const cytoscapeStyles: Stylesheet[] = [
     {
+        selector: '.start',
+        style: {
+        'shape': 'ellipse',
+        'background-color': '#27ae60',
+        'border-color': '#229954',
+        'border-width': 5,
+        'width': 60,
+        'height': 60,
+        'text-valign': 'center',
+        'text-halign': 'center',
+        'color': '#fff',
+        'font-size': '12px',
+        'font-weight': 'bold',
+        label: 'data(label)'
+        }
+    },
+    {
+        selector: '.fluxo',
+        style: {
+        'shape': 'ellipse',
+        'background-color': '#3498db',
+        'border-color': '#2980b9',
+        'border-width': 5,
+        'width': 60,
+        'height': 60,
+        'text-valign': 'center',
+        'text-halign': 'center',
+        'color': '#fff',
+        'font-size': '12px',
+        'font-weight': 'bold',
+        label: 'data(label)'
+        }
+    },
+    {
         selector: '.task-node',
         style: {
-        'text-valign': 'bottom',
+        'shape': 'rectangle',
+        'background-color': '#5dade2',
+        'width': 80,
+        'height': 40,
+        'text-valign': 'center',
+        'text-halign': 'center',
         label: 'data(id)'
         }
     },
     {
         selector: '.end-node',
         style: {
-        'text-valign': 'bottom',
+        'shape': 'ellipse',
+        'background-color': '#e74c3c',
+        'border-color': '#c0392b',
+        'border-width': 5,
+        'width': 60,
+        'height': 60,
+        'text-valign': 'center',
+        'text-halign': 'center',
+        'color': '#fff',
+        'font-weight': 'bold',
         label: 'data(id)'
         }
     },
@@ -24,9 +72,9 @@ export const cytoscapeStyles: Stylesheet[] = [
         'shape': 'triangle',
         'width': 30,
         'height': 30,
-        label: 'data(id)',
         'text-valign': 'center',
-        'text-halign': 'center'
+        'text-halign': 'center',
+        label: 'data(id)'
         }
     },
     {
@@ -44,8 +92,9 @@ export const cytoscapeStyles: Stylesheet[] = [
         selector: '.decision-node',
         style: {
         'shape': 'diamond',
-        'width': 40,
-        'height': 40,
+        'background-color': '#f39c12',
+        'width': 50,
+        'height': 50,
         label: 'data(id)',
         'text-valign': 'bottom',
         'text-halign': 'center'
@@ -55,8 +104,9 @@ export const cytoscapeStyles: Stylesheet[] = [
         selector: '.system-node',
         style: {
         'shape': 'pentagon',
-        'width': 40,
-        'height': 40,
+        'background-color': '#9b59b6',
+        'width': 50,
+        'height': 50,
         label: 'data(id)',
         'text-valign': 'bottom',
         'text-halign': 'center'
@@ -66,23 +116,24 @@ export const cytoscapeStyles: Stylesheet[] = [
         selector: '.separation-node',
         style: {
         'shape': 'vee',
-        'width': 40,
-        'height': 40,
+        'background-color': '#16a085',
+        'width': 50,
+        'height': 50,
         label: 'data(id)',
         'text-valign': 'bottom',
         'text-halign': 'center'
         }
     },
     {
-        "selector": ".join-node",
+        selector: ".join-node",
         style: {
         'shape': 'octagon',
-        'label': 'data(id)',
-        'width': 40,
-        'height': 40,
+        'background-color': '#4A90E2',
+        'width': 50,
+        'height': 50,
+        label: 'data(id)',
         'text-valign': 'bottom',
-        'text-halign': 'center',
-        'background-color': '#4A90E2'
+        'text-halign': 'center'
         }
     },
     {
@@ -90,14 +141,14 @@ export const cytoscapeStyles: Stylesheet[] = [
         style: {
         'shape': 'round-rectangle',
         'background-color': '#E8F5E8',
-        'width': 40,
+        'width': 80,
         'height': 40,
-        label: 'data(id)',
-        'text-valign': 'bottom',
+        'text-valign': 'center',
         'text-halign': 'center',
         'font-family': 'Arial, sans-serif',
         'text-wrap': 'wrap',
         'text-max-width': '90px',
+        label: 'data(id)',
         }
     },
     {
@@ -113,19 +164,21 @@ export const cytoscapeStyles: Stylesheet[] = [
         'background-color': '#FFEBEE',
         'border-color': '#F44336',
         'color': '#C62828',
-        label: 'data(label)',
+        label: 'data(id)',
         }
     },
     {
         selector: 'edge',
         style: {
         'line-style': 'solid',
-        'width': 1,
-        'line-color': '#ccc',
-        'target-arrow-color': '#ccc',
+        'width': 2,
+        'line-color': '#95a5a6',
+        'target-arrow-color': '#95a5a6',
         'target-arrow-shape': 'triangle',
         'curve-style': 'bezier',
-        'label': '',
+        'label': 'data(label)',
+        'text-rotation': 'autorotate',
+        'font-size': '10px'
         }
     },
     {
@@ -143,8 +196,11 @@ export const cytoscapeStyles: Stylesheet[] = [
     {
         selector: 'node:selected',
         style: {
-        'border-width': 4,
-        'border-color': '#ff6b6b'
+        'border-width': 6,
+        'border-color': '#ff6b6b',
+        'overlay-color': '#ff6b6b',
+        'overlay-opacity': 0.2,
+        'overlay-padding': 5
         }
     },
     {
@@ -155,5 +211,4 @@ export const cytoscapeStyles: Stylesheet[] = [
         'width': 4
         }
     }
-
 ]

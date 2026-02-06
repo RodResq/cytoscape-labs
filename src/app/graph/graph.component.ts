@@ -219,40 +219,36 @@ export class GraphComponent implements OnInit, AfterViewInit {
         nodes: [
           {
             group: 'nodes',
-            data: { id: '0' },
-            scratch: {
-              _fluxo: 'initial_fluxo' // contexto de excucao de app fields
+            data: {
+              id: '0',
+              label: 'Start'
             },
-            position: { x: 900, y: 100 },
+            scratch: {
+              _fluxo: 'initial_fluxo'
+            },
+            position: { x: 150, y: 150 },
             selected: false,
             selectable: true,
-            locked: true,
+            locked: false,
             grabbable: true,
-            classes: ['fluxo', 'start'],
-            style: {
-              'text-valign': 'top',
-              'shape': 'ellipse',
-              // 'background-color': '#f8fafc',
-              'border-width': 5,
-              'border-color': 'silver',
-              'border-style': 'solid',
-              label: 'Initial Node'
-            }
+            classes: ['fluxo', 'start']
           },
         ],
         edges: []
       },
       style: cytoscapeStyles,
       layout: {
-        name: 'grid',
-        rows: 1
+        name: 'preset',
+        padding: 50
       },
       zoom: 1,
       pan: { x: 0, y: 0 },
-      minZoom: 1e-50,
-      maxZoom: 1e50,
-      zoomingEnabled: false,
+      minZoom: 0.5,
+      maxZoom: 0.75,
+      zoomingEnabled: true,
       userZoomingEnabled: true,
+      panningEnabled: true,
+      userPanningEnabled: true
     };
   }
 
