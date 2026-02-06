@@ -252,47 +252,6 @@ export class GraphComponent implements OnInit, AfterViewInit {
     };
   }
 
-  private waitForNodeClick(collection: cytoscape.CollectionReturnValue) {
-    // this.cy.on('tap', 'node', (event) => {
-    //   const node = event.target;
-    //   this.cy.nodes().unselect();
-
-    //   if (node.isNode()) {
-    //     collection.union(node);
-    //     this.nodeService.getELement(node);
-
-    //     const dadosFormLocalStorage = localStorage.getItem('step0');
-
-    //     if (dadosFormLocalStorage) {
-
-    //       this.grafoService.setGrafo({
-    //         length: collection.length,
-    //         node: node,
-    //         collection: collection,
-    //         form: dadosFormLocalStorage,
-    //         visible: true
-    //       });
-
-    //       switch (node.id()) {
-    //         case '0':
-    //           this.stepperService.setStepperByIndex(0);
-    //           this.router.navigate(['/fluxoApp/fluxo'], {queryParams: {id:node.id()}})
-    //           break;
-    //         default:
-    //           this.stepperService.setStepperByIndex(1);
-    //           this.router.navigate(['/fluxoApp/node'], {queryParams: {id: node.id()}})
-    //           break;
-    //       }
-    //     } else {
-    //       console.error('Dados do form no local storage não foi encontrado!');
-
-    //     }
-    //   } else {
-    //     console.log('Elemento selecionado nao e um no');
-    //   }
-    // });
-  }
-
   private waitForRightClick() {
     this.cy.on('cxttap', 'node', (event) => {
       const node = event.target;
@@ -506,6 +465,20 @@ export class GraphComponent implements OnInit, AfterViewInit {
     const newNodeId = `${classes.nodeClasses}-` + Date.now();
     const nodePos = clickedElement.position();
 
+    const existingChildren = this.cy.nodes().filter((node: any) => {
+      return node.data('idParentNode') === elementId;
+    })
+
+    const childOffset = existingChildren.length * 150;
+
+    const offsetX = 120 + childOffset;
+    const offsetY = 80;
+
+    const newPosition = {
+      x: nodePos.x + offsetX,
+      y: nodePos.y + offsetY
+    }
+
     const newNodeData: any = {
       id: newNodeId,
       idParentNode: elementId,
@@ -531,7 +504,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
         group: 'nodes',
         data: { id: newNodeId, idParentNode: elementId, form: {} },
         scratch: { _fluxo: newNodeId },
-        renderedPosition: { x: nodePos.x - position.x, y: nodePos.y + position.y },
+        position: newPosition,
         classes: [classes.nodeClasses],
         style: style ? style: null
       },
@@ -546,8 +519,17 @@ export class GraphComponent implements OnInit, AfterViewInit {
         classes: classes.edgeClasses
       }
     ]);
+
     this.cy.nodes().unselect();
     const nodeAdicionado =  this.cy.getElementById(newNodeId);
+
+    this.cy.animate({
+      fit: {
+        eles: this.cy.elements(),
+        padding: 30,
+      },
+      duration: 300
+    });
 
     this.grafoService.setGrafo({
       length: this.cy.nodes().length,

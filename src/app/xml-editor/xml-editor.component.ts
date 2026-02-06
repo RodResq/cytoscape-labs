@@ -43,23 +43,23 @@ export class XmlEditorComponent {
       const formattedXml: string[] = [];
       let indent = 0;
       const tab = '   ';
-  
+
       xmlString.split(/>\s*</g).forEach((node, index) => {
         if (node.match(/^\/\w/)) {
           indent--;
         }
-  
+
         const isClossing = node.match(/^\/\w/) !== null;
         const prefix = tab.repeat(Math.max(0, indent));
         const opennig = isClossing ? '</': '<';
-  
+
         formattedXml.push(`${prefix}${opennig}${node}`);
-  
+
         if (node.match(/^<?\w[^>]*[^\/]$/) && !node.startsWith('?')) {
           indent++;
         }
       });
-  
+
       return formattedXml.join('>\n').substring(1) + '>';
     } catch (error) {
       console.error('Error ao formatar xml: ', error);
@@ -93,48 +93,6 @@ export class XmlEditorComponent {
         detail: 'Nenhum código XML para formater'
       });
     }
-  }
-
-  countTags() {
-    if (!this.xmlCode) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Avisa',
-        detail: 'Nenhum código XML disponível'
-      });
-
-      return;
-    }
-
-    try {
-      const parser = new DOMParser();
-      const xmlDoc = parser.parseFromString(this.xmlCode, 'text/xml');
-
-      const allElements = xmlDoc.getElementsByTagName('*');
-      const tagCount = allElements.length;
-
-      const uniqueTags = new Set<String>();
-      Array.from(allElements).forEach(element => {
-        uniqueTags.add(element.tagName);
-      });
-
-      const message =`Total de tags: ${tagCount} | Tags únicas: ${uniqueTags.size}`;
-      this.messageService.add({
-        severity: 'info',
-        summary: 'COntagem de tags',
-        detail: message,
-        life: 500
-      });
-
-      console.log('Tags únicas encontradas:', Array.from(uniqueTags));
-    } catch (error) { 
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Error',
-        detail: 'Error ao contar tags.'
-      })
-    }
-
   }
 
   copyToClipboard() {

@@ -3,36 +3,25 @@
       <!-- Barra de Ferramentas -->
       <div class="toolbar mb-3">
         <div class="toolbar-buttons">
-          <p-button 
-            label="Formatar" 
-            icon="pi pi-align-justify" 
+          <p-button
+            label="Formatar"
+            icon="pi pi-align-justify"
             (onClick)="formatXmlManual()"
             severity="secondary"
             size="small"
             [outlined]="true">
           </p-button>
-          
-          <p-button 
-            label="Contar Tags" 
-            icon="pi pi-hashtag" 
-            (onClick)="countTags()"
-            severity="secondary"
-            size="small"
-            [outlined]="true">
-          </p-button>
-          
-          <p-button 
-            label="Copiar" 
-            icon="pi pi-copy" 
+          <p-button
+            label="Copiar"
+            icon="pi pi-copy"
             (onClick)="copyToClipboard()"
             severity="secondary"
             size="small"
             [outlined]="true">
           </p-button>
-          
-          <p-button 
-            label="Limpar" 
-            icon="pi pi-trash" 
+          <p-button
+            label="Limpar"
+            icon="pi pi-trash"
             (onClick)="clearCode()"
             severity="danger"
             size="small"
@@ -40,15 +29,12 @@
           </p-button>
         </div>
       </div>
-  
-      <!-- Área de Código XML -->
       <div class="code-container">
         <div class="line-numbers">
           <div *ngFor="let lineNum of lineNumbers" class="line-number">
             {{ lineNum }}
           </div>
         </div>
-        
         <textarea
           #codeTextArea
           pInputTextarea
@@ -61,16 +47,13 @@
           placeholder="O código XML aparecerá aqui...">
         </textarea>
       </div>
-  
-      <!-- Informações do arquivo -->
       <div class="file-info mt-3">
         <small class="text-muted">
-          <i class="pi pi-info-circle"></i> 
-          Linhas: {{ lineNumbers.length }} | 
+          <i class="pi pi-info-circle"></i>
+          Linhas: {{ lineNumbers.length }} |
           Caracteres: {{ xmlCode.length }}
         </small>
       </div>
     </p-card>
-
   }
   <p-toast></p-toast>
