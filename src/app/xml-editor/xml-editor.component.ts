@@ -38,34 +38,49 @@ export class XmlEditorComponent {
   lineNumbers: number[] = [];
   validationMessage: { isValid: boolean; text: string } | null = null;
 
-  formatXml(xmlString: string) {
+  formatXml(xmlString: string): string {
     try {
-      const formattedXml: string[] = [];
-      let indent = 0;
-      const tab = '   ';
+        const formattedXml: string[] = [];
+        let indent = 0;
+        const tab = '   ';
 
-      xmlString.split(/>\s*</g).forEach((node, index) => {
-        if (node.match(/^\/\w/)) {
-          indent--;
-        }
+        const nodes = xmlString.split(/>\s*</);
+        nodes.forEach((node, index) => {
+            node = node.trim();
+            const isTagFechamento = node.match(/^\/\w/);
 
-        const isClossing = node.match(/^\/\w/) !== null;
-        const prefix = tab.repeat(Math.max(0, indent));
-        const opennig = isClossing ? '</': '<';
+            if (isTagFechamento) {
+                indent--;
+            }
 
-        formattedXml.push(`${prefix}${opennig}${node}`);
+            const prefixo = tab.repeat(Math.max(0, indent));
+            let formattedNode = '';
 
-        if (node.match(/^<?\w[^>]*[^\/]$/) && !node.startsWith('?')) {
-          indent++;
-        }
-      });
+            if (index === 0) {
+                formattedNode = `${prefixo}<${node}>`;
+            } else if (index === nodes.length - 1) {
+                formattedNode = `${prefixo}<${node}`;
+            } else {
+                formattedNode = `${prefixo}<${node}>`;
+            }
 
-      return formattedXml.join('>\n').substring(1) + '>';
+            formattedXml.push(formattedNode);
+
+            const isSelfClosing = node.endsWith('/');
+            const isDeclaration = node.startsWith('?');
+            const isComment = node.startsWith('!--');
+
+            if (!isTagFechamento && !isSelfClosing && !isDeclaration && !isComment) {
+                indent++;
+            }
+        });
+
+        return formattedXml.join('\n');
+
     } catch (error) {
-      console.error('Error ao formatar xml: ', error);
-      return xmlString;
+        console.error('Erro ao formatar XML: ', error);
+        return xmlString;
     }
-
   }
 
   updateHighlight() {
