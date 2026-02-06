@@ -109,6 +109,7 @@ export class XmlViewerComponent {
         if (e.target?.result) {
           const xmlContent = e.target.result as string;
           this.xmlCode = xmlContent;
+          this.graphReloadService.triggerXmlLoad(this.xmlCode);
           this.importXmlAndCreateGraph(xmlContent);
         }
       };

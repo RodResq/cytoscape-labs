@@ -1,4 +1,4 @@
-import { Component, effect, inject } from '@angular/core';
+import { Component, effect, inject, OnInit } from '@angular/core';
 import { StepperCacheService } from './../cytoscape/stepper/stepper-cache.service';
 
 import { ButtonModule } from 'primeng/button';
@@ -16,6 +16,7 @@ import { FormAction, NodeData } from '@shared/types/form.types';
 import { StepperData } from '@shared/types/stepper.types';
 import { XmlEditorComponent } from '../xml-editor/xml-editor.component';
 import { CytoscapeComponent } from '../cytoscape/cytoscape.component';
+import { GraphReloadService } from '@shared/services/graph-reload.service';
 
 
 
@@ -33,18 +34,20 @@ import { CytoscapeComponent } from '../cytoscape/cytoscape.component';
   templateUrl: './fluxo.component.html',
   styleUrl: './fluxo.component.css'
 })
-export class FluxoComponent {
+export class FluxoComponent implements OnInit{
   public formService = inject(FormService);
   public formsDataService = inject(FormsDataService);
   public stepperService = inject(StepperService);
   public stepperCacheService = inject(StepperCacheService);
   private grafoService = inject(GrafoService);
+  private xmlSubject = inject(GraphReloadService);
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
 
   public grafo!: GrafoFormData | null;
   public form!: FormAction | null;
   public idTaskNodeAtual!: string;
+  public xmlCode: string = '';
 
   constructor() {
     effect(() => {
@@ -56,6 +59,11 @@ export class FluxoComponent {
         this.form.subTitle = this.idTaskNodeAtual;
       }
     });
+  }
+  ngOnInit(): void {
+    this.xmlSubject.xmlLoad$.subscribe(xml => {
+      this.xmlCode = xml;
+    })
   }
 
   back() {
