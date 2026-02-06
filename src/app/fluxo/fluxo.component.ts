@@ -15,6 +15,7 @@ import { FormsDataService } from '@shared/services/forms-data.service';
 import { FormAction, NodeData } from '@shared/types/form.types';
 import { StepperData } from '@shared/types/stepper.types';
 import { XmlEditorComponent } from '../xml-editor/xml-editor.component';
+import { CytoscapeComponent } from '../cytoscape/cytoscape.component';
 
 
 
@@ -26,6 +27,7 @@ import { XmlEditorComponent } from '../xml-editor/xml-editor.component';
     ButtonModule,
     RouterOutlet,
     CommonModule,
+    CytoscapeComponent,
     XmlEditorComponent
 ],
   templateUrl: './fluxo.component.html',

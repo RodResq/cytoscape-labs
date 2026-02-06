@@ -1,12 +1,11 @@
 import { Component } from '@angular/core';
-import { CytoscapeComponent } from './cytoscape/cytoscape.component';
-import { NavbarComponent } from "./navbar/navbar.component";
-import { StepperComponent } from './cytoscape/stepper/stepper.component';
 import { RouterOutlet } from "@angular/router";
+import { StepperComponent } from './cytoscape/stepper/stepper.component';
+import { NavbarComponent } from "./navbar/navbar.component";
 
 @Component({
   selector: 'app-root',
-  imports: [CytoscapeComponent, NavbarComponent, StepperComponent,  RouterOutlet],
+  imports: [NavbarComponent, StepperComponent,  RouterOutlet],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

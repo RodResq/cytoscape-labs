@@ -10,7 +10,6 @@ import { CardModule } from 'primeng/card';
 import { FileSelectEvent, FileUploadModule } from 'primeng/fileupload';
 import { TextareaModule } from 'primeng/textarea';
 import { ToastModule } from 'primeng/toast';
-import { XmlEditorComponent } from '../xml-editor/xml-editor.component';
 
 interface UploadEvent {
     originalEvent: Event;
@@ -29,7 +28,6 @@ interface UploadEvent {
     ToastModule,
     FileUploadModule,
     ButtonModule,
-    XmlEditorComponent
   ],
   templateUrl: './xml-viewer.component.html',
   styleUrl: './xml-viewer.component.css',
@@ -124,7 +122,7 @@ export class XmlViewerComponent {
 
       reader.readAsText(file);
 
-    } 
+    }
   }
 
 }
