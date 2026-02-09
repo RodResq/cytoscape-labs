@@ -152,7 +152,7 @@ export class XmlViewerComponent {
         return;
       }
 
-      this.selectedFileName = file.name;
+      this.selectedFileName = '';
       const reader = new FileReader();
 
       reader.onload = (e: ProgressEvent<FileReader>) => {

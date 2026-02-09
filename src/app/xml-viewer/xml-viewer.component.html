@@ -2,10 +2,10 @@
     <p-toast />
       <p-fileupload 
         #fileUpload 
-        name="xmlFile[]" 
+        name="selectedFileName" 
         url="https://www.primefaces.org/cdn/api/upload.php" 
         (onUpload)="onUpload($event)" 
-        [multiple]="true" 
+        [multiple]="false" 
         accept=".xml" 
         maxFileSize="1000000" 
         mode="advanced">

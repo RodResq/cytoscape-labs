@@ -51,6 +51,18 @@ export const cytoscapeStyles: Stylesheet[] = [
         }
     },
     {
+        selector: '.node',
+        style: {
+        'shape': 'rectangle',
+        'background-color': '#5dc7e2ff',
+        'width': 80,
+        'height': 40,
+        'text-valign': 'center',
+        'text-halign': 'center',
+        label: 'data(label)'
+        }
+    },
+    {
         selector: '.end-node',
         style: {
         'shape': 'ellipse',

@@ -244,7 +244,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
       zoom: 1,
       pan: { x: 0, y: 0 },
       minZoom: 0.5,
-      maxZoom: 0.75,
+      maxZoom: 0.80,
       zoomingEnabled: true,
       userZoomingEnabled: true,
       panningEnabled: true,

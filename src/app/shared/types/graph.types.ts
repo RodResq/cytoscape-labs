@@ -55,6 +55,7 @@ export interface TaskFormData {
  */
 export enum NodeType {
   TASK = 'task-node',
+  NODE = 'node',
   DECISION = 'decision-node',
   SYSTEM = 'system-node',
   END = 'end-node',

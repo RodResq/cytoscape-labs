@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="Análise de desarquivamento">
+    <description><![CDATA[02:31]]></description>  
+    <!-- SWIMLANES -->
+    <swimlane name="Magistrado">
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('5:1469,5:1,8067:1469,8067:1,4:5197,8068:5197,35626:1469,35623:1469,35622:5197')}"/>
+    </swimlane>
+    <swimlane name="Assessoria">
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('4:5197,5:1469,6:1338,8068:5197,8067:1469,8066:1338,35626:1469,35627:1338,35622:5197,35623:1469,35624:1338,35625:5197')}"/>
+    </swimlane>
+    <swimlane name="Nó de Desvio - Análise de desarquivamento">
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('6:1338,5:1469,35627:1338,35624:1338,35626:1469,35623:1469,8066:1338,8067:1469')}"/>
+    </swimlane>  
+    <!-- START-STATE -->
+    <start-state name="Início">
+        <task name="Tarefa inicial" swimlane="Assessoria" priority="3"/>
+        <transition to="Minutar análise de desarquivamento" name="Minutar análise de desarquivamento"/>
+        <event type="node-enter">
+            <action expression="#{org.jboss.seam.bpm.processInstance.contextInstance.deleteVariable('MovimentosLancadosTemporariamente')}"/>
+            <action expression="#{org.jboss.seam.bpm.processInstance.contextInstance.deleteVariable('AgrupamentosLancadosTemporariamente')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('minutaEmElaboracao')}"/>
+        </event>
+    </start-state>  
+    <!-- NODES -->
+    <task-node end-tasks="true" name="Minutar análise de desarquivamento">
+        <task name="Minutar análise de desarquivamento" swimlane="Assessoria" priority="3">
+            <controller>
+                <variable name="minuta_ato_judicial" mapped-name="textEditCombo:minuta_ato_judicial" access="read,write"/>
+                <variable name="MinutarEmLote" mapped-name="minutarLote:MinutarEmLote" access="read,write"/>
+                <variable name="miniPAC" mapped-name="miniPAC:miniPAC" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - Análise de desarquivamento" name="Nó de Desvio - Análise de desarquivamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Confirmar análise de desarquivamento" name="Confirmar análise de desarquivamento"/>
+        <transition to="Limpar variáveis" name="Cancelar análise sobre desarquivamento"/>
+        <event type="task-start">
+            <action name="upd" expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{true}')}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds','62,63,64')}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos','Cancelar análise sobre desarquivamento')}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:lancamentoMovimentoObrigatorio', true)}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('prepararAto:meiosComunicacoes','E,P')}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:miniPac:DocJaExiste',false)}"/>
+        </event>
+        <event type="node-leave">
+            <action expression="#{org.jboss.seam.bpm.processInstance.contextInstance.setVariable('minutaEmElaboracao', processoHome.idProcessoDocumento)}"/>
+        </event>
+    </task-node>
+    <task-node end-tasks="true" name="Confirmar análise de desarquivamento">
+        <task name="Confirmar análise de desarquivamento" swimlane="Magistrado" priority="4">
+            <controller>
+                <variable name="Processo_Fluxo_revisarMinuta" mapped-name="frame:Processo_Fluxo_revisarMinuta" access="read,write"/>
+                <variable name="AssinaturaEmLote" mapped-name="assinarLote:AssinaturaEmLote" access="read,write"/>
+                <variable name="MovimentarLote" mapped-name="movimentarLote:MovimentarLote" access="read,write"/>
+                <variable name="miniPAC" mapped-name="miniPAC:miniPAC" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Nó de Desvio - Análise de desarquivamento" name="Nó de Desvio - Análise de desarquivamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Minutar análise de desarquivamento" name="Retornar para minutar análise de desarquivamento"/>
+        <transition to="Sinalizar arquivamento" name="Finalizar análise de desarquivamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <event type="task-start">
+            <action name="upd" expression="#{lancadorMovimentosService.setCondicaoLancamentoMovimentosTemporarioNoFluxo('#{false}')}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos','Retornar para minutar análise de desarquivamento')}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('pje:fluxo:transicao:lancamentoMovimentoObrigatorio', true)}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('prepararAto:meiosComunicacoes','E,P')}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavel('pje:fluxo:miniPac:DocJaExiste',false)}"/>
+            <action name="upd" expression="#{taskInstanceUtil.setVariable('mostrarBotaoGravarNoFluxo','false')}"/>
+        </event>
+        <event type="task-create">
+            <action name="upd" expression="#{taskInstanceUtil.setFrameDefaultTransition('Finalizar análise de desarquivamento')}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('tiposDisponiveisIds','62,63,64')}"/>
+        </event>
+    </task-node>
+    <node name="Sinalizar arquivamento">
+        <transition to="Limpar variáveis" name="Limpar variáveis"/>
+        <event type="node-enter">
+            <action expression="#{processoJudicialService.sinalizarFluxo(tramitacaoProcessualService.recuperaProcesso(),'processo_arquivado','true', true, true)}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('analise:desarquivamento')}"/>
+        </event>
+    </node>
+    <node name="Limpar variáveis">
+        <transition to="Comunicar da análise de desarquivamento" name="Comunicar da análise de desarquivamento"/>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('minutaEmElaboracao')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('MovimentosLancadosTemporariamente')}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('AgrupamentosLancadosTemporariamente')}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.apagaVariavelTarefa('pje:fluxo:transicao:dispensaRequeridos')}"/>
+            <action expression="#{org.jboss.seam.bpm.processInstance.contextInstance.deleteVariable('minuta_ato_judicial')}"/>
+        </event>
+    </node>
+    <process-state name="Comunicar da análise de desarquivamento">
+        <sub-process name="PAC Genérico" binding="late"/>
+        <transition to="Término" name="Término"/>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('pac-generico:ato_com_comunicacao','true')}"/>
+        </event>
+    </process-state>
+    <end-state name="Término"/>
+    <task-node end-tasks="true" name="Nó de Desvio - Análise de desarquivamento">
+        <task name="Nó de Desvio - Análise de desarquivamento" swimlane="Nó de Desvio - Análise de desarquivamento" priority="3"/>
+        <transition to="Término" name="Término"/>
+        <transition to="Minutar análise de desarquivamento" name="Minutar análise de desarquivamento"/>
+        <transition to="Confirmar análise de desarquivamento" name="Confirmar análise de desarquivamento"/>
+    </task-node>  
+</process-definition>
