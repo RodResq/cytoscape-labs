@@ -81,7 +81,6 @@ export class GraphComponent implements OnInit, AfterViewInit {
     }
 
     this.reloadSubscription = this.graphReloadService.reload$.subscribe(() => {
-      console.log('📡 Recebeu sinal de reload!');
       this.loadImportedGraph();
     });
   }
@@ -99,16 +98,11 @@ export class GraphComponent implements OnInit, AfterViewInit {
     const importedData = localStorage.getItem('importedGraph');
 
     if (!importedData) {
-      console.log('Nenhum grafo para importar');
       return;
     }
 
     try {
       const { nodes, edges } = JSON.parse(importedData);
-
-      console.log('=== IMPORTANDO GRAFO ===');
-      console.log('Nodes a importar:', nodes.length);
-      console.log('Edges a importar:', edges.length);
 
       const startNode = this.cy.getElementById('0');
       if (startNode.length > 0) {
@@ -118,9 +112,6 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
       const elementsToAdd = [...nodes, ...edges];
       this.cy.add(elementsToAdd);
-      // Verifica se os nós foram adicionados
-      console.log('Nós no grafo após adicionar:', this.cy.nodes().length);
-      console.log('Arestas no grafo:', this.cy.edges().length);
 
       this.cy.nodes().forEach(node => {
         console.log(`Nó: ${node.id()} - classes: ${node.classes()}`);
@@ -130,10 +121,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
         console.log(`Edge: ${edge.id()} - ${edge.source().id()} -> ${edge.target().id()}`);
       });
 
-
       setTimeout(() => {
-        console.log('Aplicando layout breadthfirst...');
-
         const layout = this.cy.layout({
           name: 'breadthfirst',
           directed: true,
@@ -146,8 +134,6 @@ export class GraphComponent implements OnInit, AfterViewInit {
         layout.run();
         layout.one('layoutstop', () => {
           this.cy.fit(undefined, 50);
-          console.log('Layout aplicado a zoom ajustado');
-          console.log('=== IMPORTAÇÃO CONCLUÍDA ===');
         })
       }, 100);
 
@@ -198,10 +184,6 @@ export class GraphComponent implements OnInit, AfterViewInit {
     this.cy = cytoscape(this.addStartNode());
 
     this.contexMenuInstance = this.cy.contextMenus(this.options);
-
-    // let collection = this.cy.collection();
-
-    // this.waitForNodeClick(collection);
 
     this.grafoService.setGrafo({
       length: 1,
@@ -256,7 +238,6 @@ export class GraphComponent implements OnInit, AfterViewInit {
     this.cy.on('cxttap', 'node', (event) => {
       const node = event.target;
 
-      console.log('Nó clicado: ', node.id());
       let menuItemRemoveNodeExist = this.menuItemExiste('remove-node');
 
       if (node && node.id() == '0') {
@@ -270,7 +251,6 @@ export class GraphComponent implements OnInit, AfterViewInit {
         }
       } else if(node && String(node.id()).includes('end-node')) {
         let menuItemAddNodeExist = this.menuItemExiste('add-node');
-        console.log('menuItemAddNodeExist: ', menuItemAddNodeExist);
 
         if (menuItemAddNodeExist) {
           this.contexMenuInstance.removeMenuItem('add-node');
@@ -288,8 +268,6 @@ export class GraphComponent implements OnInit, AfterViewInit {
     try {
       while (this.isWaitingForEdges) {
         const event: any =  await this.cy.promiseOn('tap', 'edge');
-        console.log('Edge Clicada: ', event.target);
-
         this.processEdgeClicked(event.target);
       }
     } catch(error) {
@@ -303,8 +281,6 @@ export class GraphComponent implements OnInit, AfterViewInit {
     const targerId = edge.target().id();
 
     console.log('Process Edge: ', edgeId, `${sourceId} -> ${targerId}`);
-    // this.fluxoService.openForm(2, 'Node Geral', 'Info Node');
-
   }
 
   private appendMenuItem() {
@@ -421,10 +397,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
     const clickedElement = event.target || event.cyTarget;
     const elementId = clickedElement.id();
 
-    console.log('No a ser removido', clickedElement);
-
     if (this.hasChildren(elementId)) {
-      alert('Elemento nao pode ser removido pois possui elemento filhos');
       return;
     }
 
@@ -457,9 +430,6 @@ export class GraphComponent implements OnInit, AfterViewInit {
   }
 
   private addNode(event: any, classes: any, position: {x: number, y: number}, style?: {}) {
-    console.log('Adiconando elemento: ', event);
-    console.log('Stepper Atual: ', this.stepperService.getCurrentStep());
-
     const clickedElement = event.target || event.cyTarget;
     const elementId = clickedElement.id();
     const newNodeId = `${classes.nodeClasses}-` + Date.now();
@@ -578,11 +548,9 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
   ngOnDestroy(): void {
     this.stopWaitingForEdge();
-
     if (this.reloadSubscription) {
       this.reloadSubscription.unsubscribe()
     }
-    console.log('Componente destruído');
   }
 
 }
