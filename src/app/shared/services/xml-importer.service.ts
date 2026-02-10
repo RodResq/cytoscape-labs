@@ -79,7 +79,7 @@ export class XMLImporterService {
         const endStates = xmlDoc.getElementsByTagName('end-state');
         Array.from(endStates).forEach((endState, index) => {
             const name = endState.getAttribute('name') || 'Término';
-            const nodeId = `end-${index}`;
+            const nodeId = `${name}-${index}`;
 
             nodeMapping.set(name, {
                 id: nodeId,
