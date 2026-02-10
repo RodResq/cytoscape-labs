@@ -149,6 +149,26 @@ export class ContextMenuConfig {
 
 
         return [
+          {
+                id: 'metadata',
+                content: 'Metadados',
+                tooltipText: 'metadados',
+                image: {
+                  src: "assets/icons/metadata.svg",
+                  width: 12,
+                  height: 12,
+                  x: 6,
+                  y: 4
+                },
+                selector: 'node, edge',
+                onClickFunction: (event: any) => {
+                  component.metadata(event);
+                },
+                disabled: false,
+                show: true,
+                hasTrailingDivider: true,
+                coreAsWell: false
+            },
             {
                 id: 'edit-node',
                 content: 'Editar',

@@ -111,6 +111,8 @@ export class GraphComponent implements OnInit, AfterViewInit {
       }
 
       const elementsToAdd = [...nodes, ...edges];
+      console.log('Elementos para gerar o grafo:', elementsToAdd);
+
       this.cy.add(elementsToAdd);
 
       this.cy.nodes().forEach(node => {
@@ -362,6 +364,21 @@ export class GraphComponent implements OnInit, AfterViewInit {
       this.isWaitingForEdges = true;
       this.waitForEdgeClick();
     }
+  }
+
+  private metadata(event: any) {
+    const node = event.target || event.cyTarget;
+    this.cy.nodes().unselect();
+
+    if (!node.isNode()) {
+      console.log('Elemento clicado nao e um no.');
+      return;
+    }
+
+    const selectedNode = node.select();
+    console.log('No selecionado: ', selectedNode);
+
+    this.nodeService.getELement(node);
   }
 
   private editNode(event: any) {

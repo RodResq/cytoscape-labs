@@ -11,6 +11,16 @@ export interface XmlNodeMapping {
     task?: XmlTask;
 }
 
+export interface XMLAction {
+  expression: string;
+}
+
+export interface XmlEvent {
+  type: string;
+  actions: XMLAction[]
+}
+
+
 export interface XmlTransition {
     to: string;
     name: string;
@@ -37,8 +47,12 @@ export class XMLImporterService {
 
         const startStates = xmlDoc.getElementsByTagName('start-state');
         Array.from(startStates).forEach((startState, index) => {
-            const name = startState.getAttribute('name') || 'Início';
-            const nodeId = `start-${index}`;
+            const task = startState.firstElementChild;
+            if (!task) return;
+
+            const name = task.getAttribute('name') || 'Início';
+            const swimlane = task.getAttribute('swimlane');
+            const nodeId = `${name}-${index}`;
 
             nodeMapping.set(name, {
                 id: nodeId,
@@ -53,7 +67,9 @@ export class XMLImporterService {
                 data: {
                     id: nodeId,
                     label: name,
-                    type: NodeType.START
+                    type: NodeType.START,
+                    swimlane: swimlane,
+                    events: this.extratEvents(startState)
                 },
                 position: { x: 50, y: 50 + (index * 50)},
                 classes: 'start'
@@ -86,7 +102,11 @@ export class XMLImporterService {
 
         const taskNodes = xmlDoc.getElementsByTagName('task-node');
         Array.from(taskNodes).forEach((taskNode, index) => {
-            const name = taskNode.getAttribute('name') || `Node ${index + 1}`;
+            const task = taskNode.firstElementChild;
+            if (!task) return;
+
+            const name = task.getAttribute('name') || `Node ${index + 1}`;
+            const swimlane = task.getAttribute('swimlane');
             const endTasks = taskNode.getAttribute('end-tasks') === 'true';
             const nodeId = `${name} (${index})`;
 
@@ -104,7 +124,9 @@ export class XMLImporterService {
                     id: nodeId,
                     label: name,
                     type: NodeType.TASK,
-                    endTasks: endTasks
+                    endTasks: endTasks,
+                    swimlane: swimlane,
+                    events: this.extratEvents(taskNode)
                 },
                 position: { x: 400, y: 100 + (index * 150) },
                 classes: 'task-node'
@@ -130,6 +152,7 @@ export class XMLImporterService {
                     id: nodeId,
                     label: name,
                     type: NodeType.NODE,
+                    events: this.extratEvents(node)
                 },
                 position: { x: 500, y: 100 + (index * 150) },
                 classes: 'node'
@@ -165,6 +188,35 @@ export class XMLImporterService {
         console.log('Node Mapping:', nodeMapping);
 
         return { nodes, edges }
+    }
+
+    private extratEvents(element: Element): XmlEvent[] {
+      const events: XmlEvent[] = [];
+      const eventsElement = element.getElementsByTagName('event');
+
+      Array.from(eventsElement).forEach((event) => {
+        const eventType = event.getAttribute('type');
+
+        const actions: XMLAction[] = [];
+        const actionsElements = event.getElementsByTagName('action');
+
+        Array.from(actionsElements).forEach((action) => {
+          const expression = action.getAttribute('expression');
+          if (expression) {
+            actions.push({
+              expression: expression
+            })
+          }
+        });
+
+        events.push({
+          type: eventType || '',
+          actions: actions
+        })
+
+      });
+
+      return events;
     }
 
     private extractTransitions(element: Element): XmlTransition[] {
