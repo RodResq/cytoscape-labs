@@ -19,7 +19,6 @@
   flex-wrap: wrap;
 }
 
-/* Code Container */
 .code-container {
   display: flex;
   border: 1px solid #ddd;
@@ -27,9 +26,9 @@
   overflow: hidden;
   background-color: #f8f9fa;
   font-family: 'Courier New', Courier, monospace;
+  position: relative;
 }
 
-/* Line Numbers */
 .line-numbers {
   background-color: #e9ecef;
   padding: 0.75rem 0.5rem;
@@ -40,6 +39,9 @@
   font-size: 0.9rem;
   line-height: 1.5;
   min-width: 50px;
+  overflow-y: hidden;
+  height: 500px;
+  max-height: 600px;
 }
 
 .line-number {
@@ -63,6 +65,8 @@
   overflow-x: auto;
   white-space: pre;
   tab-size: 2;
+  height: 500px;
+  max-height: 600px;
 }
 
 .xml-textarea:focus {
