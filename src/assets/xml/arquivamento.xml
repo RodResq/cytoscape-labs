@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<process-definition xmlns="urn:jbpm.org:jpdl-3.2" name="Arquivamento">
+    <description><![CDATA[05:38]]></description>  
+    <!-- SWIMLANES -->
+    <swimlane name="Servidor Arquivo">
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('6:5184,35624:5184,35627:5184,35630:5184,35634:5184,8066:5184')}"/>
+    </swimlane>
+    <swimlane name="Secretaria">
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('5:1,6:1338,6:5483,8066:1338,8066:5483,5:1469,8067:1469,35627:1338,35627:5483,35624:1338,35624:5483,35626:1469,35623:1469')}"/>
+    </swimlane>
+    <swimlane name="Nó de Desvio - Arquivamento">
+        <assignment pooled-actors="#{localizacaoAssignment.getPooledActors('6:1338,5:1469,8066:1338,35627:1338,35624:1338,35626:1469,35623:1469,8067:1469')}"/>
+    </swimlane>  
+    <!-- START-STATE -->
+    <start-state name="Início">
+        <task name="Tarefa inicial" swimlane="Secretaria" priority="3"/>
+        <transition to="Arquivar processo" name="Arquivar processo"/>
+    </start-state>  
+    <!-- NODES -->
+    <task-node end-tasks="true" name="Arquivar processo">
+        <task name="Arquivar processo" swimlane="Secretaria" priority="3">
+            <controller>
+                <variable name="MovimentarLote" mapped-name="movimentarLote:MovimentarLote" access="read,write"/>
+                <variable name="aviso_audiencias_designadas" mapped-name="textMessage:aviso_audiencias_designadas" access="read,write"/>
+            </controller>
+        </task>
+        <description><![CDATA[Aviso: #{processoAudienciaHome.existeAudienciaEmAbertoProcesso() ? 'Há audiência(s) designada(s) no processo. Favor cancelar antes de arquivar.' : 'Selecione o tipo de arquivamento.'}]]></description>
+        <transition to="Processo está suspenso?" name="Arquivo definitivo"/>
+        <transition to="ArqProv" name="Arquivo provisório"/>
+        <transition to="Nó de Desvio - Arquivamento" name="Nó de Desvio - Arquivamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Término" name="Sair do arquivamento"/>
+        <event type="task-start">
+            <action name="upd" expression="#{taskInstanceUtil.setVariable('mostrarBotaoGravarNoFluxo','false')}"/>
+        </event>
+    </task-node>
+    <decision expression="#{tramitacaoProcessualService.temSituacao('jus:suspenso') ? 'Analisar pendência para arquivamento' : 'Tem bem apreendido?'}" name="Processo está suspenso?">
+        <transition to="Analisar pendência para arquivamento" name="Analisar pendência para arquivamento"/>
+        <transition to="Tem bem apreendido?" name="Tem bem apreendido?"/>
+    </decision>
+    <task-node end-tasks="true" name="Analisar pendência para arquivamento">
+        <task name="Analisar pendência para arquivamento" swimlane="Secretaria" priority="3">
+            <controller>
+                <variable name="atencao" mapped-name="textMessage:atencao" access="read,write"/>
+                <variable name="movimentarEmLote" mapped-name="movimentarLote:movimentarEmLote" access="read"/>
+            </controller>
+        </task>
+        <description><![CDATA[Variável: atencao
+Label: Para aquivar um processo é necessário o movimento de levantamento de sobrestamento ou suspensão
+Tipo: Aviso Customizado]]></description>
+        <transition to="Nó de Desvio - Arquivamento" name="Nó de Desvio - Arquivamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Iniciar fluxo de Suspensão ou Sobrestamento" name="Levantar suspensão ou sobrestamento"/>
+        <transition to="Término" name="Sair do arquivamento"/>
+    </task-node>
+    <process-state name="Iniciar fluxo de Suspensão ou Sobrestamento">
+        <sub-process name="Fluxo de Suspensão ou Sobrestamento" binding="late"/>
+        <transition to="Término" name="Término"/>
+    </process-state>
+    <decision expression="#{(tramitacaoProcessualService.temMovimento('1055')) ? 'Tem destinação do bem apreendido?' : 'Existe audiência designada?'}" name="Tem bem apreendido?">
+        <transition to="Tem destinação do bem apreendido?" name="Tem destinação do bem apreendido?"/>
+        <transition to="Existe audiência designada?" name="Existe audiência designada?"/>
+    </decision>
+    <decision expression="#{(tramitacaoProcessualService.temMovimento('1053')) ? 'Existe audiência designada?' : 'Destinação de bem apreendido'}" name="Tem destinação do bem apreendido?">
+        <transition to="Destinação de bem apreendido" name="Destinação de bem apreendido"/>
+        <transition to="Existe audiência designada?" name="Existe audiência designada?"/>
+    </decision>
+    <task-node end-tasks="true" name="Destinação de bem apreendido">
+        <task name="Destinação de bem apreendido" swimlane="Secretaria" priority="3">
+            <controller>
+                <variable name="Aviso" mapped-name="textAlert:Aviso" access="read,write"/>
+            </controller>
+        </task>
+        <description><![CDATA[Aviso: Favor informar a destinação dos bens apreendidos inserindo um documento com o movimento de Destinação (1053)]]></description>
+        <transition to="Nó de Desvio - Arquivamento" name="Nó de Desvio - Arquivamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Arquivar processo" name="Arquivar processo"/>
+    </task-node>
+    <decision expression="#{processoAudienciaHome.existeAudienciaEmAbertoProcesso() ? 'Arquivar processo' : 'ArqDef'}" name="Existe audiência designada?">
+        <transition to="ArqDef" name="ArqDef"/>
+        <transition to="Arquivar processo" name="Arquivar processo"/>
+    </decision>
+    <node name="ArqDef">
+        <transition to="É plantão?" name="É plantão?"/>
+        <event type="node-enter">
+            <action expression="#{preencherMovimento.deCodigo(246).lancarMovimento()}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('pje:aguardaCiencia')}"/>
+            <action expression="#{tramitacaoProcessualService.acrescentarSituacao('jus:arquivado:definitivo')}"/>
+        </event>
+    </node>
+    <decision expression="#{tramitacaoProcessualService.recuperaIdOrgaoPlantao() == authenticator.getUsuarioLocalizacaoMagistradoServidorAtual().orgaoJulgador.idOrgaoJulgador ? 'Sair do plantão':'Arquivo definitivo'}" name="É plantão?">
+        <transition to="Sair do plantão" name="Sair do plantão"/>
+        <transition to="Arquivo definitivo" name="Arquivo definitivo"/>
+    </decision>
+    <node name="Sair do plantão">
+        <transition to="Arquivo definitivo" name="Arquivo definitivo"/>
+        <event type="node-leave">
+            <action expression="#{tramitacaoProcessualService.deslocarFluxoParaOrgaoDiverso()}"/>
+            <action expression="#{tramitacaoProcessualService.removerSituacao('pje:fluxo:atendimentoPlantao')}"/>
+        </event>
+        <event type="node-enter">
+            <action expression="#{processoJudicialService.sinalizarFluxo(tramitacaoProcessualService.recuperaProcesso(),'pje:fluxo:aguardaPlantao','true',false,true)}"/>
+            <action expression="#{tramitacaoProcessualService.apagaVariavel('pje:fluxo:deslocamento:orgaoDestino')}"/>
+        </event>
+    </node>
+    <node name="ArqProv">
+        <transition to="Arquivo provisório" name="Arquivo provisório"/>
+        <event type="node-enter">
+            <action expression="#{preencherMovimento.deCodigo(245).lancarMovimento()}"/>
+            <action expression="#{tramitacaoProcessualService.acrescentarSituacao('jus:arquivado:provisorio')}"/>
+        </event>
+    </node>
+    <task-node end-tasks="true" name="Arquivo definitivo">
+        <task name="Arquivo definitivo" swimlane="Servidor Arquivo" priority="3">
+            <controller>
+                <variable name="arquivamento_aviso" mapped-name="textAlert:arquivamento_aviso" access="read,write"/>
+                <variable name="MovimentarLote" mapped-name="movimentarLote:MovimentarLote" access="read"/>
+            </controller>
+        </task>
+        <transition to="Término" name="Término">
+            <condition expression="#{usuarioService.getUsuarioLogado().login == '78901553287'}"/>
+        </transition>
+        <transition to="Nó de Desvio - Arquivamento" name="Nó de Desvio - Arquivamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Decidir sobre pedido de desarquivamento" name="Decidir sobre pedido de desarquivamento"/>
+        <transition to="[Comunicação] Intimar custas finais" name="[Comunicação] Intimar custas finais">
+            <condition expression="#{tramitacaoProcessualService.recuperaProcesso().orgaoJulgador.orgaoJulgador == '1ª Vara de Execução Fiscal de Belém'}"/>
+        </transition>
+        <transition to="Cumprir determinação sobre desarquivamento" name="Cumprir determinação sobre desarquivamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Encaminhar para Cobrança Administrativa" name="Encaminhar para Cobrança Administrativa"/>
+        <event type="task-start">
+            <action name="upd" expression="#{taskInstanceUtil.setFrameDefaultTransition('Cumprir determinação sobre desarquivamento')}"/>
+            <action name="upd" expression="#{tramitacaoProcessualService.gravaVariavelTarefa('processo_arquivado','true')}"/>
+        </event>
+    </task-node>
+    <node name="Encaminhar para Cobrança Administrativa">
+        <transition to="Arquivo definitivo" name="Arquivo definitivo"/>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.cadastrarProcessoIncidentalDuplicado(tramitacaoProcessualService.recuperaProcesso().processo.numeroProcesso, 184, &quot;1298&quot;, &quot;COBRA&quot;)}"/>
+            <action expression="#{processoTagManager.criarProcessoTagValido(tramitacaoProcessualService.recuperaProcesso().idProcessoTrf, 'COBRANÇA ADM.', tramitacaoProcessualService.recuperaProcesso().getOrgaoJulgador().getLocalizacao().idLocalizacao, authenticator.getUsuarioLogado().idUsuario)}"/>
+        </event>
+    </node>
+    <process-state name="[Comunicação] Intimar custas finais">
+        <sub-process name="PAC Genérico" binding="late"/>
+        <transition to="Arquivo definitivo" name="Arquivo definitivo"/>
+        <event type="node-enter">
+            <action expression="#{tramitacaoProcessualService.gravaVariavel('pac-generico:tipo_comunicacao','intimacao-custas-finais')}"/>
+        </event>
+    </process-state>
+    <process-state name="Decidir sobre pedido de desarquivamento">
+        <sub-process name="Análise de desarquivamento" binding="late"/>
+        <transition to="Cumprir determinação sobre desarquivamento" name="Cumprir determinação sobre desarquivamento"/>
+    </process-state>
+    <task-node end-tasks="true" name="Cumprir determinação sobre desarquivamento">
+        <task name="Cumprir determinação sobre desarquivamento" swimlane="Secretaria" priority="3">
+            <controller>
+                <variable name="MovimentarLote" mapped-name="movimentarLote:MovimentarLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Arquivo definitivo" name="Manter arquivado"/>
+        <transition to="Nó de Desvio - Arquivamento" name="Nó de Desvio - Arquivamento">
+            <condition expression="#{true}"/>
+        </transition>
+        <transition to="Reativar processo" name="Reativar processo"/>
+    </task-node>
+    <task-node end-tasks="true" name="Avaliar determinaçao sobre desarquivamento">
+        <task name="Avaliar determinaçao sobre desarquivamento" swimlane="Secretaria" priority="3">
+            <controller>
+                <variable name="MovimentarLote" mapped-name="movimentarLote:MovimentarLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Arquivo definitivo" name="Manter arquivado"/>
+        <transition to="Desarq" name="Desarquivar Processo"/>
+        <transition to="Nó de Desvio - Arquivamento" name="Nó de Desvio - Arquivamento">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <task-node end-tasks="true" name="Arquivo provisório">
+        <task name="Arquivo provisório" swimlane="Secretaria" priority="3">
+            <controller>
+                <variable name="MovimentarLote" mapped-name="movimentarLote:MovimentarLote" access="read,write"/>
+            </controller>
+        </task>
+        <transition to="Desarq" name="Desarquivar"/>
+        <transition to="Nó de Desvio - Arquivamento" name="Nó de Desvio - Arquivamento">
+            <condition expression="#{true}"/>
+        </transition>
+    </task-node>
+    <node name="Desarq">
+        <transition to="Término" name="Término"/>
+        <event type="node-enter">
+            <action expression="#{preencherMovimento.deCodigo(893).lancarMovimento()}"/>
+            <action expression="#{tramitacaoProcessualService.acrescentarSituacao('jus:desarquivado')}"/>
+        </event>
+    </node>
+    <node name="Reativar processo">
+        <transition to="Término" name="Término"/>
+        <event type="node-enter">
+            <action expression="#{preencherMovimento.deCodigo(849).lancarMovimento()}"/>
+            <action expression="#{tramitacaoProcessualService.acrescentarSituacao('jus:reativado')}"/>
+        </event>
+    </node>
+    <end-state name="Término"/>
+    <task-node end-tasks="true" name="Nó de Desvio - Arquivamento">
+        <task name="Nó de Desvio - Arquivamento" swimlane="Nó de Desvio - Arquivamento" priority="3"/>
+        <transition to="Arquivar processo" name="Arquivar processo"/>
+        <transition to="Arquivo definitivo" name="Arquivo definitivo"/>
+        <transition to="Arquivo provisório" name="Arquivo provisório"/>
+        <transition to="Término" name="Término"/>
+        <transition to="Avaliar determinaçao sobre desarquivamento" name="Avaliar determinaçao sobre desarquivamento"/>
+        <transition to="Cumprir determinação sobre desarquivamento" name="Cumprir determinação sobre desarquivamento"/>
+        <transition to="Destinação de bem apreendido" name="Destinação de bem apreendido"/>
+        <transition to="Analisar pendência para arquivamento" name="Analisar pendência para arquivamento"/>
+    </task-node>  
+</process-definition>

@@ -151,7 +151,7 @@ export const cytoscapeStyles: Stylesheet[] = [
     {
         selector: '.subprocess-node',
         style: {
-        'shape': 'round-rectangle',
+        'shape': 'rectangle',
         'background-color': '#E8F5E8',
         'width': 80,
         'height': 40,
@@ -160,7 +160,7 @@ export const cytoscapeStyles: Stylesheet[] = [
         'font-family': 'Arial, sans-serif',
         'text-wrap': 'wrap',
         'text-max-width': '90px',
-        label: 'data(id)',
+        label: 'data(label)',
         }
     },
     {

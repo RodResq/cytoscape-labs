@@ -76,6 +76,48 @@ export class XMLImporterService {
             })
         });
 
+        const processStates = xmlDoc.getElementsByTagName('process-state');
+        Array.from(processStates).forEach((processState, index) => {
+            const processStateName = processState.getAttribute('name') || 'process-state';
+            const processStateId = `${processStateName}-${index}`;
+
+            const subProcesss = processState.firstElementChild;
+            if (!subProcesss) return;
+
+            const name = subProcesss.getAttribute('name') || 'sub-process';
+            const swimlane = subProcesss.getAttribute('swimlane') || null;
+            const nodeId = `${name}-${index}`;
+            
+            nodeMapping.set(processStateName, {
+                id: processStateId,
+                name: processStateName,
+                type: NodeType.SUBPROCESS,
+                label: processStateName,
+                transitions: this.extractTransitions(processState)
+            });
+
+            nodes.push({
+                group: 'nodes',
+                data: {
+                    id: processStateId,
+                    label: processStateName,
+                    type: NodeType.SUBPROCESS,
+                    swimlane: null,
+                    subprocess: {
+                        id: nodeId,
+                        label: name,
+                        type: NodeType.SUBPROCESS,
+                        swimlane: swimlane,
+                        events: this.extratEvents(processState)
+                    },
+                    events: this.extratEvents(processState)
+                },
+                position: { x: 50, y: 50 + (index * 50)},
+                classes: 'subprocess-node'
+            })
+            
+        });
+
         const endStates = xmlDoc.getElementsByTagName('end-state');
         Array.from(endStates).forEach((endState, index) => {
             const name = endState.getAttribute('name') || 'Término';
