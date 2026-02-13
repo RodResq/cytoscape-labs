@@ -7,7 +7,8 @@ import { XMLImporterService } from '@shared/services/xml-importer.service';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
-import { FileSelectEvent, FileUploadEvent, FileUploadModule } from 'primeng/fileupload';
+import { FileUploadHandlerEvent, FileUploadEvent, FileUploadModule } from 'primeng/fileupload';
+import { TagModule } from 'primeng/tag';
 import { TextareaModule } from 'primeng/textarea';
 import { ToastModule } from 'primeng/toast';
 
@@ -28,7 +29,8 @@ interface UploadEvent {
     ToastModule,
     FileUploadModule,
     ButtonModule,
-  ],
+    TagModule
+],
   templateUrl: './xml-viewer.component.html',
   styleUrl: './xml-viewer.component.css',
   standalone: true,
@@ -126,7 +128,7 @@ export class XmlViewerComponent {
     }
   }
 
-  onUpload(event: FileUploadEvent) {
+  onUpload(event: FileUploadHandlerEvent) {
     const files = event.files;
     console.log('File:', files[0]);
     

@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { Component, ElementRef, inject, Input, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, inject, Input, OnChanges, OnDestroy, SimpleChanges, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -8,6 +8,8 @@ import { CardModule } from 'primeng/card';
 import { FileUploadModule } from 'primeng/fileupload';
 import { TextareaModule } from 'primeng/textarea';
 import { ToastModule } from 'primeng/toast';
+
+declare const monaco: any;
 
 @Component({
   selector: 'app-xml-editor',
@@ -27,16 +29,98 @@ import { ToastModule } from 'primeng/toast';
   standalone: true,
   providers: [MessageService]
 })
-export class XmlEditorComponent {
-  @ViewChild('codeTextArea') codeTextArea!: ElementRef;
-  @ViewChild('fileInput') fileInput!: ElementRef;
+export class XmlEditorComponent implements AfterViewInit, OnChanges, OnDestroy {
+  @ViewChild("editorContainer") editorContainer!: ElementRef<HTMLDivElement>;
   private messageService = inject(MessageService);
-
+  private editorInstance: any = null;
+  
   @Input() xmlCode: string = '';
-  highlightedCode: string = '';
-  selectedFileName: string = '';
+
   lineNumbers: number[] = [];
+  selectedFileName: string = '';
   validationMessage: { isValid: boolean; text: string } | null = null;
+
+  
+  ngAfterViewInit(): void {
+    this.loadMonaco();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['xmlCode'] && !changes['xmlCode'].firstChange) {
+      this.updateEditor();
+    }
+    this.updateLineNumbers();
+  }
+
+  ngOnDestroy(): void {
+    this.editorInstance?.dispose();
+  }
+  
+  private loadMonaco() {
+    if ((window as any).monaco) {
+      this.initEditor();
+      return;
+    }
+
+    (window as any).require = { paths: {vs: 'assets/vs' } };
+
+    const script = document.createElement('script');
+    script.src = 'assets/vs/loader.js';
+    script.onload = () => {
+      (window as any).require(['vs/editor/editor.main'], () => {
+        this.initEditor();
+      });
+    };
+    document.body.appendChild(script);
+  }
+
+  private initEditor() {
+    if (!this.editorContainer?.nativeElement) return;
+
+    this.editorInstance = (window as any).monaco.editor.create(
+      this.editorContainer.nativeElement,
+      {
+        value: this.xmlCode,
+        language: 'xml',
+        theme: 'vs-dark',
+        automaticLayout: true,
+        fontSize: 13,
+        minimap: { enabled: false },
+        scrollBeyondLastLine: false,
+        wordWrap: 'off',
+        formatOnPast: true,
+        formatOnType: true,
+        lineNumbers: 'on',
+        folding: true,
+        renderLineHighlight: 'all'
+      }
+    );
+
+    this.editorInstance.onDidChangeModelContent(() => {
+      this.xmlCode = this.editorInstance.getValue();
+      this.updateLineNumbers();
+    })
+  }
+
+  private updateEditor() {
+    if (this.editorInstance) {
+      const current = this.editorInstance.getValue();
+      if (current != this.xmlCode) {
+        this.editorInstance.setValue(this.xmlCode);
+      }
+    }
+  }
+
+  private updateLineNumbers() {
+    if (this.xmlCode) {
+      this.lineNumbers = Array.from(
+        { length: this.xmlCode.split('\n').length },
+        (_, i) => i + 1
+      )
+    } else {
+      this.lineNumbers = [];
+    }
+  }
 
   formatXml(xmlString: string): string {
     try {
@@ -92,7 +176,7 @@ export class XmlEditorComponent {
     }
   }
 
-  formatXmlManual() {
+  formatXmlManualOld() {
     if (this.xmlCode) {
       this.xmlCode = this.formatXml(this.xmlCode);
       this.updateHighlight();
@@ -108,6 +192,28 @@ export class XmlEditorComponent {
         detail: 'Nenhum código XML para formater'
       });
     }
+  }
+
+  formatXmlManual() {
+    if (!this.xmlCode) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Aviso',
+        detail: 'Nenhum código para XML formatar.'
+      });
+      return;
+    }
+
+    this.editorInstance
+      ?.getAction('editor.action.formatDocument')
+      ?.run()
+      .then(() => {
+        this.messageService.add({
+          severity: 'info',
+          summary: 'Sucesso',
+          detail: 'XML formatado com sucesso.'
+        })
+      })
   }
 
   copyToClipboard() {
@@ -139,10 +245,10 @@ export class XmlEditorComponent {
 
   clearCode() {
     this.xmlCode = '';
-    this.highlightedCode = '';
     this.selectedFileName = '';
     this.lineNumbers = [];
     this.validationMessage = null;
+    this.editorInstance.setValue('');
   }
 
 }

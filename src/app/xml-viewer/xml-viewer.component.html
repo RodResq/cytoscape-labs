@@ -3,13 +3,35 @@
       <p-fileupload 
         #fileUpload 
         name="selectedFileName" 
-        url="https://www.primefaces.org/cdn/api/upload.php" 
-        (onUpload)="onUpload($event)" 
+        [customUpload]="true"
+        (uploadHandler)="onUpload($event)" 
         [multiple]="false" 
         accept=".xml" 
-        maxFileSize="1000000" 
+        [maxFileSize]="10485760" 
         mode="advanced">
-      <ng-template #empty>
+      
+      <ng-template pTemplate="file" let-file let-uploadedFiles="uploadedFiles" let-removeFileCallback="removeFileCallback" let-index="index">
+        <div class="flex align-items-center gap-3 p-2">
+          <i class="pi pi-file" style="font-size: 1.4rem;"></i>
+          <span class="font-semibold flex-1">{{ file.name }}</span>
+          <span class="text-sm" style="color: var(--text-color-secondary)">
+            {{ (file.size / 1024).toFixed(1) }} KB
+          </span>
+          <p-tag
+            [value]="uploadedFiles.includes(file) ? 'Completed': 'Pending'"
+            [severity]="uploadedFiles.includes(file) ? 'success': 'warn'"          
+          />
+          <p-button
+            icon="pi pi-times"
+            [rounded]="true"
+            [outlined]="true"
+            severity="danger"
+            size="small"
+            (onClick)="removeFileCallback($event, index)"
+          />
+        </div>
+      </ng-template>
+      <ng-template pTemplate="empty">
           <div>Drag and drop files to here to upload.</div>
       </ng-template>
     </p-fileupload>

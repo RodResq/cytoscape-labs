@@ -1,33 +1,17 @@
 <div class="container-fluid" style="height: calc(100vh - 60px); overflow: hidden;">
   <div class="row h-100">
-    <!-- Coluna do Formulário (Esquerda) -->
     <div class="col-md-3">
       @if (changeUrl) {
         <div class="mb-4 p-4">
-          <p-card [style]="{ width: '100%' }">
-            <ng-template #header></ng-template>
-            <ng-template #title> {{ form?.title }} </ng-template>
-            <ng-template #subtitle> {{ form?.subTitle }} </ng-template>
-            <ng-template #content>
-              <router-outlet></router-outlet>
-            </ng-template>
-            <ng-template #footer>
-              <div class="d-flex gap-3 mt-1">
-                <p-button label="Back" severity="secondary" icon="pi pi-arrow-left" (onClick)="back()" />
-                <p-button [disabled]="grafo?.form?.invalid" label="Next" icon="pi pi-arrow-right" iconPos="right" (onClick)="next()" />
-              </div>
-            </ng-template>
-          </p-card>
+          <router-outlet></router-outlet>
         </div>
       }
     </div>
 
-    <!-- Coluna do Grafo (Centro) -->
     <div class="col-md-5" style="height: 100%; overflow: hidden;">
       <app-cytoscape style="display: block; height: 100%; width: 100%;"></app-cytoscape>
     </div>
 
-    <!-- Coluna do Editor XML (Direita) -->
     <div class="col-md-4">
       <div class="mb-4 p-4">
         <app-xml-editor [xmlCode]="xmlCode"/>

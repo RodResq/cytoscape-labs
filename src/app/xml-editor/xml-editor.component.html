@@ -1,6 +1,5 @@
 @if (xmlCode) {
     <p-card header="Visualizador de XML">
-      <!-- Barra de Ferramentas -->
       <div class="toolbar mb-3">
         <div class="toolbar-buttons">
           <p-button
@@ -29,24 +28,7 @@
           </p-button>
         </div>
       </div>
-      <div class="code-container">
-        <div class="line-numbers">
-          <div *ngFor="let lineNum of lineNumbers" class="line-number">
-            {{ lineNum }}
-          </div>
-        </div>
-        <textarea
-          #codeTextArea
-          pInputTextarea
-          [(ngModel)]="xmlCode"
-          (ngModelChange)="updateHighlight()"
-          class="xml-textarea"
-          [rows]="20"
-          [autoResize]="false"
-          spellcheck="false"
-          placeholder="O código XML aparecerá aqui...">
-        </textarea>
-      </div>
+      <div #editorContainer class="monaco-container"></div>
       <div class="file-info mt-3">
         <small class="text-muted">
           <i class="pi pi-info-circle"></i>
