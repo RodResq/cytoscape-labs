@@ -18,8 +18,8 @@
             {{ (file.size / 1024).toFixed(1) }} KB
           </span>
           <p-tag
-            [value]="uploadedFiles.includes(file) ? 'Completed': 'Pending'"
-            [severity]="uploadedFiles.includes(file) ? 'success': 'warn'"          
+            [value]="uploadedFiles?.includes(file) ? 'Completed': 'Pending'"
+            [severity]="uploadedFiles?.includes(file) ? 'success': 'warn'"          
           />
           <p-button
             icon="pi pi-times"

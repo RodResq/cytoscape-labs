@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { AfterViewInit, Component, ElementRef, inject, Input, OnChanges, OnDestroy, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterContentChecked, AfterViewInit, Component, ElementRef, inject, Input, OnChanges, OnDestroy, SimpleChanges, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -29,10 +29,14 @@ declare const monaco: any;
   standalone: true,
   providers: [MessageService]
 })
-export class XmlEditorComponent implements AfterViewInit, OnChanges, OnDestroy {
+export class XmlEditorComponent implements AfterViewInit, AfterContentChecked,  OnChanges, OnDestroy {
+
   @ViewChild("editorContainer") editorContainer!: ElementRef<HTMLDivElement>;
+
   private messageService = inject(MessageService);
   private editorInstance: any = null;
+  private monacoLoaded = false;
+  private editorInitialized = false;
   
   @Input() xmlCode: string = '';
 
@@ -42,14 +46,29 @@ export class XmlEditorComponent implements AfterViewInit, OnChanges, OnDestroy {
 
   
   ngAfterViewInit(): void {
+    console.log('[Editor] ngAfterViewInit - xmlCode inicial:', this.xmlCode?.substring(0, 50));
     this.loadMonaco();
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['xmlCode'] && !changes['xmlCode'].firstChange) {
-      this.updateEditor();
+  ngAfterContentChecked(): void {
+    if (this.monacoLoaded && !this.editorInitialized && this.editorContainer?.nativeElement) {
+      this.editorInitialized = true;
+      this.initEditor();
     }
-    this.updateLineNumbers();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['xmlCode']) {
+      console.log('[Editor] ngOnChanges - novo xmlCode:', this.xmlCode?.substring(0, 50));
+      console.log('[Editor] Monaco carregado?', this.monacoLoaded);
+
+      this.updateLineNumbers();
+
+      if (this.monacoLoaded) {
+        this.updateEditor();
+      }
+
+    }
   }
 
   ngOnDestroy(): void {
@@ -58,29 +77,42 @@ export class XmlEditorComponent implements AfterViewInit, OnChanges, OnDestroy {
   
   private loadMonaco() {
     if ((window as any).monaco) {
+      console.log('[Editor] Monaco já estava carregado globalmente');
+      this.monacoLoaded = true;
       this.initEditor();
       return;
     }
 
+    console.log('[Editor] Carregando Monaco pela primeira vez...');
     (window as any).require = { paths: {vs: 'assets/vs' } };
 
     const script = document.createElement('script');
     script.src = 'assets/vs/loader.js';
     script.onload = () => {
       (window as any).require(['vs/editor/editor.main'], () => {
+        console.log('[Editor] Monaco carregado via require');
+        this.monacoLoaded = true;
         this.initEditor();
       });
     };
+    script.onerror = (error) => {
+      console.error('[Editor] Erro ao carregar Monaco:', error);
+    }
     document.body.appendChild(script);
   }
 
   private initEditor() {
-    if (!this.editorContainer?.nativeElement) return;
+    if (!this.editorContainer?.nativeElement) {
+      console.warn('[Editor] Container não disponível ainda');
+      return;
+    }
+
+    console.log('[Editor] Inicializando editor com xmlCode:', this.xmlCode?.substring(0, 50));
 
     this.editorInstance = (window as any).monaco.editor.create(
       this.editorContainer.nativeElement,
       {
-        value: this.xmlCode,
+        value: this.xmlCode || '',
         language: 'xml',
         theme: 'vs-dark',
         automaticLayout: true,
@@ -99,15 +131,21 @@ export class XmlEditorComponent implements AfterViewInit, OnChanges, OnDestroy {
     this.editorInstance.onDidChangeModelContent(() => {
       this.xmlCode = this.editorInstance.getValue();
       this.updateLineNumbers();
-    })
+    });
+
+    console.log('[Editor] Editor criado com sucesso');
   }
 
   private updateEditor() {
-    if (this.editorInstance) {
-      const current = this.editorInstance.getValue();
-      if (current != this.xmlCode) {
-        this.editorInstance.setValue(this.xmlCode);
-      }
+    if (!this.editorInstance) {
+      console.warn('[Editor] updateEditor chamado mas editor não existe');
+      return;
+    }
+
+    const current = this.editorInstance.getValue();
+    if (current != this.xmlCode) {
+      console.log('[Editor] Atualizando conteúdo do editor');
+      this.editorInstance.setValue(this.xmlCode || '');
     }
   }
 

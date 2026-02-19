@@ -251,7 +251,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
         if (!menuItemTesteExist) {
           this.addMenuItemTest();
         }
-      } else if(node && String(node.id()).includes('end-node')) {
+      } else if(node && String(node.id())?.includes('end-node')) {
         let menuItemAddNodeExist = this.menuItemExiste('add-node');
 
         if (menuItemAddNodeExist) {
