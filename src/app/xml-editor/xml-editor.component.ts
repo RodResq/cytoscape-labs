@@ -114,7 +114,7 @@ export class XmlEditorComponent implements AfterViewInit, AfterContentChecked,  
       {
         value: this.xmlCode || '',
         language: 'xml',
-        theme: 'vs-dark',
+        theme: 'vs-light',
         automaticLayout: true,
         fontSize: 13,
         minimap: { enabled: false },
