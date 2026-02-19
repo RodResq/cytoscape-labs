@@ -1,5 +1,4 @@
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
 import { AfterContentChecked, AfterViewInit, Component, ElementRef, inject, Input, OnChanges, OnDestroy, SimpleChanges, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MessageService } from 'primeng/api';
@@ -16,7 +15,6 @@ declare const monaco: any;
   imports: [
     CommonModule,
     FormsModule,
-    HttpClientModule,
     ButtonModule,
     TextareaModule,
     CardModule,
