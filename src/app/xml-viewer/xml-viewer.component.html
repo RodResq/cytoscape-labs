@@ -1,25 +1,25 @@
 <div>
     <p-toast />
-      <p-fileupload 
-        #fileUpload 
-        name="selectedFileName" 
+      <p-fileupload
+        #fileUpload
+        name="selectedFileName"
         [customUpload]="true"
-        (uploadHandler)="onUpload($event)" 
-        [multiple]="false" 
-        accept=".xml" 
-        [maxFileSize]="10485760" 
+        (uploadHandler)="onUpload($event)"
+        [multiple]="false"
+        accept=".xml"
+        [maxFileSize]="10485760"
         mode="advanced">
-      
+
       <ng-template pTemplate="file" let-file let-uploadedFiles="uploadedFiles" let-removeFileCallback="removeFileCallback" let-index="index">
-        <div class="flex align-items-center gap-3 p-2">
-          <i class="pi pi-file" style="font-size: 1.4rem;"></i>
+        <div class="flex align-items-center gap-2 p-1">
+          <i class="pi pi-file" style="font-size: 0.5rem;"></i>
           <span class="font-semibold flex-1">{{ file.name }}</span>
           <span class="text-sm" style="color: var(--text-color-secondary)">
             {{ (file.size / 1024).toFixed(1) }} KB
           </span>
           <p-tag
             [value]="uploadedFiles?.includes(file) ? 'Completed': 'Pending'"
-            [severity]="uploadedFiles?.includes(file) ? 'success': 'warn'"          
+            [severity]="uploadedFiles?.includes(file) ? 'success': 'warn'"
           />
           <p-button
             icon="pi pi-times"

@@ -90,7 +90,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
     this.initCytoscape();
     setTimeout(() => {
       this.loadImportedGraph();
-    }, 0);
+    }, 100);
     this.waitForEdgeClick();
     this.waitForRightClick();
   }
@@ -128,7 +128,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
         const layout = this.cy.layout({
           name: 'dagre',
           rankDir: 'TB',
-          nodeSep: 90,
+          nodeSep: 100,
           rankSep: 100,
           edgeSep: 10,
           padding: 50,

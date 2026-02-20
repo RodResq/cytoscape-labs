@@ -11,8 +11,8 @@ export const cytoscapeStyles: Stylesheet[] = [
         'background-color': '#27ae60',
         'border-color': '#229954',
         'border-width': 5,
-        'width': 60,
-        'height': 60,
+        'width': 80,
+        'height': 80,
         'text-valign': 'center',
         'text-halign': 'center',
         'color': '#fff',
@@ -43,8 +43,8 @@ export const cytoscapeStyles: Stylesheet[] = [
         style: {
         'shape': 'rectangle',
         'background-color': '#5dade2',
-        'width': 80,
-        'height': 40,
+        'width': 200,
+        'height': 60,
         'text-valign': 'center',
         'text-halign': 'center',
         label: 'data(id)'
@@ -54,9 +54,9 @@ export const cytoscapeStyles: Stylesheet[] = [
         selector: '.node',
         style: {
         'shape': 'rectangle',
-        'background-color': '#5dc7e2ff',
-        'width': 80,
-        'height': 40,
+        'background-color': '#5dade2',
+        'width': 200,
+        'height': 60,
         'text-valign': 'center',
         'text-halign': 'center',
         label: 'data(label)'
@@ -153,8 +153,8 @@ export const cytoscapeStyles: Stylesheet[] = [
         style: {
         'shape': 'rectangle',
         'background-color': '#E8F5E8',
-        'width': 80,
-        'height': 40,
+        'width': 200,
+        'height': 80,
         'text-valign': 'center',
         'text-halign': 'center',
         'font-family': 'Arial, sans-serif',
