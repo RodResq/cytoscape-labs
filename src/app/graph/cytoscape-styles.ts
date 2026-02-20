@@ -47,7 +47,7 @@ export const cytoscapeStyles: Stylesheet[] = [
         'height': 60,
         'text-valign': 'center',
         'text-halign': 'center',
-        label: 'data(id)'
+        label: 'data(label)'
         }
     },
     {

@@ -2,8 +2,8 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { GraphImporterService } from '@shared/services/graph-importer.service';
 import { GraphReloadService } from '@shared/services/graph-reload.service';
-import { XMLImporterService } from '@shared/services/xml-importer.service';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -38,8 +38,8 @@ interface UploadEvent {
 })
 export class XmlViewerComponent {
   private messageService = inject(MessageService);
-  private xmlImporterService = inject(XMLImporterService);
   private graphReloadService = inject(GraphReloadService);
+  private graphImporterService = inject(GraphImporterService);
   uploadedFiles: any[] = [];
 
   xmlCode: string = '';
@@ -50,33 +50,7 @@ export class XmlViewerComponent {
   }
 
   async importXmlAndCreateGraph(xmlString: string): Promise<void> {
-    try {
-      const { nodes, edges } = this.xmlImporterService.importFromXml(xmlString);
-
-      if (nodes.length === 0) {
-        throw new Error('Nenhum nó foi encontrado no XML');
-      }
-
-      console.log('Salvando no localStorage:', { nodes: nodes.length, edges: edges.length });
-
-      localStorage.setItem('importedGraph', JSON.stringify({ nodes, edges }));
-
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Sucesso',
-        detail: 'XML importado com sucesso!'
-      });
-
-      this.graphReloadService.triggerReload();
-
-    } catch (error) {
-      console.error('Erro ao importar XML: ', error);
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Erro',
-        detail: 'Erro ao processar o arquivo XML. Verifique o formato.'
-      });
-    }
+    await this.graphImporterService.importXmlAndCreateGraph(xmlString);
   }
 
   onFileSelected(event: FileUploadEvent) {
