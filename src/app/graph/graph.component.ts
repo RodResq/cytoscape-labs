@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, effect, ElementRef, inject, OnInit, untracked, viewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import cytoscape from 'cytoscape';
+import dagre from 'cytoscape-dagre';
 import contextMenus from 'cytoscape-context-menus';
 import { NodeService } from '../fluxo/node-form/node.service';
 import { StepperService } from './../cytoscape/stepper/stepper.service';
@@ -14,7 +15,7 @@ import { FluxoFormData } from '@shared/types/form.types';
 import { FormGroup } from '@angular/forms';
 import { GraphReloadService } from '@shared/services/graph-reload.service';
 
-cytoscape.use(contextMenus);
+cytoscape.use(dagre);
 cytoscape.warnings(true);
 
 @Component({
@@ -125,18 +126,17 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
       setTimeout(() => {
         const layout = this.cy.layout({
-          name: 'breadthfirst',
-          directed: true,
+          name: 'dagre',
+          rankDir: 'TB',
+          nodeSep: 90,
+          rankSep: 100,
+          edgeSep: 10,
           padding: 50,
-          spacingFactor: 1,
           animate: true,
-          animationDuration: 500
-        });
-
+          animationDuration: 500,
+          fit: true
+        } as cytoscape.DagreLayouteOptions);
         layout.run();
-        layout.one('layoutstop', () => {
-          this.cy.fit(undefined, 50);
-        })
       }, 100);
 
       localStorage.removeItem('importedGraph');

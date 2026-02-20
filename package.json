@@ -41,6 +41,7 @@
     "@types/cytoscape": "^3.21.8",
     "@types/cytoscape-context-menus": "^4.1.4",
     "@types/cytoscape-cxtmenu": "^3.4.4",
+    "@types/cytoscape-dagre": "^2.3.4",
     "@types/jasmine": "~5.1.0",
     "jasmine-core": "~5.4.0",
     "karma": "~6.4.0",
