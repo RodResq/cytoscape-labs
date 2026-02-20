@@ -35,14 +35,15 @@ export class XmlEditorComponent implements AfterViewInit, AfterContentChecked,  
   private editorInstance: any = null;
   private monacoLoaded = false;
   private editorInitialized = false;
-  
+
   @Input() xmlCode: string = '';
 
   lineNumbers: number[] = [];
   selectedFileName: string = '';
   validationMessage: { isValid: boolean; text: string } | null = null;
+  vsTheme: string = 'vs-light';
 
-  
+
   ngAfterViewInit(): void {
     console.log('[Editor] ngAfterViewInit - xmlCode inicial:', this.xmlCode?.substring(0, 50));
     this.loadMonaco();
@@ -72,7 +73,7 @@ export class XmlEditorComponent implements AfterViewInit, AfterContentChecked,  
   ngOnDestroy(): void {
     this.editorInstance?.dispose();
   }
-  
+
   private loadMonaco() {
     if ((window as any).monaco) {
       console.log('[Editor] Monaco já estava carregado globalmente');
@@ -112,9 +113,9 @@ export class XmlEditorComponent implements AfterViewInit, AfterContentChecked,  
       {
         value: this.xmlCode || '',
         language: 'xml',
-        theme: 'vs-light',
+        theme: this.vsTheme,
         automaticLayout: true,
-        fontSize: 13,
+        fontSize: 11,
         minimap: { enabled: false },
         scrollBeyondLastLine: false,
         wordWrap: 'off',
@@ -285,6 +286,11 @@ export class XmlEditorComponent implements AfterViewInit, AfterContentChecked,  
     this.lineNumbers = [];
     this.validationMessage = null;
     this.editorInstance.setValue('');
+  }
+
+  setupTheme() {
+    this.vsTheme = this.vsTheme === 'vs-dark'? 'vs-light': 'vs-dark';
+    (window as any).monaco?.editor.setTheme(this.vsTheme);
   }
 
 }

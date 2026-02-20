@@ -1,6 +1,6 @@
 @if (xmlCode) {
     <p-card header="Visualizador de XML">
-      <div class="toolbar mb-3">
+      <div class="toolbar mb-2">
         <div class="toolbar-buttons">
           <p-button
             label="Formatar"
@@ -14,6 +14,14 @@
             label="Copiar"
             icon="pi pi-copy"
             (onClick)="copyToClipboard()"
+            severity="secondary"
+            size="small"
+            [outlined]="true">
+          </p-button>
+          <p-button
+            [label]="vsTheme === 'vs-dark' ? 'Light' : 'Dark'"
+            [icon]="vsTheme === 'vs-dark' ? 'pi pi-sun' : 'pi pi-moon'"
+            (onClick)="setupTheme()"
             severity="secondary"
             size="small"
             [outlined]="true">

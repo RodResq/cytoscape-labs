@@ -1,4 +1,4 @@
-import { Component, effect, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, effect, inject, OnDestroy, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { StepperCacheService } from './../cytoscape/stepper/stepper-cache.service';
 
 import { ButtonModule } from 'primeng/button';
@@ -51,6 +51,7 @@ export class FluxoComponent implements OnInit, OnDestroy{
   public idTaskNodeAtual!: string;
   public xmlCode: string = '';
   public changeUrl: boolean = false;
+  public showXmlEditor: boolean = false;
 
   constructor() {
     effect(() => {
@@ -58,9 +59,6 @@ export class FluxoComponent implements OnInit, OnDestroy{
       this.idTaskNodeAtual =  this.activatedRoute.snapshot.queryParams['id'];
 
       this.form = this.formService.getForm();
-      if (this.idTaskNodeAtual) {
-        this.form.subTitle = this.idTaskNodeAtual;
-      }
     });
   }
 
@@ -72,8 +70,12 @@ export class FluxoComponent implements OnInit, OnDestroy{
       this.changeUrl = true;
     })
 
-    this.xmlSubject.xmlLoad$.subscribe(xml => {
+    this.xmlSubject.xmlLoad$.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(xml => {
       this.xmlCode = xml;
+      this.changeUrl = false;
+      this.showXmlEditor = true;
     });
   }
 

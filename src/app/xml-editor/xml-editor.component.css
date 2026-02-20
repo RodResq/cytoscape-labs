@@ -1,31 +1,39 @@
-.monaco-container {
-  width: 100%;
-  height: 500px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 85vh;
+}
+
+/* Força o p-card a ocupar toda a altura do host */
+:host ::ng-deep .p-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+:host ::ng-deep .p-card-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
   overflow: hidden;
 }
 
-.toolbar {
+:host ::ng-deep .p-card-content {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.5rem;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+  padding: 0;
+}
+
+.monaco-container {
+  flex: 1;           /* ocupa todo espaço restante */
+  width: 100%;
+  min-height: 300px;
+  overflow: hidden;
 }
 
 .toolbar-buttons {
   display: flex;
   gap: 0.5rem;
-  flex-wrap: wrap;
-}
-
-.file-info {
-  padding-top: 0.5rem;
-  border-top: 1px solid #e9ecef;
-}
-
-.text-muted {
-  color: #6c757d;
-  font-size: 0.875rem;
 }

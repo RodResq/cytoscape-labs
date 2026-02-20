@@ -82,7 +82,7 @@ export class XmlViewerComponent {
   onFileSelected(event: FileUploadEvent) {
     const files = event.files;
     console.log('File:', files[0]);
-    
+
     if (files && files.length > 0) {
       const file = files[0];
 
@@ -131,7 +131,7 @@ export class XmlViewerComponent {
   onUpload(event: FileUploadHandlerEvent) {
     const files = event.files;
     console.log('File:', files[0]);
-    
+
     if (files && files.length > 0) {
       const file = files[0];
 
@@ -174,6 +174,7 @@ export class XmlViewerComponent {
       };
 
       reader.readAsText(file);
+
     }
   }
 
