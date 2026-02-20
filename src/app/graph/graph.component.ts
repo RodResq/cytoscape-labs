@@ -45,6 +45,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
   private dadosSalvoStorage!: FluxoFormData | null;
   private graphReloadService = inject(GraphReloadService);
   private reloadSubscription?: any;
+  private clearSubscription?: any;
 
   showNodeForm: boolean = true;
   selectedElementId: string = '';
@@ -85,6 +86,10 @@ export class GraphComponent implements OnInit, AfterViewInit {
     this.reloadSubscription = this.graphReloadService.reload$.subscribe(() => {
       this.loadImportedGraph();
     });
+
+    this.clearSubscription = this.graphReloadService.clear$.subscribe(() => {
+      this.clearGraph();
+    })
   }
 
   ngAfterViewInit(): void {
@@ -566,9 +571,20 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
   ngOnDestroy(): void {
     this.stopWaitingForEdge();
-    if (this.reloadSubscription) {
-      this.reloadSubscription.unsubscribe()
-    }
+    this.reloadSubscription.unsubscribe();
+    this.clearSubscription.unsubscribe();
+  }
+
+  clearGraph() {
+    this.cy.elements().not("#0").remove();
+
+    this.grafoService.setGrafo({
+      length: 1,
+      node: this.cy.getElementById("0"),
+      form: new FormGroup({}),
+      collection: this.cy.nodes(),
+      visible: false
+    })
   }
 
 }

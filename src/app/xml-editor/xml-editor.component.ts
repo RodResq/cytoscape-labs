@@ -275,7 +275,7 @@ export class XmlEditorComponent implements AfterViewInit, AfterContentChecked,  
     this.editorInstance.setValue('');
   }
 
-  async updateGrapho() {
+  async updateGraph() {
     if (!this.xmlCode) {
       this.messageService.add({
         severity: 'warn',
@@ -285,7 +285,6 @@ export class XmlEditorComponent implements AfterViewInit, AfterContentChecked,  
 
       return;
     }
-    // TODO Substituir pelo nó que foi alterado.
     this.xmlCode = this.editorInstance?.getValue() ?? this.xmlCode;
     const result = await this.graphImporterService.importXmlAndCreateGraph(this.xmlCode);
 

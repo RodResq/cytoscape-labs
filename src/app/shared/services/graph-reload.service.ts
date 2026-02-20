@@ -7,9 +7,12 @@ import { Subject } from "rxjs";
 export class GraphReloadService {
   private reloadSubject = new Subject<void>();
   private xmlSubject = new Subject<string>();
+  private clearSubject = new Subject<void>();
+
 
   reload$ = this.reloadSubject.asObservable();
   xmlLoad$ = this.xmlSubject.asObservable();
+  clear$ = this.clearSubject.asObservable();
 
   triggerReload() {
     this.reloadSubject.next();
@@ -17,5 +20,9 @@ export class GraphReloadService {
 
   triggerXmlLoad(xmlString: string) {
     this.xmlSubject.next(xmlString);
+  }
+
+  triggerClear() {
+    this.clearSubject.next();
   }
 }

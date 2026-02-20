@@ -1,5 +1,4 @@
 import { inject, Injectable } from '@angular/core';
-import { MessageService } from 'primeng/api';
 import { GraphReloadService } from './graph-reload.service';
 import { XMLImporterService } from './xml-importer.service';
 
@@ -23,12 +22,15 @@ export class GraphImporterService {
       if (nodes.length === 0) {
         throw new Error('Nenhum nó foi encontrado no XML');
       }
+      localStorage.removeItem('importedGraph');
+      this.graphReloadService.triggerClear();
 
+      await new Promise(resolve => setTimeout(resolve, 50));
 
       localStorage.setItem('importedGraph', JSON.stringify({ nodes, edges }));
       this.graphReloadService.triggerReload();
 
-      return { success: false, message: JSON.stringify({ nodes, edges })}
+      return { success: true, message: 'XML importado com sucesso!'}
 
     } catch (error) {
       console.error('Erro ao importar XML: ', error);
