@@ -69,13 +69,13 @@ export const cytoscapeStyles: Stylesheet[] = [
         'background-color': '#e74c3c',
         'border-color': '#c0392b',
         'border-width': 5,
-        'width': 60,
-        'height': 60,
+        'width': 80,
+        'height': 80,
         'text-valign': 'center',
         'text-halign': 'center',
         'color': '#fff',
         'font-weight': 'bold',
-        label: 'data(id)'
+        label: 'data(label)'
         }
     },
     {

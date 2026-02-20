@@ -10,7 +10,6 @@ export const FLUXO_ROUTES: Routes = [
                 path: 'fluxo',
                 loadComponent: () => import('./fluxo-form/fluxo-form.component').then(c => c.FluxoFormComponent),
                 resolve: { form: fluxoFormResolver }
-
             },
             {
                 path: 'node',

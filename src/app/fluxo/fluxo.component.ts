@@ -63,7 +63,6 @@ export class FluxoComponent implements OnInit, OnDestroy{
       }
     });
   }
- 
 
   ngOnInit(): void {
     this.router.events.pipe(
@@ -87,7 +86,7 @@ export class FluxoComponent implements OnInit, OnDestroy{
     } else if (currentStepper == 2) {
       this.stepperService.setPreviousStepper();
       this.router.navigate(['/fluxoApp/node'])
-    } else if (currentStepper == 1) {
+    } else {
       this.stepperService.setPreviousStepper();
       this.router.navigate(['/fluxoApp/fluxo'])
     }

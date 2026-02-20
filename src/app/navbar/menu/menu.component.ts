@@ -25,13 +25,13 @@ export class MenuComponent implements OnInit {
     this.items = [
       {
         id: '0',
-        label: 'Criar Fluxo',
-        command: () => this.router.navigate(['/fluxoApp/fluxo'])
+        label: 'Importar XML',
+        command: () => this.router.navigate(['/fluxoApp/importar-xml'])
       },
       {
         id: '1',
-        label: 'Importar XML',
-        command: () => this.router.navigate(['/fluxoApp/importar-xml'])
+        label: 'Criar Fluxo',
+        command: () => this.router.navigate(['/fluxoApp/fluxo'])
       },
       {
         id: '2',
