@@ -50,7 +50,13 @@ export class XmlViewerComponent {
   }
 
   async importXmlAndCreateGraph(xmlString: string): Promise<void> {
-    await this.graphImporterService.importXmlAndCreateGraph(xmlString);
+    const result = await this.graphImporterService.importXmlAndCreateGraph(xmlString);
+
+    this.messageService.add({
+      severity: result.success ? 'success': 'error',
+      summary: result.success ? 'Sucesso': 'Erro',
+      detail: result.message
+    });
   }
 
   onFileSelected(event: FileUploadEvent) {
