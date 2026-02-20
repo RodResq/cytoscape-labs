@@ -16,6 +16,7 @@ import { FormGroup } from '@angular/forms';
 import { GraphReloadService } from '@shared/services/graph-reload.service';
 
 cytoscape.use(dagre);
+cytoscape.use(contextMenus);
 cytoscape.warnings(true);
 
 @Component({
