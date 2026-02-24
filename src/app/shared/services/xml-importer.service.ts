@@ -69,7 +69,8 @@ export class XMLImporterService {
                     label: name,
                     type: NodeType.START,
                     swimlane: swimlane,
-                    events: this.extratEvents(startState)
+                    events: this.extratEvents(startState),
+                    xmlSnippet: this.elementToXmlString(startState)
                 },
                 position: { x: 50, y: 50 + (index * 50)},
                 classes: 'start'
@@ -110,7 +111,8 @@ export class XMLImporterService {
                         swimlane: swimlane,
                         events: this.extratEvents(processState)
                     },
-                    events: this.extratEvents(processState)
+                    events: this.extratEvents(processState),
+                    xmlSnippet: this.elementToXmlString(processState)
                 },
                 position: { x: 50, y: 50 + (index * 50)},
                 classes: 'subprocess-node'
@@ -135,7 +137,8 @@ export class XMLImporterService {
                 data: {
                     id: nodeId,
                     label: name,
-                    type: NodeType.END
+                    type: NodeType.END,
+                    xmlSnippet: this.elementToXmlString(endState)
                 },
                 position: { x: 700, y: 100 + (index * 150)},
                 classes: 'end-node'
@@ -168,7 +171,8 @@ export class XMLImporterService {
                     type: NodeType.TASK,
                     endTasks: endTasks,
                     swimlane: swimlane,
-                    events: this.extratEvents(taskNode)
+                    events: this.extratEvents(taskNode),
+                    xmlSnippet: this.elementToXmlString(taskNode)
                 },
                 position: { x: 400, y: 100 + (index * 150) },
                 classes: 'task-node'
@@ -194,7 +198,8 @@ export class XMLImporterService {
                     id: nodeId,
                     label: name,
                     type: NodeType.NODE,
-                    events: this.extratEvents(node)
+                    events: this.extratEvents(node),
+                    xmlSnippet: this.elementToXmlString(node)
                 },
                 position: { x: 500, y: 100 + (index * 150) },
                 classes: 'node'
@@ -230,6 +235,49 @@ export class XMLImporterService {
         console.log('Node Mapping:', nodeMapping);
 
         return { nodes, edges }
+    }
+    
+    private elementToXmlString(element: Element): string {
+        const serializer = new XMLSerializer();
+        const rawXml = serializer.serializeToString(element);
+        return this.formatXmlString(rawXml);
+    }
+
+    private formatXmlString(xml: string): string {
+        const cleaned = xml.replace(/ xmlns(:\w+)?="[^"]*"/g, '');
+
+        let indent = 0;
+        const tab = '   ';
+        const lines: string[] = [];
+
+        cleaned.split(/>\s*</).forEach((part, index, arr) => {
+            part = part.trim();
+
+            if (part.startsWith('/')) {
+                indent = Math.max(0, indent - 1);
+            }
+
+            const prefix = tab.repeat(indent);
+
+            if (index === 0) {
+                lines.push(`${prefix}${part}>`);
+            } else if (index === arr.length - 1) {
+                lines.push(`${prefix}<${part}`);
+            } else {
+                lines.push(`${prefix}<${part}>`);
+            }
+
+            const isSelfClosing = part.endsWith('/');
+            const isClosingTag  = part.startsWith('/');
+            const isDeclaration = part.startsWith('?');
+            const isComment     = part.startsWith('!--');
+
+            if (!isSelfClosing && !isClosingTag && !isDeclaration && !isComment) {
+                indent++;
+            }
+        });
+
+        return lines.join('\n')
     }
 
     private extratEvents(element: Element): XmlEvent[] {

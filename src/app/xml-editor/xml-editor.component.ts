@@ -2,12 +2,14 @@ import { CommonModule } from '@angular/common';
 import { AfterContentChecked, AfterViewInit, Component, ElementRef, inject, Input, OnChanges, OnDestroy, SimpleChanges, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { GraphImporterService } from '@shared/services/graph-importer.service';
+import { NodeXmlSelectionService } from '@shared/services/node-xml-selection.service';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { FileUploadModule } from 'primeng/fileupload';
 import { TextareaModule } from 'primeng/textarea';
 import { ToastModule } from 'primeng/toast';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-xml-editor',
@@ -31,9 +33,12 @@ export class XmlEditorComponent implements AfterViewInit, AfterContentChecked,  
 
   private graphImporterService = inject(GraphImporterService);
   private messageService = inject(MessageService);
+  private nodeXmlSelectionService = inject(NodeXmlSelectionService);
+
   private editorInstance: any = null;
   private monacoLoaded = false;
   private editorInitialized = false;
+  private nodeSelectionSub?: Subscription;
 
   @Input() xmlCode: string = '';
 
@@ -42,18 +47,20 @@ export class XmlEditorComponent implements AfterViewInit, AfterContentChecked,  
   validationMessage: { isValid: boolean; text: string } | null = null;
   vsTheme: string = 'vs-light';
 
-
   ngAfterViewInit(): void {
     this.loadMonaco();
+    this.nodeSelectionSub = this.nodeXmlSelectionService.nodeSelected$.subscribe(({nodeId, nodeLabel, xmlSnippet}) => {
+      this.highLightNodeInXml(nodeLabel, nodeId, xmlSnippet);
+    });
   }
-
+  
   ngAfterContentChecked(): void {
     if (this.monacoLoaded && !this.editorInitialized && this.editorContainer?.nativeElement) {
       this.editorInitialized = true;
       this.initEditor();
     }
   }
-
+  
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['xmlCode']) {
       this.updateLineNumbers();
@@ -61,12 +68,96 @@ export class XmlEditorComponent implements AfterViewInit, AfterContentChecked,  
       if (this.monacoLoaded) {
         this.updateEditor();
       }
-
+      
     }
   }
-
+  
   ngOnDestroy(): void {
     this.editorInstance?.dispose();
+    this.nodeSelectionSub?.unsubscribe();
+  }
+  
+  private highLightNodeInXml(nodeLabel: string, nodeId: string, xmlSnippet?: string) {
+    if (!this.editorInstance) {
+      console.warn('[XmlEditor] Editor Monaco ainda não inicializado.');
+      return;
+    }
+
+    const model = this.editorInstance.getModel();
+    if (!model) return;
+
+    const xmlContent: string = model.getValue();
+    if (!xmlContent.trim()) return;
+
+    const lines: string[] = xmlContent.split('\n');
+    let foundLine: number | null = null;
+    let foundStartCol: number | null = null;
+    let foundEndCol: number | null = null;
+    
+    // usar a primeira linha não-vazia do xmlSnippet
+    if (xmlSnippet) {
+      const snippetFirstLine = xmlSnippet.split('\n').find(l => l.trim().length > 0)?.trim();
+      
+      if (snippetFirstLine) {
+        for (let i = 0; i < lines.length; i++) {
+          const col = lines[i].indexOf(snippetFirstLine.trimStart());
+          if (col !== -1) {
+            foundLine = i + 1;
+            foundStartCol = col + 1;
+            foundEndCol = col + snippetFirstLine.trimStart().length + 1;
+            break;
+          }
+        }
+      }
+    }
+
+    // Estratégia 2: fallback por busca textual
+    if (foundLine === null) {
+      const searchTerms = [
+        `name="${nodeLabel}"`,
+        `name="${nodeId}"`,
+        nodeLabel,
+        nodeId
+      ];
+  
+      for (const term of searchTerms) {
+        if (!term) return;
+  
+        const lines: string[] = xmlContent.split('\n');
+        for (let i = 0; i < lines.length; i++) {
+          const colIndex = lines[i].indexOf(term);
+          if (colIndex !== -1) {
+            foundLine = i + 1;
+            foundStartCol = i + 1;
+            foundEndCol = colIndex + term.length + 1;
+            break;
+          }
+        }
+  
+        if (foundLine !== null) break;
+      }
+    }
+    
+    // Resultado
+    if (foundLine === null) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Não encontrado',
+        detail: `Nenhum trecho XML encontrado para o nó "${nodeLabel}".`
+      });
+
+      return;
+    }
+
+    this.editorInstance.revealLineInCenter(foundLine);
+    this.editorInstance.setSelection({
+      startLineNumber: foundLine,
+      startColumn: foundStartCol!,
+      endLineNumber: foundLine,
+      endColumn: foundEndCol!
+    });
+    this.editorInstance.focus();
+    
   }
 
   private loadMonaco() {
