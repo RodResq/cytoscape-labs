@@ -104,6 +104,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
     this.cy.on('tap', 'node', (event) => {
       const node = event.target;
+      const nodeType: string | undefined = node.data('type');
       const nodeId = node.id() as string;
 
       const nodeLabel: string = 
@@ -113,7 +114,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
         const xmlSnippet: string | undefined = node.data('xmlSnippet');
         
-        this.nodeXmlSelectionService.selectNodeInXml(nodeId, nodeLabel, xmlSnippet);
+        this.nodeXmlSelectionService.selectNodeInXml(nodeId, nodeLabel, xmlSnippet, nodeType);
     });
   }
 

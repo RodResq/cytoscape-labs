@@ -5,6 +5,7 @@ export interface NodeXmlSelection {
   nodeLabel: string;
   nodeId: string;
   xmlSnippet?: string;
+  nodeType?: string;
 }
 
 
@@ -16,7 +17,7 @@ export class NodeXmlSelectionService {
   private nodeSelectionSubject = new Subject<NodeXmlSelection>();
   nodeSelected$ = this.nodeSelectionSubject.asObservable();
 
-  selectNodeInXml(nodeId: string, nodeLabel: string, xmlSnippet?: string): void {
-    this.nodeSelectionSubject.next({ nodeId, nodeLabel, xmlSnippet });
+  selectNodeInXml(nodeId: string, nodeLabel: string, xmlSnippet?: string, nodeType?: string): void {
+    this.nodeSelectionSubject.next({ nodeId, nodeLabel, xmlSnippet, nodeType });
   }
 }

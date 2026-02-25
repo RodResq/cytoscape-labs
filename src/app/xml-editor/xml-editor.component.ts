@@ -49,8 +49,8 @@ export class XmlEditorComponent implements AfterViewInit, AfterContentChecked,  
 
   ngAfterViewInit(): void {
     this.loadMonaco();
-    this.nodeSelectionSub = this.nodeXmlSelectionService.nodeSelected$.subscribe(({nodeId, nodeLabel, xmlSnippet}) => {
-      this.highLightNodeInXml(nodeLabel, nodeId, xmlSnippet);
+    this.nodeSelectionSub = this.nodeXmlSelectionService.nodeSelected$.subscribe(({nodeId, nodeLabel, xmlSnippet, nodeType}) => {
+      this.highLightNodeInXml(nodeLabel, nodeId, xmlSnippet, nodeType);
     });
   }
   
@@ -77,7 +77,7 @@ export class XmlEditorComponent implements AfterViewInit, AfterContentChecked,  
     this.nodeSelectionSub?.unsubscribe();
   }
   
-  private highLightNodeInXml(nodeLabel: string, nodeId: string, xmlSnippet?: string) {
+  private highLightNodeInXml(nodeLabel: string, nodeId: string, xmlSnippet?: string, nodeType?: string): void {
     if (!this.editorInstance) {
       console.warn('[XmlEditor] Editor Monaco ainda não inicializado.');
       return;
@@ -90,74 +90,134 @@ export class XmlEditorComponent implements AfterViewInit, AfterContentChecked,  
     if (!xmlContent.trim()) return;
 
     const lines: string[] = xmlContent.split('\n');
-    let foundLine: number | null = null;
-    let foundStartCol: number | null = null;
-    let foundEndCol: number | null = null;
+    let startLine: number | null = null;
+    let endLine: number | null = null;
+    let startCol: number = 1;
     
     // usar a primeira linha não-vazia do xmlSnippet
     if (xmlSnippet) {
-      const snippetFirstLine = xmlSnippet.split('\n').find(l => l.trim().length > 0)?.trim();
+      const snippetLines: string[] = xmlSnippet
+      .split('\n')
+      .filter(l => l.trim().length > 0);
       
-      if (snippetFirstLine) {
+      const firstSnippetLine = snippetLines[0]?.trimStart();
+
+      const isSelfClosing = this.isSelfClosingTag(firstSnippetLine);
+
+      if (firstSnippetLine) {
         for (let i = 0; i < lines.length; i++) {
-          const col = lines[i].indexOf(snippetFirstLine.trimStart());
+          const col = lines[i].indexOf(firstSnippetLine);
+
           if (col !== -1) {
-            foundLine = i + 1;
-            foundStartCol = col + 1;
-            foundEndCol = col + snippetFirstLine.trimStart().length + 1;
+            startLine = i + 1;
+            startCol = col + 1;
+
+            if (isSelfClosing) {
+              endLine = startLine;
+            } else {
+              endLine = startLine + (snippetLines.length -1);
+              endLine = Math.min(endLine, lines.length);
+            }
+
             break;
           }
         }
       }
+
+      if (startLine === null) {
+        const nameMatch = firstSnippetLine.match(/name="([^"]+)"/);
+        if (nameMatch) {
+          const xmlTagName = this.nodeTypeToXmlTag(nodeType);
+
+          const searchPattern = xmlTagName 
+            ? `<${xmlTagName} name="${nameMatch[1]}`
+            : `name="${nameMatch[1]}"`;
+
+          for (let i = 0; i < lines.length; i++) {
+            const nameCol = lines[i].indexOf(searchPattern);
+            if (nameCol !== -1) {
+              const tagStart = lines[i].lastIndexOf('<', nameCol);
+
+              startLine = i + 1;
+              startCol  = tagStart !== -1 ? tagStart + 1 : nameCol + 1;
+              endLine   = startLine;
+              break;
+            }
+          }
+        }
+      }
+      
     }
 
     // Estratégia 2: fallback por busca textual
-    if (foundLine === null) {
-      const searchTerms = [
-        `name="${nodeLabel}"`,
-        `name="${nodeId}"`,
-        nodeLabel,
-        nodeId
-      ];
+    if (startLine === null) {
+      const xmlTagName = this.nodeTypeToXmlTag(nodeType);
+
+      const searchTerms: string[] = xmlTagName 
+        ? [
+          `<${xmlTagName} name="${nodeLabel}"`,
+          `<${xmlTagName} name="${nodeId}"`,
+          `name="${nodeLabel}"`, 
+          `name="${nodeId}"`,
+        ]
+        : [
+          `name="${nodeLabel}"`,
+          `name="${nodeId}"`,
+          nodeLabel,
+          nodeId
+        ]
   
+      outer:
       for (const term of searchTerms) {
         if (!term) return;
-  
-        const lines: string[] = xmlContent.split('\n');
         for (let i = 0; i < lines.length; i++) {
-          const colIndex = lines[i].indexOf(term);
-          if (colIndex !== -1) {
-            foundLine = i + 1;
-            foundStartCol = i + 1;
-            foundEndCol = colIndex + term.length + 1;
-            break;
+          const col = lines[i].indexOf(term);
+          if (col !== -1) {
+            const tagStart = lines[i].lastIndexOf('<', col);
+            startLine = i + 1;
+            startCol  = tagStart !== -1 ? tagStart + 1 : col + 1;
+            endLine   = startLine;
+            break outer;
           }
         }
-  
-        if (foundLine !== null) break;
       }
     }
     
     // Resultado
-    if (foundLine === null) {
+    if (startLine === null || endLine === null) {
       this.messageService.add({
         severity: 'warn',
         summary: 'Não encontrado',
         detail: `Nenhum trecho XML encontrado para o nó "${nodeLabel}".`
       });
-
       return;
     }
 
-    this.editorInstance.revealLineInCenter(foundLine);
+    const endCol = lines[endLine - 1].length + 1;
+
+    this.editorInstance.revealLineInCenter(startLine, endLine);
     this.editorInstance.setSelection({
-      startLineNumber: foundLine,
-      startColumn: foundStartCol!,
-      endLineNumber: foundLine,
-      endColumn: foundEndCol!
+      startLineNumber: startLine,
+      startColumn: startCol,
+      endLineNumber: endLine,
+      endColumn: endCol
     });
     this.editorInstance.focus();
-    
+  }
+  
+  private nodeTypeToXmlTag(nodeType?: string) {
+    const map: Record<string, string> = {
+      'end-node':        'end-state',
+      'start':           'start-state',
+      'task-node':       'task-node',
+      'subprocess-node': 'process-state',
+      'node':            'node',
+    };
+    return nodeType ? (map[nodeType] ?? null): null;
+  }
+
+  private isSelfClosingTag(line: string): boolean {
+    return /^<[^>]+\/>$/.test(line.trim());
   }
 
   private loadMonaco() {
