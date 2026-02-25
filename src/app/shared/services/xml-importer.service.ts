@@ -45,166 +45,12 @@ export class XMLImporterService {
         const edges: cytoscape.EdgeDefinition[] = [];
         const nodeMapping: Map<string, XmlNodeMapping> = new Map();
 
-        const startStates = xmlDoc.getElementsByTagName('start-state');
-        Array.from(startStates).forEach((startState, index) => {
-            const task = startState.firstElementChild;
-            if (!task) return;
-
-            const name = task.getAttribute('name') || 'Início';
-            const swimlane = task.getAttribute('swimlane');
-            const nodeId = `${name}-${index}`;
-
-            nodeMapping.set(name, {
-                id: nodeId,
-                name: name,
-                type: NodeType.START,
-                label: name,
-                transitions: this.extractTransitions(startState)
-            });
-
-            nodes.push({
-                group: 'nodes',
-                data: {
-                    id: nodeId,
-                    label: name,
-                    type: NodeType.START,
-                    swimlane: swimlane,
-                    events: this.extratEvents(startState),
-                    xmlSnippet: this.elementToXmlString(startState)
-                },
-                position: { x: 50, y: 50 + (index * 50)},
-                classes: 'start'
-            })
-        });
-
-        const processStates = xmlDoc.getElementsByTagName('process-state');
-        Array.from(processStates).forEach((processState, index) => {
-            const processStateName = processState.getAttribute('name') || 'process-state';
-            const processStateId = `${processStateName}-${index}`;
-
-            const subProcesss = processState.firstElementChild;
-            if (!subProcesss) return;
-
-            const name = subProcesss.getAttribute('name') || 'sub-process';
-            const swimlane = subProcesss.getAttribute('swimlane') || null;
-            const nodeId = `${name}-${index}`;
-            
-            nodeMapping.set(processStateName, {
-                id: processStateId,
-                name: processStateName,
-                type: NodeType.SUBPROCESS,
-                label: processStateName,
-                transitions: this.extractTransitions(processState)
-            });
-
-            nodes.push({
-                group: 'nodes',
-                data: {
-                    id: processStateId,
-                    label: processStateName,
-                    type: NodeType.SUBPROCESS,
-                    swimlane: null,
-                    subprocess: {
-                        id: nodeId,
-                        label: name,
-                        type: NodeType.SUBPROCESS,
-                        swimlane: swimlane,
-                        events: this.extratEvents(processState)
-                    },
-                    events: this.extratEvents(processState),
-                    xmlSnippet: this.elementToXmlString(processState)
-                },
-                position: { x: 50, y: 50 + (index * 50)},
-                classes: 'subprocess-node'
-            })
-            
-        });
-
-        const endStates = xmlDoc.getElementsByTagName('end-state');
-        Array.from(endStates).forEach((endState, index) => {
-            const name = endState.getAttribute('name') || 'Término';
-            const nodeId = `${name}-${index}`;
-
-            nodeMapping.set(name, {
-                id: nodeId,
-                name: name,
-                type: NodeType.END,
-                label: name
-            });
-
-            nodes.push({
-                group: 'nodes',
-                data: {
-                    id: nodeId,
-                    label: name,
-                    type: NodeType.END,
-                    xmlSnippet: this.elementToXmlString(endState)
-                },
-                position: { x: 700, y: 100 + (index * 150)},
-                classes: 'end-node'
-            })
-        });
-
-        const taskNodes = xmlDoc.getElementsByTagName('task-node');
-        Array.from(taskNodes).forEach((taskNode, index) => {
-            const task = taskNode.firstElementChild;
-            if (!task) return;
-
-            const name = task.getAttribute('name') || `Node ${index + 1}`;
-            const swimlane = task.getAttribute('swimlane');
-            const endTasks = taskNode.getAttribute('end-tasks') === 'true';
-            const nodeId = `${name} (${index})`;
-
-            nodeMapping.set(name, {
-                id: nodeId,
-                name: name,
-                type: NodeType.TASK,
-                label: name,
-                transitions: this.extractTransitions(taskNode)
-            });
-
-            nodes.push({
-                group: 'nodes',
-                data: {
-                    id: nodeId,
-                    label: name,
-                    type: NodeType.TASK,
-                    endTasks: endTasks,
-                    swimlane: swimlane,
-                    events: this.extratEvents(taskNode),
-                    xmlSnippet: this.elementToXmlString(taskNode)
-                },
-                position: { x: 400, y: 100 + (index * 150) },
-                classes: 'task-node'
-            })
-        });
-
-        const node = xmlDoc.getElementsByTagName('node');
-        Array.from(node).forEach((node, index) => {
-            const name = node.getAttribute('name') || `Node ${index + 1}`;
-            const nodeId = `${name} ${index}`;
-
-            nodeMapping.set(name, {
-                id: nodeId,
-                name: name,
-                type: NodeType.NODE,
-                label: nodeId,
-                transitions: this.extractTransitions(node)
-            });
-
-            nodes.push({
-                group: 'nodes',
-                data: {
-                    id: nodeId,
-                    label: name,
-                    type: NodeType.NODE,
-                    events: this.extratEvents(node),
-                    xmlSnippet: this.elementToXmlString(node)
-                },
-                position: { x: 500, y: 100 + (index * 150) },
-                classes: 'node'
-            })
-        });
+        this.extractStartState(xmlDoc, nodeMapping, nodes);
+        this.extractProcessState(xmlDoc, nodeMapping, nodes);
+        this.extractEndState(xmlDoc, nodeMapping, nodes);
+        this.extractTaskNode(xmlDoc, nodeMapping, nodes);
+        this.extractNode(xmlDoc, nodeMapping, nodes);
+        this.extractDecisionNode(xmlDoc, nodeMapping, nodes);
 
         nodeMapping.forEach((sourceNode) => {
           if (sourceNode.transitions) {
@@ -237,6 +83,206 @@ export class XMLImporterService {
         return { nodes, edges }
     }
     
+    private extractStartState(xmlDoc: Document, nodeMapping: Map<string, XmlNodeMapping>, nodes: cytoscape.NodeDefinition[]) {
+        const startStates = xmlDoc.getElementsByTagName('start-state');
+        Array.from(startStates).forEach((startState, index) => {
+            const task = startState.firstElementChild;
+            if (!task) return;
+
+            const name = task.getAttribute('name') || 'Início';
+            const swimlane = task.getAttribute('swimlane');
+            const nodeId = `${name}-${index}`;
+
+            nodeMapping.set(name, {
+                id: nodeId,
+                name: name,
+                type: NodeType.START,
+                label: name,
+                transitions: this.extractTransitions(startState)
+            });
+
+            nodes.push({
+                group: 'nodes',
+                data: {
+                    id: nodeId,
+                    label: name,
+                    type: NodeType.START,
+                    swimlane: swimlane,
+                    events: this.extratEvents(startState),
+                    xmlSnippet: this.elementToXmlString(startState)
+                },
+                position: { x: 50, y: 50 + (index * 50) },
+                classes: 'start'
+            });
+        });
+    }
+
+    private extractProcessState(xmlDoc: Document, nodeMapping: Map<string, XmlNodeMapping>, nodes: cytoscape.NodeDefinition[]) {
+        const processStates = xmlDoc.getElementsByTagName('process-state');
+        Array.from(processStates).forEach((processState, index) => {
+            const processStateName = processState.getAttribute('name') || 'process-state';
+            const processStateId = `${processStateName}-${index}`;
+
+            const subProcesss = processState.firstElementChild;
+            if (!subProcesss) return;
+
+            const name = subProcesss.getAttribute('name') || 'sub-process';
+            const swimlane = subProcesss.getAttribute('swimlane') || null;
+            const nodeId = `${name}-${index}`;
+
+            nodeMapping.set(processStateName, {
+                id: processStateId,
+                name: processStateName,
+                type: NodeType.SUBPROCESS,
+                label: processStateName,
+                transitions: this.extractTransitions(processState)
+            });
+
+            nodes.push({
+                group: 'nodes',
+                data: {
+                    id: processStateId,
+                    label: processStateName,
+                    type: NodeType.SUBPROCESS,
+                    swimlane: null,
+                    subprocess: {
+                        id: nodeId,
+                        label: name,
+                        type: NodeType.SUBPROCESS,
+                        swimlane: swimlane,
+                        events: this.extratEvents(processState)
+                    },
+                    events: this.extratEvents(processState),
+                    xmlSnippet: this.elementToXmlString(processState)
+                },
+                position: { x: 50, y: 50 + (index * 50) },
+                classes: 'subprocess-node'
+            });
+
+        });
+    }
+
+    private extractEndState(xmlDoc: Document, nodeMapping: Map<string, XmlNodeMapping>, nodes: cytoscape.NodeDefinition[]) {
+        const endStates = xmlDoc.getElementsByTagName('end-state');
+        Array.from(endStates).forEach((endState, index) => {
+            const name = endState.getAttribute('name') || 'Término';
+            const nodeId = `${name}-${index}`;
+
+            nodeMapping.set(name, {
+                id: nodeId,
+                name: name,
+                type: NodeType.END,
+                label: name
+            });
+
+            nodes.push({
+                group: 'nodes',
+                data: {
+                    id: nodeId,
+                    label: name,
+                    type: NodeType.END,
+                    xmlSnippet: this.elementToXmlString(endState)
+                },
+                position: { x: 700, y: 100 + (index * 150) },
+                classes: 'end-node'
+            });
+        });
+    }
+
+    private extractTaskNode(xmlDoc: Document, nodeMapping: Map<string, XmlNodeMapping>, nodes: cytoscape.NodeDefinition[]) {
+        const taskNodes = xmlDoc.getElementsByTagName('task-node');
+        Array.from(taskNodes).forEach((taskNode, index) => {
+            const task = taskNode.firstElementChild;
+            if (!task) return;
+
+            const name = task.getAttribute('name') || `Node ${index + 1}`;
+            const swimlane = task.getAttribute('swimlane');
+            const endTasks = taskNode.getAttribute('end-tasks') === 'true';
+            const nodeId = `${name} (${index})`;
+
+            nodeMapping.set(name, {
+                id: nodeId,
+                name: name,
+                type: NodeType.TASK,
+                label: name,
+                transitions: this.extractTransitions(taskNode)
+            });
+
+            nodes.push({
+                group: 'nodes',
+                data: {
+                    id: nodeId,
+                    label: name,
+                    type: NodeType.TASK,
+                    endTasks: endTasks,
+                    swimlane: swimlane,
+                    events: this.extratEvents(taskNode),
+                    xmlSnippet: this.elementToXmlString(taskNode)
+                },
+                position: { x: 400, y: 100 + (index * 150) },
+                classes: 'task-node'
+            });
+        });
+    }
+
+    private extractNode(xmlDoc: Document, nodeMapping: Map<string, XmlNodeMapping>, nodes: cytoscape.NodeDefinition[]) {
+        const node = xmlDoc.getElementsByTagName('node');
+        Array.from(node).forEach((node, index) => {
+            const name = node.getAttribute('name') || `Node ${index + 1}`;
+            const nodeId = `${name} ${index}`;
+
+            nodeMapping.set(name, {
+                id: nodeId,
+                name: name,
+                type: NodeType.NODE,
+                label: nodeId,
+                transitions: this.extractTransitions(node)
+            });
+
+            nodes.push({
+                group: 'nodes',
+                data: {
+                    id: nodeId,
+                    label: name,
+                    type: NodeType.NODE,
+                    events: this.extratEvents(node),
+                    xmlSnippet: this.elementToXmlString(node)
+                },
+                position: { x: 500, y: 100 + (index * 150) },
+                classes: 'node'
+            });
+        });
+    }
+
+    private extractDecisionNode(xmlDoc: Document, nodeMapping: Map<string, XmlNodeMapping>, nodes: cytoscape.NodeDefinition[]) {
+        const decision = xmlDoc.getElementsByTagName('decision');
+        Array.from(decision).forEach((node, index) => {
+            const name = node.getAttribute('name') || `Node ${index + 1}`;
+            const nodeId = `${name} ${index}`;
+
+            nodeMapping.set(name, {
+                id: nodeId,
+                name: name,
+                type: NodeType.DECISION,
+                label: nodeId,
+                transitions: this.extractTransitions(node)
+            });
+
+            nodes.push({
+                group: 'nodes',
+                data: {
+                    id: nodeId,
+                    label: name,
+                    type: NodeType.DECISION,
+                    events: this.extratEvents(node),
+                    xmlSnippet: this.elementToXmlString(node)
+                },
+                position: { x: 500, y: 100 + (index * 150) },
+                classes: 'decision-node'
+            });
+        });
+    }
+
     private elementToXmlString(element: Element): string {
         const serializer = new XMLSerializer();
         const rawXml = serializer.serializeToString(element);
