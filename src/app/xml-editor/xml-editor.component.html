@@ -1,5 +1,5 @@
 @if (xmlCode) {
-    <p-card header="Visualizador de XML">
+    <p-card>
       <div class="toolbar mb-2">
         <div class="toolbar-buttons">
           <p-button
@@ -14,6 +14,14 @@
             label="Copiar"
             icon="pi pi-copy"
             (onClick)="copyToClipboard()"
+            severity="secondary"
+            size="small"
+            [outlined]="true">
+          </p-button>
+          <p-button
+            label="Atualizar"
+            icon="pi pi-refresh"
+            (onClick)="updateGraph()"
             severity="secondary"
             size="small"
             [outlined]="true">

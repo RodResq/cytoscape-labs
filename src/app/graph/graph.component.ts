@@ -14,6 +14,7 @@ import { GrafoService } from '@shared/services/grafo.service';
 import { FluxoFormData } from '@shared/types/form.types';
 import { FormGroup } from '@angular/forms';
 import { GraphReloadService } from '@shared/services/graph-reload.service';
+import { NodeXmlSelectionService } from '@shared/services/node-xml-selection.service';
 
 cytoscape.use(dagre);
 cytoscape.use(contextMenus);
@@ -34,6 +35,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
   private formsDataService = inject(FormsDataService);
   private grafoService = inject(GrafoService);
   private router = inject(Router);
+  private nodeXmlSelectionService = inject(NodeXmlSelectionService);
 
   private taskFormReceivedData: any;
   private cy!: cytoscape.Core;
@@ -45,6 +47,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
   private dadosSalvoStorage!: FluxoFormData | null;
   private graphReloadService = inject(GraphReloadService);
   private reloadSubscription?: any;
+  private clearSubscription?: any;
 
   showNodeForm: boolean = true;
   selectedElementId: string = '';
@@ -85,6 +88,10 @@ export class GraphComponent implements OnInit, AfterViewInit {
     this.reloadSubscription = this.graphReloadService.reload$.subscribe(() => {
       this.loadImportedGraph();
     });
+
+    this.clearSubscription = this.graphReloadService.clear$.subscribe(() => {
+      this.clearGraph();
+    })
   }
 
   ngAfterViewInit(): void {
@@ -94,6 +101,21 @@ export class GraphComponent implements OnInit, AfterViewInit {
     }, 100);
     this.waitForEdgeClick();
     this.waitForRightClick();
+
+    this.cy.on('tap', 'node', (event) => {
+      const node = event.target;
+      const nodeType: string | undefined = node.data('type');
+      const nodeId = node.id() as string;
+
+      const nodeLabel: string = 
+        node.style('label') ||
+        node.data('label') ||
+        nodeId;
+
+        const xmlSnippet: string | undefined = node.data('xmlSnippet');
+        
+        this.nodeXmlSelectionService.selectNodeInXml(nodeId, nodeLabel, xmlSnippet, nodeType);
+    });
   }
 
   private loadImportedGraph() {
@@ -566,9 +588,20 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
   ngOnDestroy(): void {
     this.stopWaitingForEdge();
-    if (this.reloadSubscription) {
-      this.reloadSubscription.unsubscribe()
-    }
+    this.reloadSubscription.unsubscribe();
+    this.clearSubscription.unsubscribe();
+  }
+
+  clearGraph() {
+    this.cy.elements().not("#0").remove();
+
+    this.grafoService.setGrafo({
+      length: 1,
+      node: this.cy.getElementById("0"),
+      form: new FormGroup({}),
+      collection: this.cy.nodes(),
+      visible: false
+    })
   }
 
 }

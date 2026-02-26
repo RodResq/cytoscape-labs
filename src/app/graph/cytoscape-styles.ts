@@ -47,7 +47,7 @@ export const cytoscapeStyles: Stylesheet[] = [
         'height': 60,
         'text-valign': 'center',
         'text-halign': 'center',
-        label: 'data(id)'
+        label: 'data(label)'
         }
     },
     {
@@ -105,10 +105,10 @@ export const cytoscapeStyles: Stylesheet[] = [
         style: {
         'shape': 'diamond',
         'background-color': '#f39c12',
-        'width': 50,
-        'height': 50,
-        label: 'data(id)',
-        'text-valign': 'bottom',
+        'width': 80,
+        'height': 80,
+        label: 'data(label)',
+        'text-valign': 'center',
         'text-halign': 'center'
         }
     },
