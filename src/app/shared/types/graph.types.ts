@@ -63,7 +63,8 @@ export enum NodeType {
   SEPARATION = 'separation-node',
   JOIN = 'join-node',
   SUBPROCESS = 'subprocess-node',
-  START = 'start'
+  START = 'start',
+  FORK = 'fork-node'
 }
 
 /**

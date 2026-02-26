@@ -86,7 +86,7 @@ export const cytoscapeStyles: Stylesheet[] = [
         'height': 30,
         'text-valign': 'center',
         'text-halign': 'center',
-        label: 'data(id)'
+        label: 'data(label)'
         }
     },
     {
@@ -95,7 +95,7 @@ export const cytoscapeStyles: Stylesheet[] = [
         'shape': 'triangle',
         'width': 30,
         'height': 30,
-        label: 'data(id)',
+        label: 'data(label)',
         'text-valign': 'bottom',
         'text-halign': 'left'
         }
@@ -119,7 +119,7 @@ export const cytoscapeStyles: Stylesheet[] = [
         'background-color': '#9b59b6',
         'width': 50,
         'height': 50,
-        label: 'data(id)',
+        label: 'data(label)',
         'text-valign': 'bottom',
         'text-halign': 'center'
         }
@@ -131,7 +131,7 @@ export const cytoscapeStyles: Stylesheet[] = [
         'background-color': '#16a085',
         'width': 50,
         'height': 50,
-        label: 'data(id)',
+        label: 'data(label)',
         'text-valign': 'bottom',
         'text-halign': 'center'
         }
@@ -143,7 +143,19 @@ export const cytoscapeStyles: Stylesheet[] = [
         'background-color': '#4A90E2',
         'width': 50,
         'height': 50,
-        label: 'data(id)',
+        label: 'data(label)',
+        'text-valign': 'bottom',
+        'text-halign': 'center'
+        }
+    },
+    {
+        selector: '.fork-node',
+        style: {
+        'shape': 'hexagon',
+        'background-color': '#E67E22',
+        'width': 50,
+        'height': 50,
+        label: 'data(label)',
         'text-valign': 'bottom',
         'text-halign': 'center'
         }
@@ -187,9 +199,11 @@ export const cytoscapeStyles: Stylesheet[] = [
         'line-color': '#95a5a6',
         'target-arrow-color': '#95a5a6',
         'target-arrow-shape': 'triangle',
+        'taxi-direction': 'auto',
         'curve-style': 'bezier',
-        'label': 'data(label)',
+        'label': '',
         'text-rotation': 'autorotate',
+        'taxi-turn-min-distance': 5,
         'font-size': '10px'
         }
     },

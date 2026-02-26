@@ -51,30 +51,9 @@ export class XMLImporterService {
         this.extractTaskNode(xmlDoc, nodeMapping, nodes);
         this.extractNode(xmlDoc, nodeMapping, nodes);
         this.extractDecisionNode(xmlDoc, nodeMapping, nodes);
+        this.extractForkNode(xmlDoc, nodeMapping, nodes);
 
-        nodeMapping.forEach((sourceNode) => {
-          if (sourceNode.transitions) {
-            sourceNode.transitions.forEach((transition, index) => {
-              const targetNode = nodeMapping.get(transition.to);
-
-              if (targetNode) {
-                edges.push({
-                    group: 'edges',
-                    data: {
-                        id: `edge-${sourceNode.id}-${targetNode.id}-${index}`,
-                        source: sourceNode.id,
-                        target: targetNode.id,
-                        label: transition.name || ''
-                    }
-                });
-                console.log(`Edge criada: ${sourceNode.name} → ${targetNode.name}`);
-              } else {
-                console.warn(`Target node não encontrado: "${transition.to}"`);
-                console.warn(`Nós disponíveis no mapeamento:`, Array.from(nodeMapping.keys()));
-              }
-            });
-          }
-        });
+        this.createEdges(nodeMapping, edges);
 
         console.log('Nodes criados:', nodes);
         console.log('Edges criados:', edges);
@@ -83,6 +62,32 @@ export class XMLImporterService {
         return { nodes, edges }
     }
     
+    private createEdges(nodeMapping: Map<string, XmlNodeMapping>, edges: cytoscape.EdgeDefinition[]) {
+        nodeMapping.forEach((sourceNode) => {
+            if (sourceNode.transitions) {
+                sourceNode.transitions.forEach((transition, index) => {
+                    const targetNode = nodeMapping.get(transition.to);
+
+                    if (targetNode) {
+                        edges.push({
+                            group: 'edges',
+                            data: {
+                                id: `edge-${sourceNode.id}-${targetNode.id}-${index}`,
+                                source: sourceNode.id,
+                                target: targetNode.id,
+                                label: transition.name || ''
+                            }
+                        });
+                        console.log(`Edge criada: ${sourceNode.name} → ${targetNode.name}`);
+                    } else {
+                        console.warn(`Target node não encontrado: "${transition.to}"`);
+                        console.warn(`Nós disponíveis no mapeamento:`, Array.from(nodeMapping.keys()));
+                    }
+                });
+            }
+        });
+    }
+
     private extractStartState(xmlDoc: Document, nodeMapping: Map<string, XmlNodeMapping>, nodes: cytoscape.NodeDefinition[]) {
         const startStates = xmlDoc.getElementsByTagName('start-state');
         Array.from(startStates).forEach((startState, index) => {
@@ -279,6 +284,35 @@ export class XMLImporterService {
                 },
                 position: { x: 500, y: 100 + (index * 150) },
                 classes: 'decision-node'
+            });
+        });
+    }
+
+    private extractForkNode(xmlDoc: Document, nodeMapping: Map<string, XmlNodeMapping>, nodes: cytoscape.NodeDefinition[]) {
+        const decision = xmlDoc.getElementsByTagName('fork');
+        Array.from(decision).forEach((node, index) => {
+            const name = node.getAttribute('name') || `Node ${index + 1}`;
+            const nodeId = `${name} ${index}`;
+
+            nodeMapping.set(name, {
+                id: nodeId,
+                name: name,
+                type: NodeType.FORK,
+                label: nodeId,
+                transitions: this.extractTransitions(node)
+            });
+
+            nodes.push({
+                group: 'nodes',
+                data: {
+                    id: nodeId,
+                    label: name,
+                    type: NodeType.FORK,
+                    events: this.extratEvents(node),
+                    xmlSnippet: this.elementToXmlString(node)
+                },
+                position: { x: 500, y: 100 + (index * 150) },
+                classes: 'fork-node'
             });
         });
     }
