@@ -139,10 +139,10 @@ export const cytoscapeStyles: Stylesheet[] = [
     {
         selector: ".join-node",
         style: {
-        'shape': 'octagon',
+        'shape': 'diamond',
         'background-color': '#4A90E2',
-        'width': 50,
-        'height': 50,
+        'width': 60,
+        'height': 60,
         label: 'data(label)',
         'text-valign': 'bottom',
         'text-halign': 'center'

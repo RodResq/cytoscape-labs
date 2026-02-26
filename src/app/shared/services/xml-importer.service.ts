@@ -52,6 +52,7 @@ export class XMLImporterService {
         this.extractNode(xmlDoc, nodeMapping, nodes);
         this.extractDecisionNode(xmlDoc, nodeMapping, nodes);
         this.extractForkNode(xmlDoc, nodeMapping, nodes);
+        this.extractJoinNode(xmlDoc, nodeMapping, nodes);
 
         this.createEdges(nodeMapping, edges);
 
@@ -313,6 +314,35 @@ export class XMLImporterService {
                 },
                 position: { x: 500, y: 100 + (index * 150) },
                 classes: 'fork-node'
+            });
+        });
+    }
+
+    private extractJoinNode(xmlDoc: Document, nodeMapping: Map<string, XmlNodeMapping>, nodes: cytoscape.NodeDefinition[]) {
+        const decision = xmlDoc.getElementsByTagName('join');
+        Array.from(decision).forEach((node, index) => {
+            const name = node.getAttribute('name') || `Node ${index + 1}`;
+            const nodeId = `${name} ${index}`;
+
+            nodeMapping.set(name, {
+                id: nodeId,
+                name: name,
+                type: NodeType.JOIN,
+                label: nodeId,
+                transitions: this.extractTransitions(node)
+            });
+
+            nodes.push({
+                group: 'nodes',
+                data: {
+                    id: nodeId,
+                    label: name,
+                    type: NodeType.JOIN,
+                    events: this.extratEvents(node),
+                    xmlSnippet: this.elementToXmlString(node)
+                },
+                position: { x: 500, y: 100 + (index * 150) },
+                classes: 'join-node'
             });
         });
     }
