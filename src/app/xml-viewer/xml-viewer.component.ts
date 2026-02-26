@@ -1,5 +1,4 @@
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { GraphReloadService } from '@shared/services/graph-reload.service';
@@ -22,7 +21,6 @@ interface UploadEvent {
   imports: [
     CommonModule,
     FormsModule,
-    HttpClientModule,
     ButtonModule,
     TextareaModule,
     CardModule,
