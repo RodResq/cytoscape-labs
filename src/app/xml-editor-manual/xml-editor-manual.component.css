@@ -1,0 +1,39 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 85vh;
+}
+
+/* Força o p-card a ocupar toda a altura do host */
+:host ::ng-deep .p-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+:host ::ng-deep .p-card-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+:host ::ng-deep .p-card-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+  padding: 0;
+}
+
+.monaco-container {
+  flex: 1;           /* ocupa todo espaço restante */
+  width: 100%;
+  min-height: 300px;
+  overflow: hidden;
+}
+
+.toolbar-buttons {
+  display: flex;
+  gap: 0.5rem;
+}

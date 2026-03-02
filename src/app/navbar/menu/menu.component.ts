@@ -4,6 +4,7 @@ import { MenuItem, MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
 import { Menubar } from 'primeng/menubar';
 import { ToastModule } from 'primeng/toast';
+import { FlowModeService } from '@shared/services/flow-mode.service';
 
 
 @Component({
@@ -16,6 +17,7 @@ import { ToastModule } from 'primeng/toast';
 })
 export class MenuComponent implements OnInit {
   private router = inject(Router);
+  private flowModeService = inject(FlowModeService);
 
   constructor() {}
 
@@ -26,16 +28,18 @@ export class MenuComponent implements OnInit {
       {
         id: '0',
         label: 'Importar XML',
-        command: () => this.router.navigate(['/fluxoApp/importar-xml'])
+        command: () => {
+          this.flowModeService.setMode('xml-import');
+          this.router.navigate(['/fluxoApp/importar-xml']);
+        }
       },
       {
         id: '1',
-        label: 'Criar Fluxo',
-        command: () => this.router.navigate(['/fluxoApp/fluxo'])
-      },
-      {
-        id: '2',
-        label: 'Exportar',
+        label: 'Criar Fluxo Manual',
+        command: () => {
+          this.flowModeService.setMode('manual');
+          this.router.navigate(['/fluxoApp/fluxo']);
+        }
       }
     ]
   }

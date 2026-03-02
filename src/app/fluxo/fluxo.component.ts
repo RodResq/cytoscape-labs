@@ -15,8 +15,10 @@ import { FormsDataService } from '@shared/services/forms-data.service';
 import { FormAction, NodeData } from '@shared/types/form.types';
 import { StepperData } from '@shared/types/stepper.types';
 import { XmlEditorComponent } from '../xml-editor/xml-editor.component';
+import { XmlEditorManualComponent } from '../xml-editor-manual/xml-editor-manual.component';
 import { CytoscapeComponent } from '../cytoscape/cytoscape.component';
 import { GraphReloadService } from '@shared/services/graph-reload.service';
+import { FlowModeService } from '@shared/services/flow-mode.service';
 import { filter, Subject, takeUntil } from 'rxjs';
 
 
@@ -30,7 +32,8 @@ import { filter, Subject, takeUntil } from 'rxjs';
     RouterOutlet,
     CommonModule,
     CytoscapeComponent,
-    XmlEditorComponent
+    XmlEditorComponent,
+    XmlEditorManualComponent
 ],
   templateUrl: './fluxo.component.html',
   styleUrl: './fluxo.component.css'
@@ -52,6 +55,7 @@ export class FluxoComponent implements OnInit, OnDestroy{
   public xmlCode: string = '';
   public changeUrl: boolean = false;
   public showXmlEditor: boolean = false;
+  public flowModeService = inject(FlowModeService);
 
   constructor() {
     effect(() => {

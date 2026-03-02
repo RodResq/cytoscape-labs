@@ -1,0 +1,57 @@
+<p-card>
+  <div class="toolbar mb-2">
+    <div class="toolbar-buttons">
+      <p-button
+        label="Formatar"
+        icon="pi pi-align-justify"
+        (onClick)="formatXmlManual()"
+        severity="secondary"
+        size="small"
+        [outlined]="true">
+      </p-button>
+      <p-button
+        label="Copiar"
+        icon="pi pi-copy"
+        (onClick)="copyToClipboard()"
+        severity="secondary"
+        size="small"
+        [outlined]="true">
+      </p-button>
+      <p-button
+        label="Atualizar"
+        icon="pi pi-refresh"
+        (onClick)="updateGraph()"
+        severity="secondary"
+        size="small"
+        [outlined]="true">
+      </p-button>
+      <p-button
+        [label]="vsTheme === 'vs-dark' ? 'Light' : 'Dark'"
+        [icon]="vsTheme === 'vs-dark' ? 'pi pi-sun' : 'pi pi-moon'"
+        (onClick)="setupTheme()"
+        severity="secondary"
+        size="small"
+        [outlined]="true">
+      </p-button>
+      <p-button
+        label="Limpar"
+        icon="pi pi-trash"
+        (onClick)="clearCode()"
+        severity="danger"
+        size="small"
+        [outlined]="true">
+      </p-button>
+    </div>
+  </div>
+  <div #editorContainer class="monaco-container"></div>
+  @if (xmlCode) {
+    <div class="file-info mt-3">
+      <small class="text-muted">
+        <i class="pi pi-info-circle"></i>
+        Linhas: {{ lineNumbers.length }} |
+        Caracteres: {{ xmlCode.length }}
+      </small>
+    </div>
+  }
+</p-card>
+<p-toast></p-toast>
