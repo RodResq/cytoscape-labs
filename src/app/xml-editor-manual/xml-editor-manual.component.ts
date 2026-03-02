@@ -64,8 +64,8 @@ export class XmlEditorManualComponent implements OnInit, AfterViewInit, AfterCon
       this.appendNodeToEditor(nodeXml);
     });
 
-    this.insertNodeSub = this.xmlTemplateService.insertNode$.subscribe(({targetNode, nodeXml}) => {
-      this.insertNodeToEditor(targetNode, nodeXml);
+    this.insertNodeSub = this.xmlTemplateService.insertNode$.subscribe(({targetNodeId, nodeXml}) => {
+      this.insertNodeToEditor(targetNodeId, nodeXml);
     });
   }
 
@@ -119,32 +119,52 @@ export class XmlEditorManualComponent implements OnInit, AfterViewInit, AfterCon
     return currentXml + '\n' + nodeXml;
   }
 
-  private insertNodeToEditor(targetNode: string, nodeXml: string): void {
-    console.log('Target node: ', targetNode);
+  private insertNodeToEditor(targetNodeId: string, nodeXml: string): void {
+    console.log('Target node: ', targetNodeId);
     
     this.ngZone.run(() => {
       if (!this.editorInstance) {
         console.warn('[XmlEditorManual] Editor ainda não inicializado. Enfileirando insert.');
         this.pendingNodes.push(nodeXml);
 
-        this.xmlCode = this.buildInsertXml(this.xmlCode, targetNode, nodeXml);
+        this.xmlCode = this.buildInsertXml(this.xmlCode, targetNodeId, nodeXml);
         this.updateLineNumbers();
         return;
       }
 
       const currentXml = this.editorInstance.getValue();
-      const newXml = this.buildInsertXml(currentXml, targetNode, nodeXml);
+      const newXml = this.buildInsertXml(currentXml, targetNodeId, nodeXml);
       this.setEditorValue(newXml);
     });
   }
 
-  private buildInsertXml(currentXml: string, targetNode: string, nodeXml: string): string {
-    const closingTag = `</${targetNode}>`;
-    const index = currentXml.lastIndexOf(closingTag);
+  private buildInsertXml(currentXml: string, targetNodeId: string, nodeXml: string): string {
 
-    if (index !== -1) {
+    let searchName = targetNodeId;
+    if (targetNodeId === '0') {
+      searchName = 'Início';
+    }
+
+    const startTagRegex = new RegExp(`<([a-zA-Z0-9-]+)[^>]*name="${searchName}"`, 'i');
+    const startTagMatch = currentXml.match(startTagRegex);
+    
+    if (startTagMatch) {
+      const tagName = startTagMatch[1];
+      const startIndex = startTagMatch.index!;
+      const closingTag = `</${tagName}>`;
+      const closingIndex = currentXml.indexOf(closingTag, startIndex);
+
+      if (closingIndex !== -1) {
+        const indentedNode = '    ' + nodeXml.split('\n').join('\n    ');
+        return currentXml.substring(0, closingIndex) + indentedNode + '\n    ' + currentXml.substring(closingIndex);
+      }
+    }
+    const closingTagFallback = `</${targetNodeId}>`;
+    const fallbackIndex = currentXml.lastIndexOf(closingTagFallback);
+
+    if (fallbackIndex !== -1) {
       const indentedNode = '    ' + nodeXml.split('\n').join('\n    ');
-      return currentXml.substring(0, index) + indentedNode + '\n    ' + currentXml.substring(index);
+      return currentXml.substring(0, fallbackIndex) + indentedNode + '\n    ' + currentXml.substring(fallbackIndex);
     }
 
     return currentXml + '\n' + nodeXml;
