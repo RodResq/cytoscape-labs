@@ -1,6 +1,7 @@
 import { MenuItemClasses } from "@shared/types/graph.types";
 
 export const NODE_TYPES = {
+    START: 'start-node',
     TASK: 'task-node',
     DECISION: 'decision-node',
     SYSTEM: 'system-node',

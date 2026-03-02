@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { AfterContentChecked, AfterViewInit, Component, ElementRef, inject, OnDestroy, ViewChild } from '@angular/core';
+import { AfterContentChecked, AfterViewInit, Component, ElementRef, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { GraphImporterService } from '@shared/services/graph-importer.service';
 import { NodeXmlSelectionService } from '@shared/services/node-xml-selection.service';
+import { XmlTemplateService } from '@shared/services/xml-template.service';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -28,12 +29,13 @@ import { Subscription } from 'rxjs';
   standalone: true,
   providers: [MessageService]
 })
-export class XmlEditorManualComponent implements AfterViewInit, AfterContentChecked, OnDestroy {
+export class XmlEditorManualComponent implements OnInit, AfterViewInit, AfterContentChecked, OnDestroy {
   @ViewChild('editorContainer') editorContainer!: ElementRef<HTMLDivElement>;
 
   private graphImporterService = inject(GraphImporterService);
   private messageService = inject(MessageService);
   private nodeXmlSelectionService = inject(NodeXmlSelectionService);
+  private xmlTemplateService = inject(XmlTemplateService);
 
   private editorInstance: any = null;
   private monacoLoaded = false;
@@ -46,6 +48,11 @@ export class XmlEditorManualComponent implements AfterViewInit, AfterContentChec
   selectedFileName: string = '';
   validationMessage: { isValid: boolean; text: string } | null = null;
   vsTheme: string = 'vs-light';
+
+  ngOnInit(): void {
+    this.xmlCode = this.xmlTemplateService.generateBaseTemplate();
+    this.updateLineNumbers();
+  }
 
   ngAfterViewInit(): void {
     this.loadMonaco();

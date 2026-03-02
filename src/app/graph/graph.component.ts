@@ -15,6 +15,7 @@ import { FluxoFormData } from '@shared/types/form.types';
 import { FormGroup } from '@angular/forms';
 import { GraphReloadService } from '@shared/services/graph-reload.service';
 import { NodeXmlSelectionService } from '@shared/services/node-xml-selection.service';
+import { XmlTemplateService } from '@shared/services/xml-template.service';
 
 cytoscape.use(dagre);
 cytoscape.use(contextMenus);
@@ -36,6 +37,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
   private grafoService = inject(GrafoService);
   private router = inject(Router);
   private nodeXmlSelectionService = inject(NodeXmlSelectionService);
+  private xmlTemplateService = inject(XmlTemplateService);
 
   private taskFormReceivedData: any;
   private cy!: cytoscape.Core;
@@ -548,6 +550,8 @@ export class GraphComponent implements OnInit, AfterViewInit {
       collection: this.cy.nodes(),
       visible: false
     });
+
+    this.xmlTemplateService.generateTaskNode();
   }
 
   private getNodeLabel(nodeClass: string): string {
