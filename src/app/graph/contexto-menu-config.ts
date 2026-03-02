@@ -43,8 +43,7 @@ export class ContextMenuConfig {
             nodeClasses: 'task-node',
             edgeClasses: 'null'
           };
-          const position = { x: 100, y: 70 };
-          component.addNode(event, classes, position);
+          component.addNode(event, classes);
         }
       };
 
@@ -59,8 +58,7 @@ export class ContextMenuConfig {
             nodeClasses: 'decision-node',
             edgeClasses: 'dashed'
           };
-          const position = { x: 0, y: 110 };
-          component.addNode(event, classes, position);
+          component.addNode(event, classes);
         },
         disabled: false
       };
@@ -76,8 +74,7 @@ export class ContextMenuConfig {
             nodeClasses: 'system-node',
             edgeClasses: 'dotted'
           };
-          const position = { x: 100, y: 70 };
-          component.addNode(event, classes, position);
+          component.addNode(event, classes);
         },
         disabled: false
       };
@@ -93,8 +90,7 @@ export class ContextMenuConfig {
             nodeClasses: 'separation-node',
             edgeClasses: 'null'
           };
-          const position = { x: 0, y: 100 };
-          component.addNode(event, classes, position);
+          component.addNode(event, classes);
         },
         disabled: false
       };
@@ -109,8 +105,7 @@ export class ContextMenuConfig {
             nodeClasses: 'join-node',
             edgeClasses: 'null'
           };
-          const position = { x: 0, y: 110 };
-          component.addNode(event, classes, position);
+          component.addNode(event, classes);
         },
         disabled: false
       };
@@ -125,8 +120,7 @@ export class ContextMenuConfig {
             nodeClasses: 'subprocess-node',
             edgeClasses: 'null'
           };
-          const position = { x: 0, y: 110 };
-          component.addNode(event, classes, position);
+          component.addNode(event, classes);
         },
         disabled: false
       };
@@ -142,8 +136,7 @@ export class ContextMenuConfig {
             edgeClasses: 'dotted'
           };
           const style = { 'background-color': 'black' };
-          const position = { x: 0, y: 110 };
-          component.addNode(event, classes, position, style);
+          component.addNode(event, classes, style);
         },
         disabled: false
       };

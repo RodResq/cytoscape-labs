@@ -471,7 +471,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
     console.log('Dados do formulário: ', this.taskFormReceivedData);
   }
 
-  private addNode(event: any, classes: any, position: {x: number, y: number}, style?: {}) {
+  private addNode(event: any, classes: any) {
     if (classes.nodeClasses === 'end-node' && this.cy.nodes('.end-node').length > 0) {
       console.log('Ja existe um no de fim');
       return;
@@ -523,7 +523,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
         scratch: { _fluxo: newNodeId },
         position: newPosition,
         classes: [classes.nodeClasses],
-        style: style ? style: null
+        style: null
       },
       {
         group: 'edges',
