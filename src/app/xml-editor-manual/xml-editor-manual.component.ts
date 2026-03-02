@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterContentChecked, AfterViewInit, Component, ElementRef, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterContentChecked, AfterViewInit, Component, ElementRef, inject, ChangeDetectorRef, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { GraphImporterService } from '@shared/services/graph-importer.service';
 import { NodeXmlSelectionService } from '@shared/services/node-xml-selection.service';
@@ -36,6 +36,8 @@ export class XmlEditorManualComponent implements OnInit, AfterViewInit, AfterCon
   private messageService = inject(MessageService);
   private nodeXmlSelectionService = inject(NodeXmlSelectionService);
   private xmlTemplateService = inject(XmlTemplateService);
+  private ngZone = inject(NgZone);
+  private cdr = inject(ChangeDetectorRef);
 
   private editorInstance: any = null;
   private monacoLoaded = false;
@@ -43,6 +45,8 @@ export class XmlEditorManualComponent implements OnInit, AfterViewInit, AfterCon
   private nodeSelectionSub?: Subscription;
   private appendNodeSub?: Subscription;
   private isUpdating = false;
+
+  private pendingNodes: string[] = [];
 
   xmlCode: string = '';
 
@@ -81,30 +85,47 @@ export class XmlEditorManualComponent implements OnInit, AfterViewInit, AfterCon
   }
 
   private appendNodeToEditor(nodeXml: string): void {
-    console.log('Adicionando nó ao editor: ', nodeXml);
+    this.ngZone.run(() => {
+      // Se o editor ainda não está pronto, enfileira para processar depois
+      if (!this.editorInstance) {
+        console.warn('[XmlEditorManual] Editor ainda não inicializado. Enfileirando nó.');
+        this.pendingNodes.push(nodeXml);
 
-    const currentXml = this.editorInstance ? this.editorInstance.getValue() : this.xmlCode;
+        // Atualiza ao menos o xmlCode para quando o editor inicializar
+        this.xmlCode = this.buildXmlWithNode(this.xmlCode, nodeXml);
+        this.updateLineNumbers();
+        return;
+      }
+
+      const currentXml = this.editorInstance.getValue();
+      const newXml = this.buildXmlWithNode(currentXml, nodeXml);
+      this.setEditorValue(newXml);
+    });
+  }
+
+  private buildXmlWithNode(currentXml: string, nodeXml: string): string {
     const closingTag = '</process-definition>';
     const index = currentXml.lastIndexOf(closingTag);
 
-    let newXml = currentXml;
     if (index !== -1) {
-      newXml = currentXml.substring(0, index) + '    ' + nodeXml.split('\n').join('\n    ') + '\n' + currentXml.substring(index);
-    } else {
-      newXml = currentXml + '\n' + nodeXml;
+      const indentedNode = '    ' + nodeXml.split('\n').join('\n    ');
+      return currentXml.substring(0, index) + indentedNode + '\n' + currentXml.substring(index);
     }
 
+    return currentXml + '\n' + nodeXml;
+  }
+
+  private setEditorValue(newXml: string): void {
     this.xmlCode = newXml;
-    
-    if (this.editorInstance) {
-      this.isUpdating = true;
-      // Força a limpeza para garantir re-renderização visual
-      this.editorInstance.setValue('');
-      this.editorInstance.setValue(newXml);
-      this.isUpdating = false;
-    }
 
+    if (!this.editorInstance) return;
+
+    this.isUpdating = true;
+    this.editorInstance.setValue(newXml);
+    this.isUpdating = false;
+    
     this.updateLineNumbers();
+    this.cdr.detectChanges();
   }
 
   private highLightNodeInXml(nodeLabel: string, nodeId: string, xmlSnippet?: string, nodeType?: string): void {
@@ -262,6 +283,8 @@ export class XmlEditorManualComponent implements OnInit, AfterViewInit, AfterCon
       return;
     }
 
+    this.editorInitialized = true;
+
     this.editorInstance = (window as any).monaco.editor.create(
       this.editorContainer.nativeElement,
       {
@@ -282,9 +305,12 @@ export class XmlEditorManualComponent implements OnInit, AfterViewInit, AfterCon
     );
 
     this.editorInstance.onDidChangeModelContent(() => {
-      if (this.isUpdating) return;
-      this.xmlCode = this.editorInstance.getValue();
-      this.updateLineNumbers();
+      this.ngZone.run(() => {
+        if (this.isUpdating) return;
+        this.xmlCode = this.editorInstance.getValue();
+        this.updateLineNumbers();
+        this.cdr.detectChanges();
+      });
     });
   }
 
