@@ -44,6 +44,7 @@ export class XmlEditorManualComponent implements OnInit, AfterViewInit, AfterCon
   private editorInitialized = false;
   private nodeSelectionSub?: Subscription;
   private appendNodeSub?: Subscription;
+  private insertNodeSub?: Subscription;
   private isUpdating = false;
 
   private pendingNodes: string[] = [];
@@ -61,6 +62,10 @@ export class XmlEditorManualComponent implements OnInit, AfterViewInit, AfterCon
 
     this.appendNodeSub = this.xmlTemplateService.appendNode$.subscribe(nodeXml => {
       this.appendNodeToEditor(nodeXml);
+    });
+
+    this.insertNodeSub = this.xmlTemplateService.insertNode$.subscribe(({targetNode, nodeXml}) => {
+      this.insertNodeToEditor(targetNode, nodeXml);
     });
   }
 
@@ -82,16 +87,15 @@ export class XmlEditorManualComponent implements OnInit, AfterViewInit, AfterCon
     this.editorInstance?.dispose();
     this.nodeSelectionSub?.unsubscribe();
     this.appendNodeSub?.unsubscribe();
+    this.insertNodeSub?.unsubscribe();
   }
 
   private appendNodeToEditor(nodeXml: string): void {
     this.ngZone.run(() => {
-      // Se o editor ainda não está pronto, enfileira para processar depois
       if (!this.editorInstance) {
         console.warn('[XmlEditorManual] Editor ainda não inicializado. Enfileirando nó.');
         this.pendingNodes.push(nodeXml);
 
-        // Atualiza ao menos o xmlCode para quando o editor inicializar
         this.xmlCode = this.buildXmlWithNode(this.xmlCode, nodeXml);
         this.updateLineNumbers();
         return;
@@ -110,6 +114,35 @@ export class XmlEditorManualComponent implements OnInit, AfterViewInit, AfterCon
     if (index !== -1) {
       const indentedNode = '    ' + nodeXml.split('\n').join('\n    ');
       return currentXml.substring(0, index) + indentedNode + '\n' + currentXml.substring(index);
+    }
+
+    return currentXml + '\n' + nodeXml;
+  }
+
+  private insertNodeToEditor(targetNode: string, nodeXml: string): void {
+    this.ngZone.run(() => {
+      if (!this.editorInstance) {
+        console.warn('[XmlEditorManual] Editor ainda não inicializado. Enfileirando insert.');
+        this.pendingNodes.push(nodeXml);
+
+        this.xmlCode = this.buildInsertXml(this.xmlCode, targetNode, nodeXml);
+        this.updateLineNumbers();
+        return;
+      }
+
+      const currentXml = this.editorInstance.getValue();
+      const newXml = this.buildInsertXml(currentXml, targetNode, nodeXml);
+      this.setEditorValue(newXml);
+    });
+  }
+
+  private buildInsertXml(currentXml: string, targetNode: string, nodeXml: string): string {
+    const closingTag = `</${targetNode}>`;
+    const index = currentXml.lastIndexOf(closingTag);
+
+    if (index !== -1) {
+      const indentedNode = '    ' + nodeXml.split('\n').join('\n    ');
+      return currentXml.substring(0, index) + indentedNode + '\n    ' + currentXml.substring(index);
     }
 
     return currentXml + '\n' + nodeXml;

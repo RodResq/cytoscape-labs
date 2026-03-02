@@ -472,6 +472,11 @@ export class GraphComponent implements OnInit, AfterViewInit {
   }
 
   private addNode(event: any, classes: any, position: {x: number, y: number}, style?: {}) {
+    if (classes.nodeClasses === 'end-node' && this.cy.nodes('.end-node').length > 0) {
+      console.log('Ja existe um no de fim');
+      return;
+    }
+
     const clickedElement = event.target || event.cyTarget;
     const elementId = clickedElement.id();
     const newNodeId = `${classes.nodeClasses}-` + Date.now();
@@ -552,8 +557,30 @@ export class GraphComponent implements OnInit, AfterViewInit {
     });
 
     if (classes.nodeClasses === 'task-node') {
-      console.log('Adicinado um no de tarefa: ', newNodeData.label);
-      const nodeXml = this.xmlTemplateService.generateTaskNode('', newNodeData.label, '');
+      console.log('Adicionado um no de tarefa: ', newNodeData.label);
+      
+      const isStartNode = elementId === '0' || clickedElement.hasClass('start');
+      if (isStartNode) {
+        const transitionId = `trans_${newNodeId}`;
+        const transitionXml = this.xmlTemplateService.generateTransition(transitionId, newNodeId);
+        this.xmlTemplateService.triggerInsertNode('start-state', transitionXml);
+        
+        const nodeXml = this.xmlTemplateService.generateTaskNode('', transitionId, '');
+        this.xmlTemplateService.triggerAppendNode(nodeXml);
+      } else {
+        const nodeXml = this.xmlTemplateService.generateTaskNode('', newNodeData.label, '');
+        this.xmlTemplateService.triggerAppendNode(nodeXml);
+      }
+    }
+
+    if (classes.nodeClasses === 'end-node') {
+      console.log('Adicionado um no de fim: ', newNodeData.label);
+
+      const transitionId = `trans_${newNodeId}`;
+      const transitionXml = this.xmlTemplateService.generateTransition(transitionId, newNodeId);
+      this.xmlTemplateService.triggerInsertNode('task-node', transitionXml);
+      
+      const nodeXml = this.xmlTemplateService.generateEndState(transitionId, newNodeData.label, '');
       this.xmlTemplateService.triggerAppendNode(nodeXml);
     }
   }
