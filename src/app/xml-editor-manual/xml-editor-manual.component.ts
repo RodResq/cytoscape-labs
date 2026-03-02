@@ -120,6 +120,8 @@ export class XmlEditorManualComponent implements OnInit, AfterViewInit, AfterCon
   }
 
   private insertNodeToEditor(targetNode: string, nodeXml: string): void {
+    console.log('Target node: ', targetNode);
+    
     this.ngZone.run(() => {
       if (!this.editorInstance) {
         console.warn('[XmlEditorManual] Editor ainda não inicializado. Enfileirando insert.');

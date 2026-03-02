@@ -22,7 +22,7 @@ export const cytoscapeStyles: Stylesheet[] = [
         }
     },
     {
-        selector: '.fluxo',
+        selector: '.start-state',
         style: {
         'shape': 'ellipse',
         'background-color': '#3498db',

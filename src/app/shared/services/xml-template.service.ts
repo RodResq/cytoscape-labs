@@ -41,7 +41,6 @@ export class XmlTemplateService {
   }
 
   generateTaskNode(
-    transitionTo: string = '',
     transitionName: string = '',
     swimlane: string = ''
   ): string {
@@ -51,12 +50,11 @@ export class XmlTemplateService {
   }
 
   generateEndState(
-    transitionTo: string = '',
-    transitionName: string = '',
+    name: string = '',
     swimlane: string = ''
   ): string {
-    return `<end-state name="${transitionName}">
-        <task name="${transitionName}" swimlane="${swimlane}" priority="3"/>
+    return `<end-state name="${name}">
+        <task name="${name}" swimlane="${swimlane}" priority="3"/>
     </end-state>`;
   }
 }

@@ -240,7 +240,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
             selectable: true,
             locked: false,
             grabbable: true,
-            classes: ['fluxo', 'start']
+            classes: ['start-state']
           },
         ],
         edges: []
@@ -556,32 +556,36 @@ export class GraphComponent implements OnInit, AfterViewInit {
       visible: false
     });
 
+    this.generateTaskNode(classes, elementId, clickedElement, newNodeId);
+    this.generateEndNode(classes, newNodeData, newNodeId, clickedElement);
+  }
+
+  private generateEndNode(classes: any, newNodeData: any, newNodeId: string, clickedElement: any) {
+    if (classes.nodeClasses === 'end-node') {
+      const transitionId = `trans_${newNodeId}`;
+
+      const transitionXml = this.xmlTemplateService.generateTransition(newNodeId, transitionId);
+      this.xmlTemplateService.triggerInsertNode(clickedElement.classes()[0], transitionXml);
+``
+      const nodeXml = this.xmlTemplateService.generateEndState(newNodeId, '');
+      this.xmlTemplateService.triggerAppendNode(nodeXml);
+    }
+  }
+
+  private generateTaskNode(classes: any, elementId: any, clickedElement: any, newNodeId: string) {
     if (classes.nodeClasses === 'task-node') {
-      console.log('Adicionado um no de tarefa: ', newNodeData.label);
-      
       const isStartNode = elementId === '0' || clickedElement.hasClass('start');
       if (isStartNode) {
         const transitionId = `trans_${newNodeId}`;
-        const transitionXml = this.xmlTemplateService.generateTransition(transitionId, newNodeId);
+        const transitionXml = this.xmlTemplateService.generateTransition(newNodeId, transitionId);
         this.xmlTemplateService.triggerInsertNode('start-state', transitionXml);
-        
-        const nodeXml = this.xmlTemplateService.generateTaskNode('', transitionId, '');
+
+        const nodeXml = this.xmlTemplateService.generateTaskNode(newNodeId);
         this.xmlTemplateService.triggerAppendNode(nodeXml);
       } else {
-        const nodeXml = this.xmlTemplateService.generateTaskNode('', newNodeData.label, '');
+        const nodeXml = this.xmlTemplateService.generateTaskNode(newNodeId);
         this.xmlTemplateService.triggerAppendNode(nodeXml);
       }
-    }
-
-    if (classes.nodeClasses === 'end-node') {
-      console.log('Adicionado um no de fim: ', newNodeData.label);
-
-      const transitionId = `trans_${newNodeId}`;
-      const transitionXml = this.xmlTemplateService.generateTransition(transitionId, newNodeId);
-      this.xmlTemplateService.triggerInsertNode('task-node', transitionXml);
-      
-      const nodeXml = this.xmlTemplateService.generateEndState(transitionId, newNodeData.label, '');
-      this.xmlTemplateService.triggerAppendNode(nodeXml);
     }
   }
 
