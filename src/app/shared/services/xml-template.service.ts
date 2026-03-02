@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
 
 /**
  * Serviço responsável por gerar os templates XML base
@@ -8,6 +9,12 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class XmlTemplateService {
+  private appendNodeSubject = new Subject<string>();
+  appendNode$ = this.appendNodeSubject.asObservable();
+
+  triggerAppendNode(nodeXml: string) {
+    this.appendNodeSubject.next(nodeXml);
+  }
 
   /**
    * Gera o template XML base de um processo (process-definition)
@@ -35,7 +42,7 @@ export class XmlTemplateService {
     swimlane: string = ''
   ): string {
     return `<start-state name="Início">
-        <task name="${transitionName}" swimlane="${swimlane}" priority="3"/>
+        <task name="inicial" swimlane="${swimlane}" priority="3"/>
         <transition to="${transitionTo}" name="${transitionName}"/>
     </start-state>`;
   }
@@ -47,7 +54,6 @@ export class XmlTemplateService {
   ): string {
     return `<task-node end-tasks="true" name="${transitionName}">
         <task name="${transitionName}" swimlane="${swimlane}" priority="3"/>
-        <transition to="${transitionTo}" name="${transitionName}"/>
     </task-node>`;
   }
 }

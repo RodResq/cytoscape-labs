@@ -41,6 +41,8 @@ export class XmlEditorManualComponent implements OnInit, AfterViewInit, AfterCon
   private monacoLoaded = false;
   private editorInitialized = false;
   private nodeSelectionSub?: Subscription;
+  private appendNodeSub?: Subscription;
+  private isUpdating = false;
 
   xmlCode: string = '';
 
@@ -52,6 +54,10 @@ export class XmlEditorManualComponent implements OnInit, AfterViewInit, AfterCon
   ngOnInit(): void {
     this.xmlCode = this.xmlTemplateService.generateBaseTemplate();
     this.updateLineNumbers();
+
+    this.appendNodeSub = this.xmlTemplateService.appendNode$.subscribe(nodeXml => {
+      this.appendNodeToEditor(nodeXml);
+    });
   }
 
   ngAfterViewInit(): void {
@@ -71,6 +77,34 @@ export class XmlEditorManualComponent implements OnInit, AfterViewInit, AfterCon
   ngOnDestroy(): void {
     this.editorInstance?.dispose();
     this.nodeSelectionSub?.unsubscribe();
+    this.appendNodeSub?.unsubscribe();
+  }
+
+  private appendNodeToEditor(nodeXml: string): void {
+    console.log('Adicionando nó ao editor: ', nodeXml);
+
+    const currentXml = this.editorInstance ? this.editorInstance.getValue() : this.xmlCode;
+    const closingTag = '</process-definition>';
+    const index = currentXml.lastIndexOf(closingTag);
+
+    let newXml = currentXml;
+    if (index !== -1) {
+      newXml = currentXml.substring(0, index) + '    ' + nodeXml.split('\n').join('\n    ') + '\n' + currentXml.substring(index);
+    } else {
+      newXml = currentXml + '\n' + nodeXml;
+    }
+
+    this.xmlCode = newXml;
+    
+    if (this.editorInstance) {
+      this.isUpdating = true;
+      // Força a limpeza para garantir re-renderização visual
+      this.editorInstance.setValue('');
+      this.editorInstance.setValue(newXml);
+      this.isUpdating = false;
+    }
+
+    this.updateLineNumbers();
   }
 
   private highLightNodeInXml(nodeLabel: string, nodeId: string, xmlSnippet?: string, nodeType?: string): void {
@@ -248,6 +282,7 @@ export class XmlEditorManualComponent implements OnInit, AfterViewInit, AfterCon
     );
 
     this.editorInstance.onDidChangeModelContent(() => {
+      if (this.isUpdating) return;
       this.xmlCode = this.editorInstance.getValue();
       this.updateLineNumbers();
     });

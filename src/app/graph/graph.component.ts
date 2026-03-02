@@ -551,7 +551,11 @@ export class GraphComponent implements OnInit, AfterViewInit {
       visible: false
     });
 
-    this.xmlTemplateService.generateTaskNode();
+    if (classes.nodeClasses === 'task-node') {
+      console.log('Adicinado um no de tarefa: ', newNodeData.label);
+      const nodeXml = this.xmlTemplateService.generateTaskNode('', newNodeData.label, '');
+      this.xmlTemplateService.triggerAppendNode(nodeXml);
+    }
   }
 
   private getNodeLabel(nodeClass: string): string {
