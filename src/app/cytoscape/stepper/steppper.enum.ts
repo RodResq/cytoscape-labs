@@ -1,8 +1,8 @@
 
 
 export enum StepperLabelEnum {
-  CRIAR_FLUXO = 'Criar Fluxo',
-  CONFIGURAR_NOS = 'Criar Tarefas',
+  CRIAR_FLUXO = 'Informações Gerais',
+  CONFIGURAR_NOS = 'Editar Nós',
   CONFIGURAR_EVENTOS = 'Configurar Transações',
-  GERAR_XML = 'Gerar XML'
+  GERAR_XML = 'Exportar XML'
 }

@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { NodeType } from "@shared/types/graph.types";
 import * as cytoscape from 'cytoscape';
+import { XmlNodeRepresentation } from "src/app/graph/node-xml-mapping";
 
 export interface XmlNodeMapping {
     id: string;
@@ -115,12 +116,25 @@ export class XMLImporterService {
                     type: NodeType.START,
                     swimlane: swimlane,
                     events: this.extratEvents(startState),
+                    xmlRepresentation: this.generateXmlRepresentation(startState),
                     xmlSnippet: this.elementToXmlString(startState)
                 },
                 position: { x: 50, y: 50 + (index * 50) },
                 classes: 'start'
             });
         });
+    }
+
+    public generateXmlRepresentation(element: Element): XmlNodeRepresentation {
+        const name = element.getAttribute('name') || '';
+        const swimlane = element.getAttribute('swimlane') || '';
+        const priority = Number(element.getAttribute('priority')) || 3; 
+
+        return {
+            name,
+            swimlane,
+            priority
+        };
     }
 
     private extractProcessState(xmlDoc: Document, nodeMapping: Map<string, XmlNodeMapping>, nodes: cytoscape.NodeDefinition[]) {
@@ -347,7 +361,7 @@ export class XMLImporterService {
         });
     }
 
-    private elementToXmlString(element: Element): string {
+    public elementToXmlString(element: Element): string {
         const serializer = new XMLSerializer();
         const rawXml = serializer.serializeToString(element);
         return this.formatXmlString(rawXml);

@@ -8,13 +8,17 @@ import { GrafoFormData } from '@shared/types/graph.types';
 export class GrafoService {
 
   private grafoSignal = signal<GrafoFormData | null>(null);
+  private nodeSignal = signal<Node | null>(null);
 
   getGrafo = computed(() => this.grafoSignal());
+  getNode = computed(() => this.nodeSignal());
 
   setGrafo(grafo: GrafoFormData) {
     this.grafoSignal.set(grafo);
   }
 
-
+  editNode(node: Node) {
+    this.nodeSignal.set(node);
+  }
 
 }

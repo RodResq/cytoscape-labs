@@ -4,18 +4,34 @@
       <p-input-group>
         <input
           pInputText
-          formControlName="nome"
-          placeholder="Nome do No"
+          formControlName="name"
+          placeholder="Node Name"
         >
       </p-input-group>
-      <p-input-group>
-        <p-checkbox
-          formControlName="ativo"
-          inputId="inputAtivo"
-          value="true"
-        />
-        <label for="inputAtivo" class="ml-2"> Ativo </label>
-      </p-input-group>
+      <div formGroupName="task">
+        <p-input-group>
+          <input
+            pInputText
+            formControlName="name"
+            placeholder="Task Name"
+          >
+        </p-input-group>
+        <p-input-group>
+          <input
+            pInputText
+            formControlName="swmlane"
+            placeholder="Swmlane"
+          >
+        </p-input-group>
+        <p-input-group>
+          <input
+            pInputText
+            formControlName="priority"
+            placeholder="Priority"
+          >
+        </p-input-group>
+      </div>
+      <p-button type="button" label="Salvar" (click)="save()" />
     </form>
   } @else {
     <div class="card flex flex-wrap gap-4 justify-center">

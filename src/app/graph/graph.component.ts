@@ -18,6 +18,8 @@ import { NodeXmlSelectionService } from '@shared/services/node-xml-selection.ser
 import { XmlTemplateService } from '@shared/services/xml-template.service';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
+import { XMLImporterService } from '@shared/services/xml-importer.service';
+import { XmlNodeRepresentation } from './node-xml-mapping';
 
 cytoscape.use(dagre);
 cytoscape.use(contextMenus);
@@ -42,6 +44,8 @@ export class GraphComponent implements OnInit, AfterViewInit {
   private nodeXmlSelectionService = inject(NodeXmlSelectionService);
   private xmlTemplateService = inject(XmlTemplateService);
   private messageService = inject(MessageService);
+  private graphReloadService = inject(GraphReloadService);
+  private xmlImporterService = inject(XMLImporterService);
 
   private taskFormReceivedData: any;
   private cy!: cytoscape.Core;
@@ -51,7 +55,6 @@ export class GraphComponent implements OnInit, AfterViewInit {
   private grafo!: GrafoFormData | null;
   private currentStep:number = 0;
   private dadosSalvoStorage!: FluxoFormData | null;
-  private graphReloadService = inject(GraphReloadService);
   private reloadSubscription?: any;
   private clearSubscription?: any;
 
@@ -225,6 +228,8 @@ export class GraphComponent implements OnInit, AfterViewInit {
   }
 
   private addStartNode(): cytoscape.CytoscapeOptions | undefined {
+    //todo: ultilzar servico que gera o xml
+    const xmlSnippet = `<start-state name="start">\n    <task name="start" swimlane="teste" priority="3"/>\n</start-state>`;
     return {
       container: this.cytoscapeContainer().nativeElement,
       elements: {
@@ -233,7 +238,9 @@ export class GraphComponent implements OnInit, AfterViewInit {
             group: 'nodes',
             data: {
               id: 'start',
-              label: 'start'
+              label: 'start',
+              xmlSnippet: xmlSnippet,
+              xmlRepresentation: this.mapXmlSnippetToRepresentation(xmlSnippet)
             },
             scratch: {
               _fluxo: 'initial_fluxo'
@@ -356,7 +363,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
   }
 
   private editNode(event: any) {
-    const node = event.target || event.cyTarget;
+    const node = event.target || event.cy;
     this.cy.nodes().unselect();
 
     if (node.isNode()) {
@@ -371,16 +378,9 @@ export class GraphComponent implements OnInit, AfterViewInit {
         visible: true
       });
 
-      switch (node.id()) {
-        case '0':
-          this.stepperService.setStepperByIndex(0);
-          this.router.navigate(['/fluxoApp/fluxo'], {queryParams: {id:node.id()}})
-          break;
-        default:
-          this.stepperService.setStepperByIndex(1);
-          this.router.navigate(['/fluxoApp/node'], {queryParams: {id: node.id()}})
-          break;
-      }
+      this.grafoService.editNode(node);
+      this.stepperService.setStepperByIndex(1);
+      this.router.navigate(['/fluxoApp/node'], {queryParams: {id: node.id()}})
     }
   }
 
@@ -547,6 +547,24 @@ export class GraphComponent implements OnInit, AfterViewInit {
       };
     }
     return newPosition;
+  }
+
+  private mapXmlSnippetToRepresentation(xmlSnippet: string): XmlNodeRepresentation {
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(xmlSnippet, 'application/xml');
+    
+    const taskElement = xmlDoc.getElementsByTagName('task')[0];
+    const startStateElement = xmlDoc.getElementsByTagName('start-state')[0];
+
+    const name = taskElement?.getAttribute('name') || startStateElement?.getAttribute('name') || 'start';
+    const swimlane = taskElement?.getAttribute('swimlane') || '';
+    const priority = Number(taskElement?.getAttribute('priority')) || 3;
+
+    return {
+      name,
+      swimlane,
+      priority
+    };
   }
 
   private generateEndNode(classes: any, clickedElement: any, newNodeId: string) {

@@ -1,11 +1,11 @@
-import { NODE_TYPES } from './contexto-menu-config';
+import { NodeType } from "@shared/types/graph.types";
 
 /**
  * Parâmetros dinâmicos para geração de elementos XML.
  * Cada campo representa um atributo ou valor utilizado
  * nos templates XML dos nós do fluxo (jpdl-3.2).
  */
-export interface XmlNodeParams {
+export interface XmlNodeRepresentation {
   /** Nome/label do nó exibido no fluxo */
   name: string;
   /** Nome da transição de saída */
@@ -28,7 +28,7 @@ export interface XmlNodeParams {
  * Assinatura de uma função geradora de XML.
  * Recebe parâmetros dinâmicos e retorna a string XML do elemento.
  */
-export type XmlGenerator = (params: XmlNodeParams) => string;
+export type XmlGenerator = (params: XmlNodeRepresentation) => string;
 
 /**
  * Mapeamento entre cada NODE_TYPE e sua função geradora
@@ -39,7 +39,7 @@ export type XmlGenerator = (params: XmlNodeParams) => string;
  */
 export const NODE_TYPE_XML_MAP: Record<string, XmlGenerator> = {
 
-  [NODE_TYPES.START]: ({ 
+  [NodeType.START]: ({ 
     name,
     transitionName,
     transitionTo,
@@ -48,7 +48,7 @@ export const NODE_TYPE_XML_MAP: Record<string, XmlGenerator> = {
     endTasks,
     actionExpression,
     eventType
-   }: XmlNodeParams): string => `
+   }: XmlNodeRepresentation): string => `
   <start-state name=${name}>
   <task name=${name} swimlane=${swimlane} priority=${priority}/>
 </start-state> `,
@@ -62,14 +62,14 @@ export const NODE_TYPE_XML_MAP: Record<string, XmlGenerator> = {
    *   <transition to="${transitionTo}" name="${transitionName}"/>
    * </task-node>
    */
-  [NODE_TYPES.TASK]: ({
+  [NodeType.TASK]: ({
     name,
     swimlane = '',
     priority = 3,
     endTasks = false,
     transitionTo = '',
     transitionName = ''
-  }: XmlNodeParams): string => `<task-node name="${name}" end-tasks="${endTasks}">
+  }: XmlNodeRepresentation): string => `<task-node name="${name}" end-tasks="${endTasks}">
   <task name="${name}" swimlane="${swimlane}" priority="${priority}"/>
   <transition to="${transitionTo}" name="${transitionName}"/>
 </task-node>`,
@@ -82,11 +82,11 @@ export const NODE_TYPE_XML_MAP: Record<string, XmlGenerator> = {
    *   <transition to="${transitionTo}" name="${transitionName}"/>
    * </decision>
    */
-  [NODE_TYPES.DECISION]: ({
+  [NodeType.DECISION]: ({
     name,
     transitionTo = '',
     transitionName = ''
-  }: XmlNodeParams): string => `<decision name="${name}">
+  }: XmlNodeRepresentation): string => `<decision name="${name}">
   <transition to="${transitionTo}" name="${transitionName}"/>
 </decision>`,
 
@@ -101,13 +101,13 @@ export const NODE_TYPE_XML_MAP: Record<string, XmlGenerator> = {
    *   <transition to="${transitionTo}" name="${transitionName}"/>
    * </node>
    */
-  [NODE_TYPES.SYSTEM]: ({
+  [NodeType.SYSTEM]: ({
     name,
     eventType = 'node-enter',
     actionExpression = '',
     transitionTo = '',
     transitionName = ''
-  }: XmlNodeParams): string => `<node name="${name}">
+  }: XmlNodeRepresentation): string => `<node name="${name}">
   <event type="${eventType}">
     <action expression="${actionExpression}"/>
   </event>
@@ -120,7 +120,7 @@ export const NODE_TYPE_XML_MAP: Record<string, XmlGenerator> = {
    *
    * <end-state name="${name}"/>
    */
-  [NODE_TYPES.END]: ({
+  [NodeType.END]: ({
     name
-  }: XmlNodeParams): string => `<end-state name="${name}"/>`,
+  }: XmlNodeRepresentation): string => `<end-state name="${name}"/>`,
 };
