@@ -11,12 +11,19 @@ export class XmlTemplateService {
   private insertNodeSubject = new Subject<{targetNodeId: string, nodeXml: string}>();
   insertNode$ = this.insertNodeSubject.asObservable();
 
+  private removeNodeSubject = new Subject<{nodeId: string}>();
+  removeNode$ = this.removeNodeSubject.asObservable();
+
   triggerAppendNode(nodeXml: string) {
     this.appendNodeSubject.next(nodeXml);
   }
 
   triggerInsertNode(targetNode: string, nodeXml: string) {
     this.insertNodeSubject.next({targetNodeId: targetNode, nodeXml});
+  }
+
+  triggerRemoveNode(nodeId: string) {
+    this.removeNodeSubject.next({nodeId});
   }
 
   generateBaseTemplate(processName: string = 'Novo Fluxo'): string {
@@ -48,6 +55,14 @@ export class XmlTemplateService {
     return `<task-node end-tasks="true" name="${name}">
     <task name="${name}" swimlane="${swimlane}" priority="3"/>
 </task-node>`;
+  }
+
+  generateDecisionNode(
+    name: string = '',
+    expression: string = ''
+  ): string {
+    return `<decision expression="${expression}" name="${name}">
+</decision>`;
   }
 
   generateEndState(

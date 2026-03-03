@@ -447,6 +447,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
     }
 
     clickedElement.remove();
+    this.xmlTemplateService.triggerRemoveNode(elementId);
   }
 
   private hasChildren(nodeId: string): boolean {
@@ -565,8 +566,10 @@ export class GraphComponent implements OnInit, AfterViewInit {
     });
 
     this.generateTaskNode(classes, clickedElement, newNodeId);
+    this.generateDecisionNode(classes, clickedElement, newNodeId);
     this.generateEndNode(classes, clickedElement, newNodeId);
   }
+  
 
   private calculateNewPosition(existingChildren: cytoscape.CollectionReturnValue, clickedElement: cytoscape.NodeSingular) {
     let offsetX = 120 + (existingChildren.length * 150);
@@ -605,7 +608,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
       const transitionId = `trans_${newNodeId}`;
 
       const transitionXml = this.xmlTemplateService.generateTransition(newNodeId, transitionId);
-      this.xmlTemplateService.triggerInsertNode(clickedElement.classes()[0], transitionXml);
+      this.xmlTemplateService.triggerInsertNode(clickedElement.data('id'), transitionXml);
 
       const nodeXml = this.xmlTemplateService.generateEndState(newNodeId, '');
       this.xmlTemplateService.triggerAppendNode(nodeXml);
@@ -621,6 +624,18 @@ export class GraphComponent implements OnInit, AfterViewInit {
       this.xmlTemplateService.triggerInsertNode(clickedElement.data('id'), transitionXml);
 
       const nodeXml = this.xmlTemplateService.generateTaskNode(newNodeId);
+      this.xmlTemplateService.triggerAppendNode(nodeXml);
+    }
+  }
+
+  private generateDecisionNode(classes: any, clickedElement: cytoscape.NodeSingular, newNodeId: string) {
+    if (classes.nodeClasses === 'decision-node') {
+      const transitionId = `trans_${newNodeId}`;
+      const transitionXml = this.xmlTemplateService.generateTransition(newNodeId, transitionId);
+      this.xmlTemplateService.triggerInsertNode(clickedElement.data('id'), transitionXml);
+
+      const nodeXml = this.xmlTemplateService
+        .generateDecisionNode(newNodeId, "#{tramitacaoProcessualService.temSituacao('jus:suspenso') ? 'Analisar pendência para arquivamento' : 'Tem bem apreendido?'}");
       this.xmlTemplateService.triggerAppendNode(nodeXml);
     }
   }

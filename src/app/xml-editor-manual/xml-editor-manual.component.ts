@@ -45,6 +45,7 @@ export class XmlEditorManualComponent implements OnInit, AfterViewInit, AfterCon
   private nodeSelectionSub?: Subscription;
   private appendNodeSub?: Subscription;
   private insertNodeSub?: Subscription;
+  private removeNodeSub?: Subscription;
   private isUpdating = false;
 
   private pendingNodes: string[] = [];
@@ -67,6 +68,10 @@ export class XmlEditorManualComponent implements OnInit, AfterViewInit, AfterCon
     this.insertNodeSub = this.xmlTemplateService.insertNode$.subscribe(({targetNodeId, nodeXml}) => {
       this.insertNodeToEditor(targetNodeId, nodeXml);
     });
+
+    this.removeNodeSub = this.xmlTemplateService.removeNode$.subscribe(({nodeId}) => {
+      this.removeNodeFromEditor(nodeId);
+    });
   }
 
   ngAfterViewInit(): void {
@@ -88,6 +93,63 @@ export class XmlEditorManualComponent implements OnInit, AfterViewInit, AfterCon
     this.nodeSelectionSub?.unsubscribe();
     this.appendNodeSub?.unsubscribe();
     this.insertNodeSub?.unsubscribe();
+    this.removeNodeSub?.unsubscribe();
+  }
+
+  private removeNodeFromEditor(nodeId: string): void {
+    this.ngZone.run(() => {
+      if (!this.editorInstance) {
+        console.warn('Editor ainda não inicializado. Atualizando xmlCode diretamente.');
+        this.xmlCode = this.buildRemoveXml(this.xmlCode, nodeId);
+        this.updateLineNumbers();
+        return;
+      }
+
+      const currentXml = this.editorInstance.getValue();
+      const newXml = this.buildRemoveXml(currentXml, nodeId);
+      this.setEditorValue(newXml);
+    });
+  }
+
+  private buildRemoveXml(currentXml: string, nodeId: string): string {
+    let newXml = currentXml;
+
+    const transitionRegex = new RegExp(`[ \\t]*<transition[^>]*to="${nodeId}"[^>]*/>(?:\\r?\\n)?`, 'g');
+    newXml = newXml.replace(transitionRegex, '');
+    
+    const transitionRegex2 = new RegExp(`[ \\t]*<transition[^>]*name="trans_${nodeId}"[^>]*/>(?:\\r?\\n)?`, 'g');
+    newXml = newXml.replace(transitionRegex2, '');
+
+    const startTagRegex = new RegExp(`[ \\t]*<([a-zA-Z0-9-]+)[^>]*name="${nodeId}"[^>]*>`);
+    const match = newXml.match(startTagRegex);
+    if (match) {
+      const tagName = match[1];
+      const startIndex = match.index!;
+      const tagContent = match[0];
+      
+      if (tagContent.trim().endsWith('/>')) {
+        const before = newXml.substring(0, startIndex);
+        let after = newXml.substring(startIndex + tagContent.length);
+        if (after.startsWith('\n')) after = after.substring(1);
+        else if (after.startsWith('\r\n')) after = after.substring(2);
+        
+        newXml = before + after;
+      } else {
+        const closingTag = `</${tagName}>`;
+        const closingIndex = newXml.indexOf(closingTag, startIndex);
+        
+        if (closingIndex !== -1) {
+          const before = newXml.substring(0, startIndex);
+          let after = newXml.substring(closingIndex + closingTag.length);
+          if (after.startsWith('\n')) after = after.substring(1);
+          else if (after.startsWith('\r\n')) after = after.substring(2);
+          
+          newXml = before + after;
+        }
+      }
+    }
+
+    return newXml;
   }
 
   private appendNodeToEditor(nodeXml: string): void {
