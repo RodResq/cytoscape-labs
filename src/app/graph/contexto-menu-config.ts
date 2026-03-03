@@ -1,35 +1,12 @@
-import { MenuItemClasses } from "@shared/types/graph.types";
-
-export const NODE_TYPES = {
-    START: 'start-node',
-    TASK: 'task-node',
-    DECISION: 'decision-node',
-    SYSTEM: 'system-node',
-    END: 'end-node'
-} as const;
-
-export const EDGE_TYPES = {
-    SOLID: '',
-    DOTTED: 'dotted',
-    DASHED: 'dashed',
-} as const;
+import { MenuItemClasses, NodeType, EdgeType } from "@shared/types/graph.types";
+import { cytoscapeStyles } from "./cytoscape-styles";
 
 
-export const NODE_STYLES = {
-    [NODE_TYPES.TASK]: {
-      'background-color': '#0074D9'
-    },
-    [NODE_TYPES.DECISION]: {
-      'background-color': '#FFDC00'
-    },
-    [NODE_TYPES.SYSTEM]: {
-      'background-color': '#009966'
-    },
-    [NODE_TYPES.END]: {
-      'background-color': 'black'
-    }
-} as const;
-
+export const styles = cytoscapeStyles.reduce<{ [key: string]: any }>((acc, style: any) => {
+  const nodeType = style.selector.replace('.', '');
+  acc[nodeType] = style.style;
+  return acc;
+}, {});
 
 export class ContextMenuConfig {
     static createMenuItems(component: any): any[] {
@@ -40,8 +17,9 @@ export class ContextMenuConfig {
         tooltipText: 'Adicionar um nó de tarefa',
         onClickFunction: (event: any) => {
           const classes: MenuItemClasses = {
-            nodeClasses: 'task-node',
-            edgeClasses: 'null'
+            nodeClasses: NodeType.TASK,
+            edgeClasses: 'null',
+            styles: styles[NodeType.TASK]
           };
           component.addNode(event, classes);
         }
@@ -55,8 +33,9 @@ export class ContextMenuConfig {
         selector: 'node, edge',
         onClickFunction: (event: any) => {
           const classes: MenuItemClasses = {
-            nodeClasses: 'decision-node',
-            edgeClasses: 'dashed'
+            nodeClasses: NodeType.DECISION,
+            edgeClasses: EdgeType.DASHED,
+            styles: styles[NodeType.DECISION]
           };
           component.addNode(event, classes);
         },
@@ -71,8 +50,9 @@ export class ContextMenuConfig {
         selector: 'node, edge',
         onClickFunction: (event: any) => {
           const classes: MenuItemClasses = {
-            nodeClasses: 'system-node',
-            edgeClasses: 'dotted'
+            nodeClasses: NodeType.SYSTEM,
+            edgeClasses: EdgeType.DOTTED,
+            styles: styles[NodeType.SYSTEM]
           };
           component.addNode(event, classes);
         },
@@ -87,8 +67,9 @@ export class ContextMenuConfig {
         selector: 'node, edge',
         onClickFunction: (event: any) => {
           const classes: MenuItemClasses = {
-            nodeClasses: 'separation-node',
-            edgeClasses: 'null'
+            nodeClasses: NodeType.SEPARATION,
+            edgeClasses: 'null',
+            styles: styles[NodeType.SEPARATION]
           };
           component.addNode(event, classes);
         },
@@ -102,8 +83,9 @@ export class ContextMenuConfig {
         selector: 'node, edge',
         onClickFunction: (event: any) => {
           const classes: MenuItemClasses = {
-            nodeClasses: 'join-node',
-            edgeClasses: 'null'
+            nodeClasses: NodeType.JOIN,
+            edgeClasses: 'null',
+            styles: styles[NodeType.JOIN]
           };
           component.addNode(event, classes);
         },
@@ -117,8 +99,9 @@ export class ContextMenuConfig {
         selector: 'node, edge',
         onClickFunction: (event: any) => {
           const classes: MenuItemClasses = {
-            nodeClasses: 'subprocess-node',
-            edgeClasses: 'null'
+            nodeClasses: NodeType.SUBPROCESS,
+            edgeClasses: 'null',
+            styles: styles[NodeType.SUBPROCESS]
           };
           component.addNode(event, classes);
         },
@@ -132,11 +115,11 @@ export class ContextMenuConfig {
         selector: 'node, edge',
         onClickFunction: (event: any) => {
           const classes: MenuItemClasses = {
-            nodeClasses: 'end-node',
-            edgeClasses: 'dotted'
+            nodeClasses: NodeType.END,
+            edgeClasses: EdgeType.DOTTED,
+            styles: styles[NodeType.END]
           };
-          const style = { 'background-color': 'black' };
-          component.addNode(event, classes, style);
+          component.addNode(event, classes);
         },
         disabled: false
       };

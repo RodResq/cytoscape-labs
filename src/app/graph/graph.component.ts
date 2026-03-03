@@ -16,6 +16,8 @@ import { FormGroup } from '@angular/forms';
 import { GraphReloadService } from '@shared/services/graph-reload.service';
 import { NodeXmlSelectionService } from '@shared/services/node-xml-selection.service';
 import { XmlTemplateService } from '@shared/services/xml-template.service';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 
 cytoscape.use(dagre);
 cytoscape.use(contextMenus);
@@ -24,9 +26,10 @@ cytoscape.warnings(true);
 @Component({
   selector: 'app-graph',
   standalone: true,
-  imports: [CommonModule, ],
-  template: `<div #cyContainer></div>`,
-  styleUrl: './graph.component.css'
+  imports: [CommonModule, ToastModule],
+  template: `<div #cyContainer></div><p-toast />`,
+  styleUrl: './graph.component.css',
+  providers: [MessageService]
 })
 export class GraphComponent implements OnInit, AfterViewInit {
 
@@ -38,6 +41,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
   private router = inject(Router);
   private nodeXmlSelectionService = inject(NodeXmlSelectionService);
   private xmlTemplateService = inject(XmlTemplateService);
+  private messageService = inject(MessageService);
 
   private taskFormReceivedData: any;
   private cy!: cytoscape.Core;
@@ -209,7 +213,6 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
   private initCytoscape() {
     this.cy = cytoscape(this.addStartNode());
-
     this.contexMenuInstance = this.cy.contextMenus(this.options);
 
     this.grafoService.setGrafo({
@@ -471,34 +474,39 @@ export class GraphComponent implements OnInit, AfterViewInit {
     console.log('Dados do formulário: ', this.taskFormReceivedData);
   }
 
-  private addNode(event: any, classes: any) {
+  private checkExistsNodeEnd(event: cytoscape.EventObject, classes: any) {
     if (classes.nodeClasses === 'end-node' && this.cy.nodes('.end-node').length > 0) {
-      console.log('Ja existe um no de fim');
-      return;
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Erro',
+        detail: 'Ja existe um no de fim'
+      });
+      return true;
     }
+    return false;
+  }
 
-    const clickedElement = event.target || event.cyTarget;
-    const elementId = clickedElement.id();
-    const newNodeId = `${classes.nodeClasses}-` + Date.now();
-    const nodePos = clickedElement.position();
+  private generateRandomUUID() {
+    return crypto.randomUUID().split('-')[0];
+  }
 
-    const existingChildren = this.cy.nodes().filter((node: any) => {
-      return node.data('idParentNode') === elementId;
-    })
+  private addNode(event: cytoscape.EventObject, classes: any) {
 
-    const childOffset = existingChildren.length * 150;
+    if (this.checkExistsNodeEnd(event, classes)) return;
 
-    const offsetX = 120 + childOffset;
-    const offsetY = 80;
+    const clickedElement: cytoscape.NodeSingular = event.target || event.cy;
+    const uuid = this.generateRandomUUID(); 
+    const newNodeId = `${classes.nodeClasses}-${uuid}`;
 
-    const newPosition = {
-      x: nodePos.x + offsetX,
-      y: nodePos.y + offsetY
-    }
+    const existingChildren = this.cy.nodes().filter((node: cytoscape.NodeSingular) => {
+      return node.data('idParentNode') === clickedElement.id();
+    });
+
+    let newPosition = this.calculateNewPosition(existingChildren, clickedElement);
 
     const newNodeData: any = {
       id: newNodeId,
-      idParentNode: elementId,
+      idParentNode: clickedElement.id(),
       label: this.getNodeLabel(classes.nodeClasses)
     };
 
@@ -519,17 +527,17 @@ export class GraphComponent implements OnInit, AfterViewInit {
     this.cy.add([
       {
         group: 'nodes',
-        data: { id: newNodeId, idParentNode: elementId, form: {} },
+        data: { id: newNodeId, idParentNode: clickedElement.id(), form: {} },
         scratch: { _fluxo: newNodeId },
         position: newPosition,
         classes: [classes.nodeClasses],
-        style: null
+        style: classes.styles ? { ...classes.styles, label: newNodeId } : { label: newNodeId }
       },
       {
         group: 'edges',
         data: {
-          id: 'edge-' + elementId + '-' + newNodeId,
-          source: elementId,
+          id: 'edge-' + clickedElement.id() + '-' + newNodeId,
+          source: clickedElement.id(),
           target: newNodeId,
           label: '',
         },
@@ -558,6 +566,38 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
     this.generateTaskNode(classes, clickedElement, newNodeId);
     this.generateEndNode(classes, clickedElement, newNodeId);
+  }
+
+  private calculateNewPosition(existingChildren: cytoscape.CollectionReturnValue, clickedElement: cytoscape.NodeSingular) {
+    let offsetX = 120 + (existingChildren.length * 150);
+    let offsetY = 80 + (existingChildren.length * 50);
+
+    let newPosition = {
+      x: clickedElement.position().x + offsetX,
+      y: clickedElement.position().y + offsetY
+    };
+
+    const MIN_DISTANCE = 120;
+
+    const isOverlapping = (pos: { x: number; y: number; }) => {
+      return this.cy.nodes().toArray().some((node: cytoscape.NodeSingular) => {
+        const nodePos = node.position();
+        if (!nodePos) return false;
+        const p1 = nodePos.x - pos.x;
+        const p2 = nodePos.y - pos.y;
+        return Math.sqrt(p1 * p1 + p2 * p2) < MIN_DISTANCE;
+      });
+    };
+
+    while (isOverlapping(newPosition)) {
+      offsetX += 140;
+      offsetY += 50;
+      newPosition = {
+        x: clickedElement.position().x + offsetX,
+        y: clickedElement.position().y + offsetY
+      };
+    }
+    return newPosition;
   }
 
   private generateEndNode(classes: any, clickedElement: any, newNodeId: string) {

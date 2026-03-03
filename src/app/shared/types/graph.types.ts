@@ -79,4 +79,5 @@ export enum EdgeType {
 export interface MenuItemClasses {
   nodeClasses: string;
   edgeClasses: string;
+  styles?: cytoscape.Css.Node;
 }
