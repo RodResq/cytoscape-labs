@@ -268,28 +268,19 @@ export class GraphComponent implements OnInit, AfterViewInit {
     this.cy.on('cxttap', 'node', (event) => {
       const node = event.target;
 
-      let menuItemRemoveNodeExist = this.menuItemExiste('remove-node');
+      // Restaura todos os itens que podem ter sido ocultados em cliques anteriores
+      try { this.contexMenuInstance.showMenuItem('remove-node'); } catch(e) {}
+      try { this.contexMenuInstance.showMenuItem('add-node'); } catch(e) {}
 
       if (node && node.id() == '0') {
-        if (menuItemRemoveNodeExist) {
-          this.contexMenuInstance.removeMenuItem('remove-node');
-        }
+        try { this.contexMenuInstance.hideMenuItem('remove-node'); } catch(e) {}
 
         let menuItemTesteExist = this.menuItemExiste('teste-menu-dinamico');
         if (!menuItemTesteExist) {
           this.addMenuItemTest();
         }
       } else if(node && String(node.id())?.includes('end-node')) {
-        let menuItemAddNodeExist = this.menuItemExiste('add-node');
-
-        if (menuItemAddNodeExist) {
-          this.contexMenuInstance.removeMenuItem('add-node');
-        }
-        this.appendMenuItem();
-      } else {
-        if (!menuItemRemoveNodeExist) {
-          this.addMenuItemRemoveNode();
-        }
+        try { this.contexMenuInstance.hideMenuItem('add-node'); } catch(e) {}
       }
     });
   }
@@ -313,52 +304,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
     console.log('Process Edge: ', edgeId, `${sourceId} -> ${targerId}`);
   }
 
-  private appendMenuItem() {
-    this.contexMenuInstance.appendMenuItem({
-      id: 'remove-node',
-      content: 'remove',
-      tooltipText: 'remove',
-      image: {
-        src: "assets/icons/remove.svg",
-        width: 12,
-        height: 12,
-        x: 6,
-        y: 4
-      },
-      selector: 'node, edge',
-      onClickFunction: (event: any) => {
-        this.removerElemento(event);
-      },
-      disabled: false,
-      show: true,
-      hasTrailingDivider: true,
-      coreAsWell: false
-    }
-    );
-  }
 
-  private addMenuItemRemoveNode() {
-    this.contexMenuInstance.insertBeforeMenuItem({
-      id: 'remove-node',
-      content: 'remove',
-      tooltipText: 'remove',
-      image: {
-        src: "assets/icons/remove.svg",
-        width: 12,
-        height: 12,
-        x: 6,
-        y: 4
-      },
-      selector: 'node, edge',
-      onClickFunction: (event: any) => {
-        this.removerElemento(event);
-      },
-      disabled: false,
-      show: true,
-      hasTrailingDivider: true,
-      coreAsWell: false
-    }, 'add-node');
-  }
 
   private addMenuItemTest() {
     this.contexMenuInstance.appendMenuItem({
