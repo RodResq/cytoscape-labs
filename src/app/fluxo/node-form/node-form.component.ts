@@ -14,7 +14,7 @@ import { Button } from "primeng/button";
   templateUrl: './node-form.component.html',
   styleUrl: './node-form.component.css'
 })
-export class NodeFormComponent implements OnInit{
+export class NodeFormComponent implements OnInit {
   private formsDataService = inject(FormsDataService);
   private formBuilder = inject(FormBuilder);
   private grafoService = inject(GrafoService);
@@ -26,7 +26,6 @@ export class NodeFormComponent implements OnInit{
 
   public nodeForm!: FormGroup;
   public grafo: GrafoFormData | null = null;
-  public node: Node | null = null;
 
   constructor() {
     effect(() => {
@@ -36,16 +35,25 @@ export class NodeFormComponent implements OnInit{
         this.preencherFormTarefa();
       }
 
-      this.node = this.grafoService.getNode();
+      const nodeEditado = this.grafoService.getNode();
 
-      if (this.node) {
-        console.log('Node recebido: ', this.node);
-        
-        this.nodeForm.patchValue(this.node);
+      if (nodeEditado) {
+        const xmlRepresentation = nodeEditado.data('xmlRepresentation');
+
+        if (xmlRepresentation) {
+          this.nodeForm?.patchValue({
+            name: xmlRepresentation.name,
+            task: {
+              name: xmlRepresentation.name,
+              swimlane: xmlRepresentation.swimlane,
+              priority: xmlRepresentation.priority
+            }
+          });
+        }
       }
     });
   }
-  
+
   ngOnInit(): void {
     this.setupFormNode();
     this.setupAutoSave();
@@ -80,15 +88,15 @@ export class NodeFormComponent implements OnInit{
             return idsIguais;
           })
           .map(dado => {
-            this.nodeForm.patchValue(dado.form, {emitEvent: false})
+            this.nodeForm.patchValue(dado.form, { emitEvent: false })
             return dado;
           });
-        };
-      }
+      };
     }
+  }
 
-    save() {
-      this.formsDataService.setFormData('step1', this.nodeForm);
-    }
+  save() {
+    this.formsDataService.setFormData('step1', this.nodeForm);
+  }
 
 }

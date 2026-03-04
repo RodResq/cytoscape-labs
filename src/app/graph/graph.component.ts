@@ -18,8 +18,7 @@ import { NodeXmlSelectionService } from '@shared/services/node-xml-selection.ser
 import { XmlTemplateService } from '@shared/services/xml-template.service';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
-import { XMLImporterService } from '@shared/services/xml-importer.service';
-import { XmlNodeRepresentation } from './node-xml-mapping';
+import { XmlSnippetRepresentationService } from '@shared/services/xml-snippet-representation.service';
 
 cytoscape.use(dagre);
 cytoscape.use(contextMenus);
@@ -45,7 +44,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
   private xmlTemplateService = inject(XmlTemplateService);
   private messageService = inject(MessageService);
   private graphReloadService = inject(GraphReloadService);
-  private xmlImporterService = inject(XMLImporterService);
+  private xmlSnippetRepresentationService = inject(XmlSnippetRepresentationService);
 
   private taskFormReceivedData: any;
   private cy!: cytoscape.Core;
@@ -53,7 +52,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
   private isWaitingForEdges = true;
   private contexMenuInstance!: contextMenus.ContextMenu;
   private grafo!: GrafoFormData | null;
-  private currentStep:number = 0;
+  private currentStep: number = 0;
   private dadosSalvoStorage!: FluxoFormData | null;
   private reloadSubscription?: any;
   private clearSubscription?: any;
@@ -69,14 +68,14 @@ export class GraphComponent implements OnInit, AfterViewInit {
       const grafoNodeData = this.grafo?.node.data();
 
       if (!grafoNodeData) {
-          return;
+        return;
       }
 
       if (this.currentStep == 0) {
         this.graphoFluxFormIteraction();
       } else if (this.currentStep == 1) {
         this.grafoTaskFormIteraction();
-      } else  {
+      } else {
         return;
       }
     });
@@ -85,7 +84,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     const dadosStorage = localStorage.getItem('step0');
     if (dadosStorage != undefined) {
-      this.dadosSalvoStorage = dadosStorage ? JSON.parse(dadosStorage): null;
+      this.dadosSalvoStorage = dadosStorage ? JSON.parse(dadosStorage) : null;
 
       if (this.dadosSalvoStorage) {
         this.grafo?.node.select();
@@ -116,14 +115,14 @@ export class GraphComponent implements OnInit, AfterViewInit {
       const nodeType: string | undefined = node.data('type');
       const nodeId = node.id() as string;
 
-      const nodeLabel: string = 
+      const nodeLabel: string =
         node.style('label') ||
         node.data('label') ||
         nodeId;
 
-        const xmlSnippet: string | undefined = node.data('xmlSnippet');
-        
-        this.nodeXmlSelectionService.selectNodeInXml(nodeId, nodeLabel, xmlSnippet, nodeType);
+      const xmlSnippet: string | undefined = node.data('xmlSnippet');
+
+      this.nodeXmlSelectionService.selectNodeInXml(nodeId, nodeLabel, xmlSnippet, nodeType);
     });
   }
 
@@ -173,7 +172,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
       localStorage.removeItem('importedGraph');
 
-    } catch(error) {
+    } catch (error) {
       console.error('Erro ao carregar grafo importado:', error)
     }
   }
@@ -184,8 +183,8 @@ export class GraphComponent implements OnInit, AfterViewInit {
     if (formCadastroFluxo && this.grafo?.node.id() == '0') {
       const formValue = formCadastroFluxo.value;
       if (formValue) {
-          this.grafo.node.select();
-          this.grafo.node.style('label', formValue.fluxo);
+        this.grafo.node.select();
+        this.grafo.node.style('label', formValue.fluxo);
       }
     }
     return;
@@ -193,9 +192,9 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
   private grafoTaskFormIteraction() {
     const dadosStorage = localStorage.getItem('step1');
-    const taskArray: TaskNode[] = dadosStorage ? JSON.parse(dadosStorage): [];
+    const taskArray: TaskNode[] = dadosStorage ? JSON.parse(dadosStorage) : [];
     const formSetupNode = this.formsDataService.getFormByStep('step1');
-    const formTaskValue = formSetupNode ? formSetupNode.value: undefined
+    const formTaskValue = formSetupNode ? formSetupNode.value : undefined
 
     if (!formTaskValue) return
 
@@ -209,7 +208,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
         this.grafo?.node.style('label', nodeSalvoNoStorage.form.nome);
       }
     } else {
-        this.grafo?.node.style('label', formTaskValue.nome);
+      this.grafo?.node.style('label', formTaskValue.nome);
     }
     return;
   }
@@ -228,8 +227,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
   }
 
   private addStartNode(): cytoscape.CytoscapeOptions | undefined {
-    //todo: ultilzar servico que gera o xml
-    const xmlSnippet = `<start-state name="start">\n    <task name="start" swimlane="teste" priority="3"/>\n</start-state>`;
+    const xmlSnippet = this.xmlTemplateService.generateStartState();
     return {
       container: this.cytoscapeContainer().nativeElement,
       elements: {
@@ -240,7 +238,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
               id: 'start',
               label: 'start',
               xmlSnippet: xmlSnippet,
-              xmlRepresentation: this.mapXmlSnippetToRepresentation(xmlSnippet)
+              xmlRepresentation: this.xmlSnippetRepresentationService.mapXmlSnippetToRepresentation(xmlSnippet)
             },
             scratch: {
               _fluxo: 'initial_fluxo'
@@ -275,19 +273,18 @@ export class GraphComponent implements OnInit, AfterViewInit {
     this.cy.on('cxttap', 'node', (event) => {
       const node = event.target;
 
-      // Restaura todos os itens que podem ter sido ocultados em cliques anteriores
-      try { this.contexMenuInstance.showMenuItem('remove-node'); } catch(e) {}
-      try { this.contexMenuInstance.showMenuItem('add-node'); } catch(e) {}
+      try { this.contexMenuInstance.showMenuItem('remove-node'); } catch (e) { }
+      try { this.contexMenuInstance.showMenuItem('add-node'); } catch (e) { }
 
       if (node && node.id() == '0') {
-        try { this.contexMenuInstance.hideMenuItem('remove-node'); } catch(e) {}
+        try { this.contexMenuInstance.hideMenuItem('remove-node'); } catch (e) { }
 
         let menuItemTesteExist = this.menuItemExiste('teste-menu-dinamico');
         if (!menuItemTesteExist) {
           this.addMenuItemTest();
         }
-      } else if(node && String(node.id())?.includes('end-node')) {
-        try { this.contexMenuInstance.hideMenuItem('add-node'); } catch(e) {}
+      } else if (node && String(node.id())?.includes('end-node')) {
+        try { this.contexMenuInstance.hideMenuItem('add-node'); } catch (e) { }
       }
     });
   }
@@ -295,10 +292,10 @@ export class GraphComponent implements OnInit, AfterViewInit {
   private async waitForEdgeClick() {
     try {
       while (this.isWaitingForEdges) {
-        const event: any =  await this.cy.promiseOn('tap', 'edge');
+        const event: any = await this.cy.promiseOn('tap', 'edge');
         this.processEdgeClicked(event.target);
       }
-    } catch(error) {
+    } catch (error) {
       console.error('Erro: ', error);
     }
   }
@@ -362,8 +359,8 @@ export class GraphComponent implements OnInit, AfterViewInit {
     this.nodeService.getELement(node);
   }
 
-  private editNode(event: any) {
-    const node = event.target || event.cy;
+  private editNode(event: cytoscape.EventObject) {
+    const node: cytoscape.NodeSingular = event.target || event.cy;
     this.cy.nodes().unselect();
 
     if (node.isNode()) {
@@ -380,7 +377,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
       this.grafoService.editNode(node);
       this.stepperService.setStepperByIndex(1);
-      this.router.navigate(['/fluxoApp/node'], {queryParams: {id: node.id()}})
+      this.router.navigate(['/fluxoApp/node'], { queryParams: { id: node.id() } })
     }
   }
 
@@ -442,7 +439,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
     if (this.checkExistsNodeEnd(event, classes)) return;
 
     const clickedElement: cytoscape.NodeSingular = event.target || event.cy;
-    const uuid = this.generateRandomUUID(); 
+    const uuid = this.generateRandomUUID();
     const newNodeId = `${classes.nodeClasses}-${uuid}`;
 
     const existingChildren = this.cy.nodes().filter((node: cytoscape.NodeSingular) => {
@@ -474,7 +471,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
     this.cy.add([
       {
         group: 'nodes',
-        data: { id: newNodeId, idParentNode: clickedElement.id(), form: {} },
+        data: { id: newNodeId, label: newNodeId },
         scratch: { _fluxo: newNodeId },
         position: newPosition,
         classes: [classes.nodeClasses],
@@ -493,7 +490,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
     ]);
 
     this.cy.nodes().unselect();
-    const nodeAdicionado =  this.cy.getElementById(newNodeId);
+    const nodeAdicionado = this.cy.getElementById(newNodeId);
 
     this.cy.animate({
       fit: {
@@ -515,7 +512,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
     this.generateDecisionNode(classes, clickedElement, newNodeId);
     this.generateEndNode(classes, clickedElement, newNodeId);
   }
-  
+
 
   private calculateNewPosition(existingChildren: cytoscape.CollectionReturnValue, clickedElement: cytoscape.NodeSingular) {
     let offsetX = 120 + (existingChildren.length * 150);
@@ -549,24 +546,6 @@ export class GraphComponent implements OnInit, AfterViewInit {
     return newPosition;
   }
 
-  private mapXmlSnippetToRepresentation(xmlSnippet: string): XmlNodeRepresentation {
-    const parser = new DOMParser();
-    const xmlDoc = parser.parseFromString(xmlSnippet, 'application/xml');
-    
-    const taskElement = xmlDoc.getElementsByTagName('task')[0];
-    const startStateElement = xmlDoc.getElementsByTagName('start-state')[0];
-
-    const name = taskElement?.getAttribute('name') || startStateElement?.getAttribute('name') || 'start';
-    const swimlane = taskElement?.getAttribute('swimlane') || '';
-    const priority = Number(taskElement?.getAttribute('priority')) || 3;
-
-    return {
-      name,
-      swimlane,
-      priority
-    };
-  }
-
   private generateEndNode(classes: any, clickedElement: any, newNodeId: string) {
     if (classes.nodeClasses === 'end-node') {
       const transitionId = `trans_${newNodeId}`;
@@ -581,14 +560,24 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
   private generateTaskNode(classes: any, clickedElement: any, newNodeId: string) {
     console.log('Elemento clicado: ', clickedElement.data('id'));
-    
+
     if (classes.nodeClasses === 'task-node') {
       const transitionId = `trans_${newNodeId}`;
       const transitionXml = this.xmlTemplateService.generateTransition(newNodeId, transitionId);
       this.xmlTemplateService.triggerInsertNode(clickedElement.data('id'), transitionXml);
 
-      const nodeXml = this.xmlTemplateService.generateTaskNode(newNodeId);
-      this.xmlTemplateService.triggerAppendNode(nodeXml);
+      const xmlSnippet = this.xmlTemplateService.generateTaskNode(newNodeId);
+
+      const newNode = this.cy.getElementById(newNodeId);
+      newNode.data({
+        ...newNode.data(),
+        id: newNodeId,
+        label: newNodeId,
+        xmlSnippet: xmlSnippet,
+        xmlRepresentation: this.xmlSnippetRepresentationService.mapXmlSnippetToRepresentation(xmlSnippet)
+      });
+
+      this.xmlTemplateService.triggerAppendNode(xmlSnippet);
     }
   }
 

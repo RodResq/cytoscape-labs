@@ -1,5 +1,6 @@
 import { computed, Injectable, signal } from '@angular/core';
 import { GrafoFormData } from '@shared/types/graph.types';
+import * as cytoscape from 'cytoscape';
 
 
 @Injectable({
@@ -8,7 +9,7 @@ import { GrafoFormData } from '@shared/types/graph.types';
 export class GrafoService {
 
   private grafoSignal = signal<GrafoFormData | null>(null);
-  private nodeSignal = signal<Node | null>(null);
+  private nodeSignal = signal<cytoscape.NodeSingular | null>(null);
 
   getGrafo = computed(() => this.grafoSignal());
   getNode = computed(() => this.nodeSignal());
@@ -17,7 +18,7 @@ export class GrafoService {
     this.grafoSignal.set(grafo);
   }
 
-  editNode(node: Node) {
+  editNode(node: cytoscape.NodeSingular) {
     this.nodeSignal.set(node);
   }
 

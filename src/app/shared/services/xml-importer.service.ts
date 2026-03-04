@@ -13,12 +13,12 @@ export interface XmlNodeMapping {
 }
 
 export interface XMLAction {
-  expression: string;
+    expression: string;
 }
 
 export interface XmlEvent {
-  type: string;
-  actions: XMLAction[]
+    type: string;
+    actions: XMLAction[]
 }
 
 
@@ -34,7 +34,7 @@ export interface XmlTask {
 }
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class XMLImporterService {
 
@@ -63,7 +63,7 @@ export class XMLImporterService {
 
         return { nodes, edges }
     }
-    
+
     private createEdges(nodeMapping: Map<string, XmlNodeMapping>, edges: cytoscape.EdgeDefinition[]) {
         nodeMapping.forEach((sourceNode) => {
             if (sourceNode.transitions) {
@@ -128,7 +128,7 @@ export class XMLImporterService {
     public generateXmlRepresentation(element: Element): XmlNodeRepresentation {
         const name = element.getAttribute('name') || '';
         const swimlane = element.getAttribute('swimlane') || '';
-        const priority = Number(element.getAttribute('priority')) || 3; 
+        const priority = Number(element.getAttribute('priority')) || 3;
 
         return {
             name,
@@ -237,7 +237,12 @@ export class XMLImporterService {
                     endTasks: endTasks,
                     swimlane: swimlane,
                     events: this.extratEvents(taskNode),
-                    xmlSnippet: this.elementToXmlString(taskNode)
+                    xmlSnippet: this.elementToXmlString(taskNode),
+                    xmlRepresentation: {
+                        name: task.getAttribute('name') || '',
+                        swimlane: task.getAttribute('swimlane') || '',
+                        priority: Number(task.getAttribute('priority')) || 3
+                    }
                 },
                 position: { x: 400, y: 100 + (index * 150) },
                 classes: 'task-node'
@@ -392,9 +397,9 @@ export class XMLImporterService {
             }
 
             const isSelfClosing = part.endsWith('/');
-            const isClosingTag  = part.startsWith('/');
+            const isClosingTag = part.startsWith('/');
             const isDeclaration = part.startsWith('?');
-            const isComment     = part.startsWith('!--');
+            const isComment = part.startsWith('!--');
 
             if (!isSelfClosing && !isClosingTag && !isDeclaration && !isComment) {
                 indent++;
@@ -405,32 +410,32 @@ export class XMLImporterService {
     }
 
     private extratEvents(element: Element): XmlEvent[] {
-      const events: XmlEvent[] = [];
-      const eventsElement = element.getElementsByTagName('event');
+        const events: XmlEvent[] = [];
+        const eventsElement = element.getElementsByTagName('event');
 
-      Array.from(eventsElement).forEach((event) => {
-        const eventType = event.getAttribute('type');
+        Array.from(eventsElement).forEach((event) => {
+            const eventType = event.getAttribute('type');
 
-        const actions: XMLAction[] = [];
-        const actionsElements = event.getElementsByTagName('action');
+            const actions: XMLAction[] = [];
+            const actionsElements = event.getElementsByTagName('action');
 
-        Array.from(actionsElements).forEach((action) => {
-          const expression = action.getAttribute('expression');
-          if (expression) {
-            actions.push({
-              expression: expression
+            Array.from(actionsElements).forEach((action) => {
+                const expression = action.getAttribute('expression');
+                if (expression) {
+                    actions.push({
+                        expression: expression
+                    })
+                }
+            });
+
+            events.push({
+                type: eventType || '',
+                actions: actions
             })
-          }
+
         });
 
-        events.push({
-          type: eventType || '',
-          actions: actions
-        })
-
-      });
-
-      return events;
+        return events;
     }
 
     private extractTransitions(element: Element): XmlTransition[] {
