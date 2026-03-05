@@ -1,41 +1,25 @@
 <ng-container>
   @if (grafo?.visible) {
-    <form [formGroup]="nodeForm">
-      <p-input-group>
-        <input
-          pInputText
-          formControlName="name"
-          placeholder="Node Name"
-        >
-      </p-input-group>
-      <div formGroupName="task">
-        <p-input-group>
-          <input
-            pInputText
-            formControlName="name"
-            placeholder="Task Name"
-          >
-        </p-input-group>
-        <p-input-group>
-          <input
-            pInputText
-            formControlName="swmlane"
-            placeholder="Swmlane"
-          >
-        </p-input-group>
-        <p-input-group>
-          <input
-            pInputText
-            formControlName="priority"
-            placeholder="Priority"
-          >
-        </p-input-group>
+  <div class="flex justify-center">
+    <form [formGroup]="nodeForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4 w-full sm:w-56">
+      <div class="flex flex-col gap-1">
+        <p-inputgroup>
+          <input pInputText type="text" formControlName="name" placeholder="Node Name">
+        </p-inputgroup>
       </div>
-      <p-button type="button" label="Salvar" (click)="save()" />
+      <div class="flex flex-col gap-1" formGroupName="task">
+        <p-inputgroup>
+          <input pInputText formControlName="name" placeholder="Task Name">
+        </p-inputgroup>
+        <p-inputgroup>
+          <input pInputText formControlName="swmlane" placeholder="Swmlane">
+        </p-inputgroup>
+        <p-inputgroup>
+          <input pInputText formControlName="priority" placeholder="Priority">
+        </p-inputgroup>
+      </div>
+      <button pButton type="submit" type="submit"><span pButtonLabel>Salvar</span></button>
     </form>
-  } @else {
-    <div class="card flex flex-wrap gap-4 justify-center">
-    <p-message severity="info">Cadastre as tarefas diretamente no grafo!</p-message>
   </div>
   }
 </ng-container>

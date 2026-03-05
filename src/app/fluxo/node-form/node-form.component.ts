@@ -5,14 +5,15 @@ import { GrafoService } from '@shared/services/grafo.service';
 import { GrafoFormData } from '@shared/types/graph.types';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputTextModule } from 'primeng/inputtext';
-import { Message } from 'primeng/message';
-import { Button } from "primeng/button";
+import { InputNumberModule } from 'primeng/inputnumber';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-node-form',
-  imports: [FormsModule, InputGroupModule, InputTextModule, ReactiveFormsModule, Message, Button],
+  imports: [ReactiveFormsModule, InputGroupModule, InputTextModule, ButtonModule, InputNumberModule],
   templateUrl: './node-form.component.html',
-  styleUrl: './node-form.component.css'
+  styleUrl: './node-form.component.css',
+  standalone: true
 })
 export class NodeFormComponent implements OnInit {
   private formsDataService = inject(FormsDataService);
@@ -95,7 +96,7 @@ export class NodeFormComponent implements OnInit {
     }
   }
 
-  save() {
+  onSubmit() {
     this.formsDataService.setFormData('step1', this.nodeForm);
   }
 

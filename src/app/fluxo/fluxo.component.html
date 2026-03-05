@@ -2,9 +2,9 @@
   <div class="row h-100">
     <div [ngClass]="showXmlEditor ? '':  'col-md-3'">
       @if (changeUrl) {
-        <div class="mb-4 p-4">
-          <router-outlet></router-outlet>
-        </div>
+      <div class="mb-2 p-2">
+        <router-outlet></router-outlet>
+      </div>
       }
     </div>
 
@@ -15,10 +15,10 @@
     <div [ngClass]="showXmlEditor ? 'col-md-5': 'col-md-4'">
       <div class="mb-2 p-2 h-100">
         @if (flowModeService.mode() === 'xml-import') {
-          <app-xml-editor [xmlCode]="xmlCode"/>
+        <app-xml-editor [xmlCode]="xmlCode" />
         }
         @if (flowModeService.mode() === 'manual') {
-          <app-xml-editor-manual/>
+        <app-xml-editor-manual />
         }
       </div>
     </div>
