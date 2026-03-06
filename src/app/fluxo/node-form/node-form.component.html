@@ -1,7 +1,7 @@
 <ng-container>
   @if (grafo?.visible) {
   <div class="flex justify-center">
-    <form [formGroup]="nodeForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4 w-full sm:w-56">
+    <form [formGroup]="nodeForm" (ngSubmit)="onSubmit(nodeForm.value)" class="flex flex-col gap-4 w-full sm:w-56">
       <div class="flex flex-col gap-1">
         <p-inputgroup>
           <input pInputText type="text" formControlName="name" placeholder="Node Name">

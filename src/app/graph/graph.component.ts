@@ -19,6 +19,7 @@ import { XmlTemplateService } from '@shared/services/xml-template.service';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { XmlSnippetRepresentationService } from '@shared/services/xml-snippet-representation.service';
+import { FormService } from '@shared/services/form.service';
 
 cytoscape.use(dagre);
 cytoscape.use(contextMenus);
@@ -45,6 +46,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
   private messageService = inject(MessageService);
   private graphReloadService = inject(GraphReloadService);
   private xmlSnippetRepresentationService = inject(XmlSnippetRepresentationService);
+  private formService = inject(FormService);
 
   private taskFormReceivedData: any;
   private cy!: cytoscape.Core;
@@ -62,10 +64,15 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
   constructor() {
     effect(() => {
+      const form = this.formService.form();
+      if (form) {
+        console.log('Form recebido no graph component: ', form);
+      }
+
       this.grafo = this.grafoService.getGrafo();
       this.currentStep = untracked(() => this.stepperService.getCurrentStep());
 
-      const grafoNodeData = this.grafo?.node.data();
+      const grafoNodeData = this.grafo?.node?.data?.();
 
       if (!grafoNodeData) {
         return;
@@ -78,6 +85,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
       } else {
         return;
       }
+
     });
   }
 

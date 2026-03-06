@@ -62,7 +62,6 @@ export class FluxoComponent implements OnInit, OnDestroy{
       this.grafo = this.grafoService.getGrafo()
       this.idTaskNodeAtual =  this.activatedRoute.snapshot.queryParams['id'];
 
-      this.form = this.formService.getForm();
     });
   }
 

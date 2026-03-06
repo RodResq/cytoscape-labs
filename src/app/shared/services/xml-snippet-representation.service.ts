@@ -12,7 +12,6 @@ export class XmlSnippetRepresentationService {
 
 
     const taskElement: any = xmlDoc.getElementsByTagName('task')[0];
-    console.log('taskElement: ', taskElement);
     const startStateElement: any = xmlDoc.getElementsByTagName('start-state')[0];
 
     const name = taskElement?.getAttribute('name') || startStateElement?.getAttribute('name') || 'start';

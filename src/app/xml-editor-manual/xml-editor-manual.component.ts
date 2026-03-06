@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { AfterContentChecked, AfterViewInit, Component, ElementRef, inject, ChangeDetectorRef, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterContentChecked, AfterViewInit, Component, effect, ElementRef, inject, ChangeDetectorRef, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { GraphImporterService } from '@shared/services/graph-importer.service';
 import { NodeXmlSelectionService } from '@shared/services/node-xml-selection.service';
 import { XmlTemplateService } from '@shared/services/xml-template.service';
+import { FormService } from '@shared/services/form.service';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -36,6 +37,7 @@ export class XmlEditorManualComponent implements OnInit, AfterViewInit, AfterCon
   private messageService = inject(MessageService);
   private nodeXmlSelectionService = inject(NodeXmlSelectionService);
   private xmlTemplateService = inject(XmlTemplateService);
+  private formService = inject(FormService);
   private ngZone = inject(NgZone);
   private cdr = inject(ChangeDetectorRef);
 
@@ -56,6 +58,15 @@ export class XmlEditorManualComponent implements OnInit, AfterViewInit, AfterCon
   selectedFileName: string = '';
   validationMessage: { isValid: boolean; text: string } | null = null;
   vsTheme: string = 'vs-light';
+
+  constructor() {
+    effect(() => {
+      const form = this.formService.form();
+      if (form) {
+        console.log('Form recebido no xml editor manual: ', form);
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.xmlCode = this.xmlTemplateService.generateBaseTemplate();

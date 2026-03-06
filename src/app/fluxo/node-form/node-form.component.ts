@@ -2,11 +2,12 @@ import { Component, effect, inject, OnInit, output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FormsDataService } from '@shared/services/forms-data.service';
 import { GrafoService } from '@shared/services/grafo.service';
-import { GrafoFormData } from '@shared/types/graph.types';
+import { GrafoFormData, TaskNode } from '@shared/types/graph.types';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { ButtonModule } from 'primeng/button';
+import { FormService } from '@shared/services/form.service';
 
 @Component({
   selector: 'app-node-form',
@@ -19,6 +20,7 @@ export class NodeFormComponent implements OnInit {
   private formsDataService = inject(FormsDataService);
   private formBuilder = inject(FormBuilder);
   private grafoService = inject(GrafoService);
+  private formService = inject(FormService);
 
   public stepCompleted = output<boolean>();
 
@@ -57,7 +59,6 @@ export class NodeFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.setupFormNode();
-    this.setupAutoSave();
   }
 
   setupFormNode() {
@@ -68,12 +69,6 @@ export class NodeFormComponent implements OnInit {
         swmlane: new FormControl(''),
         priority: new FormControl(''),
       })
-    });
-  }
-
-  setupAutoSave() {
-    this.nodeForm?.valueChanges.subscribe(() => {
-      this.formsDataService.setFormData('step1', this.nodeForm);
     });
   }
 
@@ -96,8 +91,8 @@ export class NodeFormComponent implements OnInit {
     }
   }
 
-  onSubmit() {
-    this.formsDataService.setFormData('step1', this.nodeForm);
+  onSubmit(nodeFormValue: any) {
+    this.formService.setForm(nodeFormValue);
   }
 
 }
