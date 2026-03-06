@@ -64,6 +64,7 @@ export class XmlEditorManualComponent implements OnInit, AfterViewInit, AfterCon
       const form = this.formService.form();
       if (form) {
         console.log('Form recebido no xml editor manual: ', form);
+        this.updatesXmlCodeWithForm(form);
       }
     });
   }
@@ -105,6 +106,21 @@ export class XmlEditorManualComponent implements OnInit, AfterViewInit, AfterCon
     this.appendNodeSub?.unsubscribe();
     this.insertNodeSub?.unsubscribe();
     this.removeNodeSub?.unsubscribe();
+  }
+
+  private updatesXmlCodeWithForm(form: any) {
+    if (!this.xmlCode) return;
+    const selectedNodeOldId = this.nodeXmlSelectionService.getOldSelectedNodeId() || form.name;
+    console.log('Selected Node OLD ID', selectedNodeOldId);
+    
+    this.xmlCode = this.xmlTemplateService.updateXmlWithObject(this.xmlCode, form, selectedNodeOldId);
+    
+    if (form.name) {
+      this.nodeXmlSelectionService.updateOldSelectedNodeId(form.name);
+    }
+    
+    this.updateLineNumbers();
+    this.setEditorValue(this.xmlCode);
   }
 
   private removeNodeFromEditor(nodeId: string): void {

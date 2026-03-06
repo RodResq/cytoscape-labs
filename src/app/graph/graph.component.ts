@@ -67,6 +67,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
       const form = this.formService.form();
       if (form) {
         console.log('Form recebido no graph component: ', form);
+        this.updatesDataGraphWithForm(form);
       }
 
       this.grafo = this.grafoService.getGrafo();
@@ -87,6 +88,19 @@ export class GraphComponent implements OnInit, AfterViewInit {
       }
 
     });
+  }
+
+  private updatesDataGraphWithForm(form: any) {
+    const node = this.grafo?.node;
+    if (!node) return;
+
+    node.data('xmlRepresentation', { ...form });
+    const newName = form.name || form.task?.name;
+    
+    if (newName) {
+       node.data('label', newName);
+       node.style('label', newName);
+    }
   }
 
   ngOnInit(): void {
@@ -122,6 +136,9 @@ export class GraphComponent implements OnInit, AfterViewInit {
       const node = event.target;
       const nodeType: string | undefined = node.data('type');
       const nodeId = node.id() as string;
+      
+      const xmlRep = node.data('xmlRepresentation');
+      const oldNodeId = xmlRep?.name || node.data('label') || nodeId;
 
       const nodeLabel: string =
         node.style('label') ||
@@ -130,7 +147,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
       const xmlSnippet: string | undefined = node.data('xmlSnippet');
 
-      this.nodeXmlSelectionService.selectNodeInXml(nodeId, nodeLabel, xmlSnippet, nodeType);
+      this.nodeXmlSelectionService.selectNodeInXml(nodeId, nodeLabel, xmlSnippet, nodeType, oldNodeId);
     });
   }
 
@@ -373,6 +390,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
     if (node.isNode()) {
       node.select();
+      this.nodeXmlSelectionService.updateOldSelectedNodeId(node.id());
       this.nodeService.getELement(node);
 
       this.grafoService.setGrafo({
@@ -566,13 +584,13 @@ export class GraphComponent implements OnInit, AfterViewInit {
     }
   }
 
-  private generateTaskNode(classes: any, clickedElement: any, newNodeId: string) {
-    console.log('Elemento clicado: ', clickedElement.data('id'));
-
+  private generateTaskNode(classes: any, clickedElement: cytoscape.NodeSingular, newNodeId: string) {
+    console.log('Elemento clicado: ', clickedElement.data('xmlRepresentation').name);
+    const idParentNode = clickedElement.data('xmlRepresentation').name;
     if (classes.nodeClasses === 'task-node') {
       const transitionId = `trans_${newNodeId}`;
       const transitionXml = this.xmlTemplateService.generateTransition(newNodeId, transitionId);
-      this.xmlTemplateService.triggerInsertNode(clickedElement.data('id'), transitionXml);
+      this.xmlTemplateService.triggerInsertNode(idParentNode, transitionXml);
 
       const xmlSnippet = this.xmlTemplateService.generateTaskNode(newNodeId);
 
