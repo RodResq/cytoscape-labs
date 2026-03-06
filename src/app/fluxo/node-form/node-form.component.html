@@ -1,25 +1,42 @@
 <ng-container>
   @if (grafo?.visible) {
-  <div class="flex justify-center">
-    <form [formGroup]="nodeForm" (ngSubmit)="onSubmit(nodeForm.value)" class="flex flex-col gap-4 w-full sm:w-56">
-      <div class="flex flex-col gap-1">
-        <p-inputgroup>
-          <input pInputText type="text" formControlName="name" placeholder="Node Name">
-        </p-inputgroup>
-      </div>
-      <div class="flex flex-col gap-1" formGroupName="task">
-        <p-inputgroup>
-          <input pInputText formControlName="name" placeholder="Task Name">
-        </p-inputgroup>
-        <p-inputgroup>
-          <input pInputText formControlName="swmlane" placeholder="Swmlane">
-        </p-inputgroup>
-        <p-inputgroup>
-          <input pInputText formControlName="priority" placeholder="Priority">
-        </p-inputgroup>
-      </div>
-      <button pButton type="submit" type="submit"><span pButtonLabel>Salvar</span></button>
-    </form>
+  <div class="p-2 flex items-center justify-center">
+    <p-card>
+      <ng-template #header></ng-template>
+      <ng-template #title></ng-template>
+      <ng-template #subtitle></ng-template>
+      <ng-template #content>
+        <form [formGroup]="nodeForm">
+          <div class="flex flex-col gap-1">
+            <p-inputgroup>
+              <input pInputText type="text" formControlName="name" placeholder="Node Name">
+            </p-inputgroup>
+          </div>
+          <div class="flex flex-col gap-1" formGroupName="task">
+            <p-inputgroup>
+              <input pInputText formControlName="name" placeholder="Task Name">
+            </p-inputgroup>
+            <p-inputgroup>
+              <input pInputText formControlName="swmlane" placeholder="Swmlane">
+            </p-inputgroup>
+            <p-inputgroup>
+              <input pInputText formControlName="priority" placeholder="Priority">
+            </p-inputgroup>
+          </div>
+        </form>
+      </ng-template>
+      <ng-template #footer>
+        <div style="display: flex; justify-content: space-between; gap: 1rem; margin-top: 0.25rem; width: 100%;">
+          <div style="flex: 1;">
+            <p-button label="Cancelar" severity="secondary" [outlined]="true" styleClass="w-full"
+              (click)="onCancel()" />
+          </div>
+          <div style="flex: 1;">
+            <p-button label="Salvar" styleClass="w-full" (click)="onSubmit(nodeForm.value)" />
+          </div>
+        </div>
+      </ng-template>
+    </p-card>
   </div>
   }
 </ng-container>

@@ -1,0 +1,13 @@
+::ng-deep .p-fileupload {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+::ng-deep .p-fileupload-header {
+  border: none !important;
+  border-bottom: none !important;
+}
+
+::ng-deep .p-fileupload-content {
+  border: none !important;
+}

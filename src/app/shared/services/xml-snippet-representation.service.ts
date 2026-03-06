@@ -13,8 +13,10 @@ export class XmlSnippetRepresentationService {
 
     const taskElement: any = xmlDoc.getElementsByTagName('task')[0];
     const startStateElement: any = xmlDoc.getElementsByTagName('start-state')[0];
+    const endStateElement: any = xmlDoc.getElementsByTagName('end-state')[0];
+    const decisionElement: any = xmlDoc.getElementsByTagName('decision')[0];
 
-    const name = taskElement?.getAttribute('name') || startStateElement?.getAttribute('name') || 'start';
+    const name = taskElement?.getAttribute('name') || startStateElement?.getAttribute('name') || endStateElement?.getAttribute('name') || decisionElement?.getAttribute('name') || 'start';
     const swimlane = taskElement?.getAttribute('swimlane') || '';
     const priority = Number(taskElement?.getAttribute('priority')) || 3;
 

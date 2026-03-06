@@ -80,16 +80,16 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
   private updatesDataGraphWithForm(form: any) {
     console.log('Recebendo dados do form no updatesDataGraphWithForm', form);
-    
+
     if (!this.node) return;
     console.log('Node para ser alterado so label e style: ', this.node);
 
     this.node.data('xmlRepresentation', { ...form });
     const newName = form.name || form.task?.name;
-    
+
     if (newName) {
-       this.node.data('label', newName);
-       this.node.style('label', newName);
+      this.node.data('label', newName);
+      this.node.style('label', newName);
     }
   }
 
@@ -115,7 +115,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
       const node = event.target;
       const nodeType: string | undefined = node.data('type');
       const nodeId = node.id() as string;
-      
+
       const xmlRep = node.data('xmlRepresentation');
       const oldNodeId = xmlRep?.name || node.data('label') || nodeId;
 
@@ -366,6 +366,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
   private editNode(event: cytoscape.EventObject) {
     const node: cytoscape.NodeSingular = event.target || event.cy;
     this.cy.nodes().unselect();
+    console.log('No selecionado: ', node);
 
     if (node.isNode()) {
       // node.select();
@@ -441,7 +442,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
   private addNode(event: cytoscape.EventObject, classes: any) {
 
-    if (this.checkExistsNodeEnd(event, classes)) return;
+    // if (this.checkExistsNodeEnd(event, classes)) return;
 
     const clickedElement: cytoscape.NodeSingular = event.target || event.cy;
     const uuid = this.generateRandomUUID();
@@ -559,8 +560,18 @@ export class GraphComponent implements OnInit, AfterViewInit {
       const transitionXml = this.xmlTemplateService.generateTransition(newNodeId, transitionId);
       this.xmlTemplateService.triggerInsertNode(idParentNode, transitionXml);
 
-      const nodeXml = this.xmlTemplateService.generateEndState(newNodeId, '');
-      this.xmlTemplateService.triggerAppendNode(nodeXml);
+      const snippetXml = this.xmlTemplateService.generateEndState(newNodeId, '');
+
+      const newNode = this.cy.getElementById(newNodeId);
+      newNode.data({
+        ...newNode.data(),
+        id: newNodeId,
+        label: newNodeId,
+        xmlSnippet: snippetXml,
+        xmlRepresentation: this.xmlSnippetRepresentationService.mapXmlSnippetToRepresentation(snippetXml)
+      });
+
+      this.xmlTemplateService.triggerAppendNode(snippetXml);
     }
   }
 
@@ -572,30 +583,41 @@ export class GraphComponent implements OnInit, AfterViewInit {
       const transitionXml = this.xmlTemplateService.generateTransition(newNodeId, transitionId);
       this.xmlTemplateService.triggerInsertNode(idParentNode, transitionXml);
 
-      const xmlSnippet = this.xmlTemplateService.generateTaskNode(newNodeId);
+      const snippetXml = this.xmlTemplateService.generateTaskNode(newNodeId);
 
       const newNode = this.cy.getElementById(newNodeId);
       newNode.data({
         ...newNode.data(),
         id: newNodeId,
         label: newNodeId,
-        xmlSnippet: xmlSnippet,
-        xmlRepresentation: this.xmlSnippetRepresentationService.mapXmlSnippetToRepresentation(xmlSnippet)
+        xmlSnippet: snippetXml,
+        xmlRepresentation: this.xmlSnippetRepresentationService.mapXmlSnippetToRepresentation(snippetXml)
       });
 
-      this.xmlTemplateService.triggerAppendNode(xmlSnippet);
+      this.xmlTemplateService.triggerAppendNode(snippetXml);
     }
   }
 
   private generateDecisionNode(classes: any, clickedElement: cytoscape.NodeSingular, newNodeId: string) {
+    const idParentNode = clickedElement.data('xmlRepresentation').name;
     if (classes.nodeClasses === 'decision-node') {
       const transitionId = `trans_${newNodeId}`;
       const transitionXml = this.xmlTemplateService.generateTransition(newNodeId, transitionId);
-      this.xmlTemplateService.triggerInsertNode(clickedElement.data('id'), transitionXml);
+      this.xmlTemplateService.triggerInsertNode(idParentNode, transitionXml);
 
-      const nodeXml = this.xmlTemplateService
+      const snippetXml = this.xmlTemplateService
         .generateDecisionNode(newNodeId, "#{tramitacaoProcessualService.temSituacao('jus:suspenso') ? 'Analisar pendência para arquivamento' : 'Tem bem apreendido?'}");
-      this.xmlTemplateService.triggerAppendNode(nodeXml);
+
+      const newNode = this.cy.getElementById(newNodeId);
+      newNode.data({
+        ...newNode.data(),
+        id: newNodeId,
+        label: newNodeId,
+        xmlSnippet: snippetXml,
+        xmlRepresentation: this.xmlSnippetRepresentationService.mapXmlSnippetToRepresentation(snippetXml)
+      });
+
+      this.xmlTemplateService.triggerAppendNode(snippetXml);
     }
   }
 

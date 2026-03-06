@@ -8,10 +8,11 @@ import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { ButtonModule } from 'primeng/button';
 import { FormService } from '@shared/services/form.service';
+import { CardModule } from 'primeng/card';
 
 @Component({
   selector: 'app-node-form',
-  imports: [ReactiveFormsModule, InputGroupModule, InputTextModule, ButtonModule, InputNumberModule],
+  imports: [ReactiveFormsModule, InputGroupModule, InputTextModule, ButtonModule, InputNumberModule, CardModule],
   templateUrl: './node-form.component.html',
   styleUrl: './node-form.component.css',
   standalone: true
@@ -95,4 +96,7 @@ export class NodeFormComponent implements OnInit {
     this.formService.setForm(nodeFormValue);
   }
 
+  onCancel() {
+    this.nodeForm.reset();
+  }
 }
