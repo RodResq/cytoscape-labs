@@ -5,14 +5,14 @@ type Stylesheet = StylesheetStyle | StylesheetCSS;
 
 export const cytoscapeStyles: Stylesheet[] = [
     {
-        selector: '.start',
+        selector: '.start-state',
         style: {
         'shape': 'ellipse',
         'background-color': '#27ae60',
         'border-color': '#229954',
         'border-width': 5,
-        'width': 80,
-        'height': 80,
+        'width': 60,
+        'height': 60,
         'text-valign': 'center',
         'text-halign': 'center',
         'color': '#fff',
@@ -22,11 +22,11 @@ export const cytoscapeStyles: Stylesheet[] = [
         }
     },
     {
-        selector: '.start-state',
+        selector: '.start',
         style: {
         'shape': 'ellipse',
-        'background-color': '#3498db',
-        'border-color': '#2980b9',
+        'background-color': '#27ae60',
+        'border-color': '#27ae60',
         'border-width': 5,
         'width': 60,
         'height': 60,

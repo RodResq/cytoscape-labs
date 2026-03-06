@@ -574,10 +574,11 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
   private generateEndNode(classes: any, clickedElement: any, newNodeId: string) {
     if (classes.nodeClasses === 'end-node') {
+      const idParentNode = clickedElement.data('xmlRepresentation').name;
       const transitionId = `trans_${newNodeId}`;
 
       const transitionXml = this.xmlTemplateService.generateTransition(newNodeId, transitionId);
-      this.xmlTemplateService.triggerInsertNode(clickedElement.data('id'), transitionXml);
+      this.xmlTemplateService.triggerInsertNode(idParentNode, transitionXml);
 
       const nodeXml = this.xmlTemplateService.generateEndState(newNodeId, '');
       this.xmlTemplateService.triggerAppendNode(nodeXml);
