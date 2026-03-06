@@ -55,9 +55,9 @@ export class GraphComponent implements OnInit, AfterViewInit {
   private contexMenuInstance!: contextMenus.ContextMenu;
   private grafo!: GrafoFormData | null;
   private currentStep: number = 0;
-  private dadosSalvoStorage!: FluxoFormData | null;
   private reloadSubscription?: any;
   private clearSubscription?: any;
+  private node!: cytoscape.NodeSingular | null;
 
   showNodeForm: boolean = true;
   selectedElementId: string = '';
@@ -70,51 +70,30 @@ export class GraphComponent implements OnInit, AfterViewInit {
         this.updatesDataGraphWithForm(form);
       }
 
-      this.grafo = this.grafoService.getGrafo();
+      this.node = this.grafoService.getNode()
       this.currentStep = untracked(() => this.stepperService.getCurrentStep());
 
-      const grafoNodeData = this.grafo?.node?.data?.();
 
-      if (!grafoNodeData) {
-        return;
-      }
-
-      if (this.currentStep == 0) {
-        this.graphoFluxFormIteraction();
-      } else if (this.currentStep == 1) {
-        this.grafoTaskFormIteraction();
-      } else {
-        return;
-      }
 
     });
   }
 
   private updatesDataGraphWithForm(form: any) {
-    const node = this.grafo?.node;
-    if (!node) return;
+    console.log('Recebendo dados do form no updatesDataGraphWithForm', form);
+    
+    if (!this.node) return;
+    console.log('Node para ser alterado so label e style: ', this.node);
 
-    node.data('xmlRepresentation', { ...form });
+    this.node.data('xmlRepresentation', { ...form });
     const newName = form.name || form.task?.name;
     
     if (newName) {
-       node.data('label', newName);
-       node.style('label', newName);
+       this.node.data('label', newName);
+       this.node.style('label', newName);
     }
   }
 
   ngOnInit(): void {
-    const dadosStorage = localStorage.getItem('step0');
-    if (dadosStorage != undefined) {
-      this.dadosSalvoStorage = dadosStorage ? JSON.parse(dadosStorage) : null;
-
-      if (this.dadosSalvoStorage) {
-        this.grafo?.node.select();
-        this.grafo?.node.style('label', this.dadosSalvoStorage.fluxo);
-        return;
-      }
-    }
-
     this.reloadSubscription = this.graphReloadService.reload$.subscribe(() => {
       this.loadImportedGraph();
     });
@@ -389,7 +368,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
     this.cy.nodes().unselect();
 
     if (node.isNode()) {
-      node.select();
+      // node.select();
       this.nodeXmlSelectionService.updateOldSelectedNodeId(node.id());
       this.nodeService.getELement(node);
 
